@@ -1,0 +1,72 @@
+<head>
+  <title>protobrew</title>
+</head>
+
+<body>
+  {{> menu}}
+  {{> main}}
+    <p>
+    {{loginButtons}}
+    </p>
+</body>
+
+<template name="menu">
+    <div>
+    <h2>Menu</h2>
+    {{#each entries}}
+    <a href="/{{title}}">{{title}}</a>
+    {{/each}}
+    </div>
+</template>
+
+<template name="main">
+  {{#if index}}
+    {{> index}}
+  {{else}}
+    {{> entry}}
+  {{/if}}
+</template>
+
+<template name="index">
+    {{{content.text}}}
+</template>
+
+<template name="entry">
+    <h1>{{title}}</h1>
+
+    {{#if edit_mode}}
+    <form>
+        {{#with entry}}
+        {{> editEntry}}
+        {{/with}}
+        <input type="submit" value="save" id="save" />
+    </form>
+    {{else}}
+
+    {{#if entry}}
+    <p>{{{entry.text}}}</p>
+    <ul>
+        {{#each entry.tags}}
+        <li>{{this}}</li>
+        {{/each}}
+    </ul>
+    {{#if currentUser}}
+    <input type="button" value="edit" id="edit" />
+    {{/if}}
+
+    {{else}}
+
+    {{title}} doesn't exist yet.
+        {{#if currentUser}}
+        <input type="button" value="Create it!" id="edit" />
+        {{/if}}
+
+    {{/if}}
+
+    {{/if}}
+</template>
+
+<template name="editEntry">
+    <textarea id="entry-text" placeholder="Tell your story.">{{text}}</textarea>
+    <textarea id="entry-tags"></textarea>
+</template>
