@@ -1,30 +1,54 @@
 <head>
-  <title>protobrew</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Welcome to Protobrew</title>
+
+<!--[if IE 5]>
+<style type="text/css"> 
+/* place css box model fixes for IE 5* in this conditional comment */
+#sidebar1 { width: 230px; }
+</style>
+<![endif]--><!--[if IE]>
+<style type="text/css"> 
+/* place css fixes for all versions of IE in this conditional comment */
+#sidebar1 { padding-top: 30px; }
+#mainContent { zoom: 1; }
+/* the above proprietary zoom property gives IE the hasLayout it needs to avoid several bugs */
+</style>
+<![endif]-->
 </head>
 
-<body>
+<template name="null">
   {{> menu}}
   {{> main}}
-    <p>
-    {{loginButtons}}
-    </p>
-</body>
+</template>
 
 <template name="menu">
     <div>
     <h2>Menu</h2>
-    {{#each entries}}
-    <a href="/{{title}}">{{title}}</a>
-    {{/each}}
+    <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/articles">Articles</a></li>
+    <li><a href="/brew-systesm">Brew Systems</a></li>
+    </ul>
     </div>
+
+    <p>
+    {{loginButtons}}
+    </p>
+
+    {{#if currentUser}}
+    {{> user}}
+    {{/if}}
 </template>
 
 <template name="main">
-  {{#if index}}
+    <div class="content">
+    {{#if index}}
     {{> index}}
-  {{else}}
+    {{else}}
     {{> entry}}
-  {{/if}}
+    {{/if}}
+    </div>
 </template>
 
 <template name="index">
@@ -40,6 +64,7 @@
         {{> editEntry}}
         {{/with}}
         <input type="submit" value="save" id="save" />
+        <input type="button" value="cancel" id="cancel" />
     </form>
     {{else}}
 
@@ -66,7 +91,66 @@
     {{/if}}
 </template>
 
+
 <template name="editEntry">
     <textarea id="entry-text" placeholder="Tell your story.">{{text}}</textarea>
     <textarea id="entry-tags"></textarea>
+</template>
+
+<template name="user">
+    {{info}}
+</template>
+
+
+<template name="leftNav">
+  <div id="left_nav">
+    <div id="logo"><a href="/">ProtoBrew Wiki</a></div>
+    <div id="search"><input class="txtOptionInput searchField" type="search" results="5" size="15" accesskey="F" autocomplete="off" lastsearchtext="aasdfasdfsd" placeholder=""></div>
+
+    <nav>
+    	<ul>
+    		<li {{#if pageIs "/"}}class="selected"{{/if}}><a href="/"><span aria-hidden="true" data-icon="&#x68;"></span> Home</a></li>
+			<li {{#if pageIs "Articles"}}class="selected"{{/if}}><a href="/Articles"><span aria-hidden="true" data-icon="&#x6e;"></span> Articles</a></li>
+			<li {{#if pageIs "Brew systems"}}class="selected"{{/if}}><a href="/Brew systems"><span aria-hidden="true" data-icon="&#xe007;"></span> Brew systems</a></li>
+    	</ul>
+    </nav>
+
+    <div id="buttons">
+        <!--
+    	<a href="#"><span aria-hidden="true" data-icon="&#x73;"></span> Join</a>
+    	<a href="#"><span aria-hidden="true" data-icon="&#x70;"></span> Sign In</a>
+        -->
+        {{loginButtons}}
+    </div>
+
+
+  <!-- end #left_nav --></div>
+</template>
+
+
+<body>
+
+<div id="container">
+  <div id="header"></div>
+
+    {{> leftNav}}
+  
+  <div id="main">
+    {{> main}}
+
+	<div id="footer">
+  	<!-- end #footer --></div>
+
+	<!-- end #main --></div>
+	
+	<div id="sidebar">
+        {{> sidebar}}
+	<!-- end #sidebar --></div>
+	<!-- end #container --></div>
+</body>
+
+<template name="sidebar">
+    <ul>
+    {{{ navItems }}}
+    </ul>
 </template>
