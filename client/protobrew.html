@@ -43,9 +43,15 @@
 
 <template name="main">
     <div class="content">
-    {{#if index}}
+    {{#if modeIs "index"}}
     {{> index}}
-    {{else}}
+    {{/if}}
+
+    {{#if modeIs "search"}}
+    {{> search}}
+    {{/if}}
+
+    {{#if modeIs "entry"}}
     {{> entry}}
     {{/if}}
     </div>
@@ -53,6 +59,16 @@
 
 <template name="index">
     {{{content.text}}}
+</template>
+
+<template name="search">
+    <h3>Search results for "{{term}}"</h3>
+
+    {{#each results}}
+        <h2><a href="/{{this.title}}">{{this.title}}</a></h2>
+        <p>{{this.text}}</p>
+    {{/each}}
+
 </template>
 
 <template name="entry">
@@ -105,7 +121,7 @@
 <template name="leftNav">
   <div id="left_nav">
     <div id="logo"><a href="/">ProtoBrew Wiki</a></div>
-    <div id="search"><input class="txtOptionInput searchField" type="search" results="5" size="15" accesskey="F" autocomplete="off" lastsearchtext="aasdfasdfsd" placeholder=""></div>
+    <div id="search"><input class="txtOptionInput searchField" type="search" results="5" size="15" accesskey="F" autocomplete="off" lastsearchtext="aasdfasdfsd" placeholder="" id="search-input" value="{{term}}"></div>
 
     <nav>
     	<ul>

@@ -12,16 +12,5 @@ Entries.allow
 
   remove: (userId, entries) -> _.all( entries, (entry) -> userId == entry.author )
 
-Meteor.methods
-
-    # Todo: lock down fields
-    saveEntry: (entry, callback) ->
-        throw new Meteor.Error(403, "You must be logged in") unless this.userId
-
-        entry.author = this.userId
-        entry.visibility = "public"
-
-        return Entries.insert(entry, callback) unless entry._id
-        return Entries.update({_id: entry._id}, entry, callback)
-
-        
+Tags.allow
+    insert: (userId, entry) -> true if userId

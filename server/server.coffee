@@ -7,3 +7,48 @@ Meteor.publish('entries', (title) ->
 
 
 Meteor.publish('tags', -> return Tags.find({}))
+
+
+
+Meteor.methods
+
+    # Todo: lock down fields
+    saveEntry: (entry, callback) ->
+        throw new Meteor.Error(403, "You must be logged in") unless this.userId
+
+        entry.author = this.userId
+        entry.visibility = "public"
+
+        return Entries.insert(entry, callback) unless entry._id
+        return Entries.update({_id: entry._id}, entry, callback)
+
+    saveFile: (blob, name, path, encoding) ->
+        throw new Meteor.Error(403, "You must be logged in") unless this.userId
+
+        cleanPath = (str) ->
+          if str
+            str.replace(/\.\./g,'').replace(/\/+/g,'').replace(/^\/+/,'').replace(/\/+$/,'')
+
+        cleanName = (str) ->
+          str.replace(/\.\./g,'').replace(/\//g,'')
+
+        path = cleanPath(path)
+        fs = __meteor_bootstrap__.require('fs')
+        name = cleanName(name || 'file')
+        encoding = encoding || 'binary'
+        chroot = 'public'
+
+        path = chroot + (if path then '/' + path + '/' else '/')
+
+        path = "#{path}user-images~/#{this.userId}/"
+
+        fs.mkdirSync( path ) if ! fs.existsSync( path )
+
+        fs.writeFile(path + name, blob, encoding, (err) ->
+          if err
+            console.log( "err" );
+          else
+            console.log('The file ' + name + ' (' + encoding + ') was saved to ' + path)
+        );
+
+        return {filelink: path + name}

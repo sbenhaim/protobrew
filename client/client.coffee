@@ -14,11 +14,35 @@ Template.menu.showAllEntries = ->
 Template.menu.content = ->
     Entries.find({'title': 'menu'})
 
-Template.menu.events =
-    'click #show-all-entries': (evt) ->
-        Session.set( 'showAllEntries', ! Session.get('showAllEntries') )
+navigate = (evt) ->
+    href = $(evt.target).attr('href')
+    evt.preventDefault()
+    Router.navigate(href, true)
 
 ## Nav
+
+Template.leftNav.events =
+    'click a': navigate
+
+    'change #search-input': (evt) ->
+        term = $(evt.target).val()
+        Router.navigate( '/search/' + term, true ) if term
+
+Template.search.term = -> Session.get( 'search-term' )
+
+Template.leftNav.term = -> Session.get( 'search-term' )
+
+Template.search.results = ->
+    term = Session.get('search-term')
+
+    return unless term
+    
+    entries = Entries.find( {text: new RegExp( term, "i" )} )
+
+    entries.map (e) ->
+        text: $('<div>').html( e.text ).text().substring(0,200) + '...'
+        title: e.title
+            
 
 Template.leftNav.pageIs = (u) ->
     page = Session.get('title')
@@ -56,8 +80,8 @@ Template.entry.entry = ->
 Template.entry.edit_mode = ->
     Session.get('edit-mode')
 
-Template.main.index = ->
-    return Session.get('index');
+Template.main.modeIs = (mode) ->
+    Session.get('mode') == mode;
 
 Template.index.content = ->
     entry = Entries.findOne({title:"index"})
@@ -68,18 +92,23 @@ Template.index.content = ->
 
 Template.editEntry.rendered = ->
     el = $( '#entry-text' )
-    el.redactor();
+    el.redactor(
+        imageUpload: '/images'
+        );
 
     tags = Tags.find({})
+    entry = Session.get('entry')
 
     $('#entry-tags').textext({
         plugins : 'autocomplete suggestions tags',
-        tagsItems: Session.get('entry').tags
+        tagsItems: if entry then entry.tags else []
         suggestions: tags.map (t) -> t.name
     });
 
 
 Template.entry.events
+
+    'click a': navigate
 
     'click #edit': (evt) ->
         evt.preventDefault()
@@ -136,16 +165,21 @@ rewriteLinks = ( text ) ->
     $html.html()
 
 
-
 EntryRouter = Backbone.Router.extend({
     routes: {
+        "search/:term": "search"
+        "images": "images",
         ":title": "main",
         "": "index"
     },
     index: ->
-        Session.set("index", 'true')
+        Session.set("mode", 'index')
+        Session.set("title", undefined)
+    search: (term) ->
+        Session.set( 'mode', 'search' )
+        Session.set( 'search-term', decodeURIComponent( term ) )
     main: (title) ->
-        Session.set("index", false)
+        Session.set("mode", 'entry')
         Session.set("title", decodeURIComponent( title ))
     setTitle: (title) ->
         this.navigate(title, true)
@@ -198,7 +232,8 @@ buildNav = ( ul, items ) ->
             id = this.id
             target_id = id.replace( /nav/, 'entry' )
             offset = $('#' + target_id).offset()
-            $( 'html,body' ).animate( { scrollTop: offset.top }, 500 )
+            adjust = if Session.get( 'edit-mode' ) then 70 else 20
+            $( 'html,body' ).animate( { scrollTop: offset.top - adjust }, 500 )
         )
 
         $a.attr( 'href', 'javscript:void(0)' )
@@ -241,3 +276,26 @@ $(window).scroll ->
         scrollLast = +new Date();
         highlightNav()
 
+
+Meteor.saveFile = (blob, name, path, type, callback) ->
+  fileReader = new FileReader()
+  encoding = 'binary'
+  type = type || 'binary'
+
+  switch type
+    when 'text'
+      method = 'readAsText'
+      encoding = 'utf8'
+    when 'binary'
+      method = 'readAsBinaryString'
+      encoding = 'binary'
+    else
+      method = 'readAsBinaryString'
+      encoding = 'binary'
+
+  fileReader.onload = (file) ->
+    result = Meteor.call('saveFile', file.srcElement.result, name, path, encoding, (e) ->
+        callback( { filelink: "/user-images/#{Meteor.userId()}/#{name}" } )
+    )
+
+  fileReader[method](blob)

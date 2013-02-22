@@ -3458,6 +3458,16 @@ var RLANG = {
 			{
 				$(this.uploadOptions.input).change($.proxy(function()
 				{
+                    // Hack
+                    var that = this;
+                    $.each(this.element[0].redactor_file.files, function(i, file) {
+                        Meteor.saveFile(file, file.name, null, null, $.proxy(function( json ) {
+                            console.log( "json: ", json );
+                            that.uploadOptions.success(json);
+                        },this));
+                    });
+                    return
+                    // End hack
 					this.element.submit(function(e) { return false; });
 					this.uploadSubmit();
 				}, this));
