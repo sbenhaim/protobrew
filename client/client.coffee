@@ -108,7 +108,7 @@ Template.editEntry.rendered = ->
 
 Template.entry.events
 
-    'click a': navigate
+    'click a.internal-link': navigate
 
     'click #edit': (evt) ->
         evt.preventDefault()
@@ -161,6 +161,7 @@ rewriteLinks = ( text ) ->
         if href
             href = href.replace( /https?:\/\/([^\/.]+)$/, '/$1' )
             $(el).attr( 'href', href )
+            $(el).addClass('internal-link')
 
     $html.html()
 
