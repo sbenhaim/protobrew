@@ -44,7 +44,7 @@ Meteor.methods
 
         path = chroot + (if path then '/' + path + '/' else '/')
 
-        path = "#{path}user-images~/#{this.userId}/"
+        path = "#{path}user-images/#{this.userId}/"
 
         fs.mkdirSync( path ) if ! fs.existsSync( path )
 
