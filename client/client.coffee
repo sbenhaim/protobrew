@@ -94,6 +94,10 @@ Template.editEntry.rendered = ->
     el = $( '#entry-text' )
     el.redactor(
         imageUpload: '/images'
+        buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'deleted', '|', 
+            'unorderedlist', 'orderedlist', 'outdent', 'indent', '|',
+            'image', 'table', 'link', '|',
+            'fontcolor', 'backcolor', '|', 'alignment', '|', 'horizontalrule']
         );
 
     tags = Tags.find({})
@@ -145,6 +149,28 @@ Template.entry.events
 
         evt.preventDefault()
         Session.set("edit-mode", false)
+
+    'click #entry-title': (evt) ->
+        $el = $(evt.target)
+        $in = $("<input class='entry-title-input'/>")
+        $in.val( $el.text() )
+        $el.replaceWith($in)
+        $in.focus()
+
+        updateTitle = (e, force = false) ->
+            if force || e.target != $el[0] && e.target != $in[0]
+                if $in.val() != $el.text()
+                    Meteor.call('updateTitle', Session.get('entry'), $in.val())
+                    $el.html($in.val())
+                    Router.navigate($in.val(), true)
+
+                $in.replaceWith($el)
+                $(document).off('click')
+
+
+        $(document).on('click', updateTitle)
+        $in.on("keypress", (e) ->
+            updateTitle(e, true) if e.keyCode == 13)
 
 
 Template.user.info = ->

@@ -12,6 +12,10 @@ Meteor.publish('tags', -> return Tags.find({}))
 
 Meteor.methods
 
+    updateTitle: (entry, title, callback) ->
+        throw new Meteor.Error(403, "You must be logged in") unless this.userId
+        return Entries.update( {_id: entry._id}, {$set: {'title': title}} )
+
     # Todo: lock down fields
     saveEntry: (entry, callback) ->
         throw new Meteor.Error(403, "You must be logged in") unless this.userId
