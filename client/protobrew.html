@@ -72,8 +72,11 @@
 </template>
 
 <template name="entry">
+    {{#if currentUser}}
+    <input type="button" value="edit" id="edit" />
+    {{/if}}
     <h1 id="article-title" class="article-title">{{title}}</h1>
-
+	
     {{#if edit_mode}}
     <form>
         {{#with entry}}
