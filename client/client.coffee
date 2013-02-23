@@ -150,7 +150,7 @@ Template.entry.events
         evt.preventDefault()
         Session.set("edit-mode", false)
 
-    'click #entry-title': (evt) ->
+    'click #article-title': (evt) ->
         $el = $(evt.target)
         $in = $("<input class='entry-title-input'/>")
         $in.val( $el.text() )
@@ -287,13 +287,10 @@ highlightNav = ->
 
     el = $("#" + id)
 
-    # todo: remove
-    el.parents( 'ul' ).find( 'a' ).css( 'color', 'black' )
     el.parents( 'ul' ).find( 'a' ).removeClass( 'selected' )
     # el.parents( 'li' ).last().addClass( 'selected' )
     el.addClass( 'selected' )
-    # todo: remove
-    el.css( 'color', 'red' )
+
 
 scrollLast = +new Date()
 
