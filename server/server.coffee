@@ -44,7 +44,7 @@ Meteor.methods
 
         path = chroot + (if path then '/' + path + '/' else '/')
 
-        path = "#{path}user-images/#{this.userId}/"
+        path = "public/user-images/#{this.userId}/"
 
         fs.mkdirSync( path ) if ! fs.existsSync( path )
 
@@ -56,3 +56,11 @@ Meteor.methods
         );
 
         return {filelink: path + name}
+
+
+# __meteor_bootstrap__.app.stack.splice (0, 0, {
+#     route: '/images',
+#     handle: function (req,res, next) {
+#         //handle upload
+#     }.future ()
+# });
