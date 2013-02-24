@@ -2990,6 +2990,18 @@ var RLANG = {
 
 			}, this);
 
+            // SB: Override with filepicker
+            filepicker.setKey('AjmU2eDdtRDyMpagSeV7rz');
+            filepicker.pickAndStore({mimetype:"image/*"},
+                                    {location:"S3"},
+                                    function(fpfiles){
+                                        var json = {filelink: fpfiles[0].url};
+                                        that.imageUploadCallback.call( that, json );
+                                    });
+
+            return;
+
+
 			this.modalInit(RLANG.image, this.opts.modal_image, 610, callback);
 
 		},
