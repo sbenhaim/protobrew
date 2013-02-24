@@ -2991,6 +2991,7 @@ var RLANG = {
 			}, this);
 
             // SB: Override with filepicker
+            var that = this;
             filepicker.setKey('AjmU2eDdtRDyMpagSeV7rz');
             filepicker.pickAndStore({mimetype:"image/*"},
                                     {location:"S3"},
