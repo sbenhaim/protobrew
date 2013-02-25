@@ -24,25 +24,6 @@
   {{> main}}
 </template>
 
-<template name="menu">
-    <div>
-    <h2>Menu</h2>
-    <ul>
-    <li><a href="/">Home</a></li>
-    <li><a href="/articles">Articles</a></li>
-    <li><a href="/brew-systesm">Brew Systems</a></li>
-    </ul>
-    </div>
-
-    <p>
-    {{loginButtons}}
-    </p>
-
-    {{#if currentUser}}
-    {{> user}}
-    {{/if}}
-</template>
-
 <template name="main">
     <div class="content">
     {{#if modeIs "index"}}
@@ -157,16 +138,16 @@
 
     <nav>
     	<ul>
-    		<li {{#if pageIs "/"}}class="selected"{{/if}}><a href="/"><span aria-hidden="true" data-icon="&#x68;"></span> Home</a></li>
-			<li {{#if pageIs "Articles"}}class="selected"{{/if}}><a href="/Articles"><span aria-hidden="true" data-icon="&#x6e;"></span> Articles</a></li>
-			<li {{#if pageIs "Brew systems"}}class="selected"{{/if}}><a href="/Brew systems"><span aria-hidden="true" data-icon="&#xe007;"></span> Brew systems</a></li>
+    		<li {{#if pageIs "/"}}class="selected"{{/if}}><a class="left-nav" href="/"><span aria-hidden="true" data-icon="&#x68;"></span> Home</a></li>
+			<li {{#if pageIs "Articles"}}class="selected"{{/if}}><a class="left-nav" href="/Articles"><span aria-hidden="true" data-icon="&#x6e;"></span> Articles</a></li>
+			<li {{#if pageIs "Brew systems"}}class="selected"{{/if}}><a class="left-nav" href="/Brew systems"><span aria-hidden="true" data-icon="&#xe007;"></span> Brew systems</a></li>
     	</ul>
     </nav>
 
     <div id="buttons">
         <!--
-    	<a href="#"><span aria-hidden="true" data-icon="&#x73;"></span> Join</a>
-    	<a href="#"><span aria-hidden="true" data-icon="&#x70;"></span> Sign In</a>
+    	<a href="javascript:void(0);"><span aria-hidden="true" data-icon="&#x73;"></span> Join</a>
+    	<a href="javascript:void(0);"><span aria-hidden="true" data-icon="&#x70;"></span> Sign In</a>
         -->
         {{loginButtons}}
     </div>

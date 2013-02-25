@@ -3,29 +3,27 @@ Meteor.subscribe('tags')
 
 Session.set('edit-mode', false)
 
-Template.menu.entries = ->
-    Entries.find({})
-
-## MENU
-
-Template.menu.showAllEntries = ->
-    Session.get('showAllEntries')
-
-Template.menu.content = ->
-    Entries.find({'title': 'menu'})
-
 navigate = (location) ->
     Router.navigate(location, true)
 
 evtNavigate = (evt) ->
     evt.preventDefault()
     href = $(evt.target).attr('href')
-    navigate(href)
+    localhost = document.location.host
+    linkhost = evt.target.host
+
+    console.log( "localhost: ", localhost );
+    console.log( "linkhost: ", linkhost );
+    
+    if localhost == linkhost
+        navigate(href)
+    else
+        document.location = evt.target.href
 
 ## Nav
 
 Template.leftNav.events =
-    'click a': evtNavigate
+    'click a.left-nav': evtNavigate
 
     'change #search-input': (evt) ->
         term = $(evt.target).val()
@@ -115,15 +113,12 @@ Template.index.content = ->
         entry
 
 Template.index.events
-    'click a.internal-link': evtNavigate
+    'click a.entry-link': evtNavigate
 
 Template.editEntry.events
     'focus #entry-tags': (evt) ->
         console.log( "hello" );
         $("#tag-init").show()
-    'click .redactor_editor a': (evt) -> 
-        console.log( "link in story" )
-        evt.preventDefault()
 
 Template.editEntry.rendered = ->
     el = $( '#entry-text' )
@@ -204,8 +199,7 @@ Template.entry.events
         tag = $(evt.target).text()
         navigate( '/tag/' + tag ) if tag
 
-    'click a.internal-link': (e) ->
-        e.preventDefault()
+    'click a.entry-link': (e) ->
         evtNavigate(e) unless Session.get('edit-mode')
 
     'click #edit': (evt) ->
@@ -271,7 +265,7 @@ rewriteLinks = ( text ) ->
         if href
             href = href.replace( /https?:\/\/([^\/.]+)$/, '/$1' )
             $(el).attr( 'href', href )
-            $(el).addClass('internal-link')
+            $(el).addClass( 'entry-link' )
 
     $html.html()
 
