@@ -88,22 +88,30 @@
 </template>
 
 <template name="entry">
-    <h1 id="article-title" class="article-title">{{title}} </h1>
-
+    
+    <h1 id="article-title" class="article-title">{{title}}</h1>
+	
     {{#if edit_mode}}
     <form>
+    	<div id="action-toolbar">
+    		<a class="action-btn" href="#" value="delete" id="delete"><span aria-hidden="true" data-icon="&#x64;"></span></a>
+    		<a class="action-btn" href="#" value="cancel" id="cancel"><span aria-hidden="true" data-icon="&#x62;"></span></a>
+    		<a class="action-btn" href="#" value="save" id="save"><span aria-hidden="true" data-icon="&#x21;"></span> Save</a>
+        </div>
         {{#with entry}}
         {{> editEntry}}
         {{/with}}
-        <p>
-        <input type="submit" value="save" id="save" />
-        <input type="button" value="cancel" id="cancel" />
-        <input type="button" value="delete" id="delete" />
-        </p>
     </form>
     {{else}}
-
+	
+	
+	
     {{#if entry}}
+    {{#if currentUser}}
+    	<div id="action-toolbar">
+    		<a class="action-btn" href="#" value="edit" id="edit"><span aria-hidden="true" data-icon="&#x22;"></span> Edit</a>
+    	</div>
+    {{/if}}
     <p>{{{entry.text}}}</p>
 
     {{#if entry.tags.length}}
@@ -113,20 +121,12 @@
         <li class="article-tag"><a href="javascript:void(0);">{{this}}</a></li>
         {{/each}}
     </ul>
-
     {{/if}}
-
-    <p>
-        {{#if currentUser}}
-        <input type="button" value="edit" id="edit" />
-        {{/if}}
-    </p>
-
     {{else}}
 
-    {{title}} doesn't exist yet.
+    <p>{{title}} doesn't exist yet.</p>
         {{#if currentUser}}
-        <input type="button" value="Create it!" id="edit" />
+        	<a class="action-btn" href="#" value="edit" id="edit"><span aria-hidden="true" data-icon="&#x22;"></span> Create it!</a>
         {{/if}}
 
     {{/if}}
