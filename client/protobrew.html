@@ -53,6 +53,10 @@
     {{> search}}
     {{/if}}
 
+    {{#if modeIs "tag"}}
+    {{> tag}}
+    {{/if}}
+
     {{#if modeIs "entry"}}
     {{> entry}}
     {{/if}}
@@ -73,30 +77,50 @@
 
 </template>
 
+<template name="tag">
+    <h3>Entries tagged with "{{tag}}"</h3>
+
+    {{#each results}}
+        <h2><a href="/{{this.title}}">{{this.title}}</a></h2>
+        <p>{{this.text}}</p>
+    {{/each}}
+
+</template>
+
 <template name="entry">
-    <h1 id="article-title" class="article-title">{{title}}</h1>
+    <h1 id="article-title" class="article-title">{{title}} </h1>
 
     {{#if edit_mode}}
     <form>
         {{#with entry}}
         {{> editEntry}}
         {{/with}}
+        <p>
         <input type="submit" value="save" id="save" />
         <input type="button" value="cancel" id="cancel" />
+        <input type="button" value="delete" id="delete" />
+        </p>
     </form>
     {{else}}
 
     {{#if entry}}
     <p>{{{entry.text}}}</p>
+
+    {{#if entry.tags.length}}
     <h2>Tags</h2>
     <ul>
         {{#each entry.tags}}
-        <li class="article-tag">{{this}}</li>
+        <li class="article-tag"><a href="javascript:void(0);">{{this}}</a></li>
         {{/each}}
     </ul>
-    {{#if currentUser}}
-    <input type="button" value="edit" id="edit" />
+
     {{/if}}
+
+    <p>
+        {{#if currentUser}}
+        <input type="button" value="edit" id="edit" />
+        {{/if}}
+    </p>
 
     {{else}}
 
@@ -113,7 +137,12 @@
 
 <template name="editEntry">
     <textarea id="entry-text" placeholder="Tell your story.">{{text}}</textarea>
-    <textarea id="entry-tags"></textarea>
+
+    <p>
+        <h2>Tags</h2>
+        <textarea id="entry-tags"></textarea>
+        <small><em>press &#x23ce; between tags</em></small>
+    </p>
 </template>
 
 <template name="user">

@@ -407,6 +407,17 @@ ul li.article-tag {
 	color: #fff;
 	padding: 0 5px;
 }
+
+textarea#entry-tags {
+    height: 2em;
+    width: 50em;
+}
+
+ul li.article-tag a {
+    color: white;
+    text-decoration: none;
+}
+
 ul li.article-tag:before {
 	content: "";
 	position: absolute;
@@ -436,6 +447,14 @@ ul li.article-tag:after {
 /*
 	TOOLBAR
 */
+.redactor_box {
+    min-height: 10em;
+}
+
+.redactor_.redactor_editor {
+    min-height: 9em;
+}
+
 .redactor_toolbar {
 	font-family: Helvetica, Arial, Verdana, Tahoma, sans-serif !important; 
 	position: fixed;
@@ -552,6 +571,12 @@ body .redactor_toolbar li a.redactor_btn_normalscreen		{ background-position: -5
 body .redactor_toolbar li a.redactor_btn_clips		 		{ background-position: -600px; }
 
 body .redactor_toolbar li a.redactor_btn_alignment	 		{ background-position: -625px; }
+
+body .redactor_toolbar li a.redactor_btn_save,
+body .redactor_toolbar li a.redactor_btn_cancel,
+body .redactor_toolbar li a.redactor_btn_delete {
+    background-image: none;
+}
 
 /*
 	Toolbar classes

@@ -56,11 +56,3 @@ Meteor.methods
         );
 
         return {filelink: path + name}
-
-
-# __meteor_bootstrap__.app.stack.splice (0, 0, {
-#     route: '/images',
-#     handle: function (req,res, next) {
-#         //handle upload
-#     }.future ()
-# });

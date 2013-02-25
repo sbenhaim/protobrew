@@ -14,23 +14,32 @@ Template.menu.showAllEntries = ->
 Template.menu.content = ->
     Entries.find({'title': 'menu'})
 
-navigate = (evt) ->
+navigate = (location) ->
+    Router.navigate(location, true)
+
+evtNavigate = (evt) ->
     href = $(evt.target).attr('href')
     evt.preventDefault()
-    Router.navigate(href, true)
+    navigate(href)
 
 ## Nav
 
 Template.leftNav.events =
-    'click a': navigate
+    'click a': evtNavigate
 
     'change #search-input': (evt) ->
         term = $(evt.target).val()
-        Router.navigate( '/search/' + term, true ) if term
+        navigate( '/search/' + term ) if term
+
+getSummaries = (entries) ->
+    entries.map (e) ->
+        
+        text = $('<div>').html( e.text ).text()
+        text = text.substring(0,200) + '...' if text.length > 204;
+        
+        {text: text, title: e.title}
 
 Template.search.term = -> Session.get( 'search-term' )
-
-Template.leftNav.term = -> Session.get( 'search-term' )
 
 Template.search.results = ->
     term = Session.get('search-term')
@@ -38,11 +47,23 @@ Template.search.results = ->
     return unless term
     
     entries = Entries.find( {text: new RegExp( term, "i" )} )
+    getSummaries( entries )
 
-    entries.map (e) ->
-        text: $('<div>').html( e.text ).text().substring(0,200) + '...'
-        title: e.title
-            
+
+Template.tag.tag = ->
+    Session.get( 'tag' )
+
+Template.tag.results = ->
+    tag = Session.get('tag')
+
+    return unless tag
+    
+    entries = Entries.find( { tags: tag } )
+    console.log( "tag: ", tag );
+    console.log( "entries: ", entries );
+    getSummaries( entries )
+
+Template.leftNav.term = -> Session.get( 'search-term' )
 
 Template.leftNav.pageIs = (u) ->
     page = Session.get('title')
@@ -90,6 +111,11 @@ Template.index.content = ->
         Session.set('entry_id', entry._id )
         entry
 
+Template.editEntry.events
+    'focus #entry-tags': (evt) ->
+        console.log( "hello" );
+        $("#tag-init").show()
+
 Template.editEntry.rendered = ->
     el = $( '#entry-text' )
     el.redactor(
@@ -97,8 +123,29 @@ Template.editEntry.rendered = ->
         buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'deleted', '|', 
             'unorderedlist', 'orderedlist', 'outdent', 'indent', '|',
             'image', 'table', 'link', '|',
-            'fontcolor', 'backcolor', '|', 'alignment', '|', 'horizontalrule']
-        );
+            'fontcolor', 'backcolor', '|', 'alignment', '|', 'horizontalrule', '|',
+            'save', 'cancel', 'delete'],
+        buttonsCustom:
+            save:
+                title: 'Save'
+                callback: saveEntry
+            cancel:
+                title: 'Cancel'
+                callback: ->
+                    Session.set("edit-mode", false)
+            delete:
+                title: 'Delete'
+                callback: deleteEntry
+        focus: true
+        autoresize: true
+        filepicker: (callback) ->
+
+            filepicker.setKey('AjmU2eDdtRDyMpagSeV7rz')
+
+            filepicker.pick({mimetype:"image/*"}, (file) ->
+                filepicker.store(file, {location:"S3", path: Meteor.userId() + "/" + file.filename },
+                (file) -> callback( filelink: file.url )))
+    )
 
     tags = Tags.find({})
     entry = Session.get('entry')
@@ -109,51 +156,71 @@ Template.editEntry.rendered = ->
         suggestions: tags.map (t) -> t.name
     });
 
+deleteEntry = (evt) ->
+    entry = Session.get('entry')
+    if entry && confirm( "Are you sure you want to delete #{entry.title}?")
+        Entries.remove({_id: entry._id})
+        Session.set('edit-mode', false)
+
+saveEntry = (evt) ->
+
+    console.log( "saving" );
+    reroute = ( e ) ->
+        Router.setTitle( entry.title ) unless entry.title == "home"
+
+    title = Session.get('title') || ''
+
+    entry = {
+        'title': title
+        'text': rewriteLinks( $('#entry-text').val() )
+    }
+
+    tags = $('#entry-tags').nextAll('input[type=hidden]').val()
+
+    if tags
+        tags = JSON.parse(tags)
+        entry.tags = tags;
+        Tags.insert({'name':tag}) for tag in tags
+
+    entry._id = Session.get('entry_id')
+
+    Meteor.call('saveEntry', entry, reroute)
+
+    Session.set("edit-mode", false)
+
 
 Template.entry.events
 
-    'click a.internal-link': navigate
+    'click li.article-tag a': (evt) ->
+        evt.preventDefault()
+        tag = $(evt.target).text()
+        navigate( '/tag/' + tag ) if tag
+
+    'click a.internal-link': evtNavigate
 
     'click #edit': (evt) ->
         evt.preventDefault()
         Session.set('edit-mode', true )
 
     'click #save': (evt) ->
-
         evt.preventDefault()
-
-        reroute = ( e ) ->
-            Router.setTitle( entry.title ) unless entry.title == "home"
-
-        title = Session.get('title') || ''
-
-        entry = {
-            'title': title
-            'text': rewriteLinks( $('#entry-text').val() )
-        }
-
-        tags = $('#entry-tags').nextAll('input[type=hidden]').val()
-
-        if tags
-            tags = JSON.parse(tags)
-            entry.tags = tags;
-            Tags.insert({'name':tag}) for tag in tags
-
-        entry._id = Session.get('entry_id')
-
-        Meteor.call('saveEntry', entry, reroute)
-
-        Session.set("edit-mode", false)
+        saveEntry( evt )
 
     'click #cancel': (evt) ->
-
         evt.preventDefault()
         Session.set("edit-mode", false)
 
+    'click #delete': (evt) ->
+        evt.preventDefault()
+        deleteEntry(evt)
+
     'click #article-title': (evt) ->
+        return unless Meteor.userId() && Session.get('entry')
+
         $el = $(evt.target)
         $in = $("<input class='entry-title-input'/>")
-        $in.val( $el.text() )
+        console.log( "$el.text(): ", $el.text().trim() );
+        $in.val( $el.text().trim() )
         $el.replaceWith($in)
         $in.focus()
 
@@ -162,15 +229,22 @@ Template.entry.events
                 if $in.val() != $el.text()
                     Meteor.call('updateTitle', Session.get('entry'), $in.val())
                     $el.html($in.val())
-                    Router.navigate($in.val(), true)
+                    navigate($in.val())
 
                 $in.replaceWith($el)
                 $(document).off('click')
 
+        cancel = (e, force = false) ->
+            if force || e.target != $el[0] && e.target != $in[0]
+                $in.replaceWith($el)
+                $(document).off('click')
 
-        $(document).on('click', updateTitle)
-        $in.on("keypress", (e) ->
-            updateTitle(e, true) if e.keyCode == 13)
+        $(document).on('click', cancel)
+
+        $in.on("keyup", (e) ->
+            updateTitle(e, true) if e.keyCode == 13
+            cancel(e, true) if e.keyCode == 27
+        )
 
 
 Template.user.info = ->
@@ -195,6 +269,7 @@ rewriteLinks = ( text ) ->
 EntryRouter = Backbone.Router.extend({
     routes: {
         "search/:term": "search"
+        "tag/:tag": "tag",
         "images": "images",
         ":title": "main",
         "": "index"
@@ -205,6 +280,9 @@ EntryRouter = Backbone.Router.extend({
     search: (term) ->
         Session.set( 'mode', 'search' )
         Session.set( 'search-term', decodeURIComponent( term ) )
+    tag: (tag) ->
+        Session.set( 'mode', 'tag' )
+        Session.set( 'tag', decodeURIComponent( tag ) )
     main: (title) ->
         Session.set("mode", 'entry')
         Session.set("title", decodeURIComponent( title ))

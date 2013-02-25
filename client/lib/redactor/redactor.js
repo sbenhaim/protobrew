@@ -156,6 +156,7 @@ var RLANG = {
 			imageGetJson: false, // url (ex. /folder/images.json ) or false
 
 			imageUpload: false, // url
+            filepicker: false,
 			imageUploadCallback: false, // function
 			imageUploadErrorCallback: false, // function
 
@@ -2990,18 +2991,10 @@ var RLANG = {
 
 			}, this);
 
-            // SB: Override with filepicker
-            var that = this;
-            filepicker.setKey('AjmU2eDdtRDyMpagSeV7rz');
-            filepicker.pickAndStore({mimetype:"image/*"},
-                                    {location:"S3"},
-                                    function(fpfiles){
-                                        var json = {filelink: fpfiles[0].url};
-                                        that.imageUploadCallback.call( that, json );
-                                    });
-
-            return;
-
+            // Filepicker override
+            if ( this.opts.filepicker ) {
+                return this.opts.filepicker( $.proxy( this.imageUploadCallback, this ) );
+            }
 
 			this.modalInit(RLANG.image, this.opts.modal_image, 610, callback);
 
