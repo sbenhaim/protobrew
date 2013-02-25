@@ -18,8 +18,8 @@ navigate = (location) ->
     Router.navigate(location, true)
 
 evtNavigate = (evt) ->
-    href = $(evt.target).attr('href')
     evt.preventDefault()
+    href = $(evt.target).attr('href')
     navigate(href)
 
 ## Nav
@@ -97,6 +97,9 @@ Template.entry.entry = ->
 
             entry.text = source.html()
             entry
+        else
+            Session.set( 'entry', null )
+            Session.set( 'entry_id', null )
 
 Template.entry.edit_mode = ->
     Session.get('edit-mode')
@@ -111,10 +114,16 @@ Template.index.content = ->
         Session.set('entry_id', entry._id )
         entry
 
+Template.index.events
+    'click a.internal-link': evtNavigate
+
 Template.editEntry.events
     'focus #entry-tags': (evt) ->
         console.log( "hello" );
         $("#tag-init").show()
+    'click .redactor_editor a': (evt) -> 
+        console.log( "link in story" )
+        evt.preventDefault()
 
 Template.editEntry.rendered = ->
     el = $( '#entry-text' )
@@ -163,12 +172,10 @@ deleteEntry = (evt) ->
         Session.set('edit-mode', false)
 
 saveEntry = (evt) ->
-
-    console.log( "saving" );
     reroute = ( e ) ->
         Router.setTitle( entry.title ) unless entry.title == "home"
 
-    title = Session.get('title') || ''
+    title = Session.get('title')
 
     entry = {
         'title': title
@@ -182,7 +189,8 @@ saveEntry = (evt) ->
         entry.tags = tags;
         Tags.insert({'name':tag}) for tag in tags
 
-    entry._id = Session.get('entry_id')
+    eid = Session.get('entry_id')
+    entry._id = eid if eid
 
     Meteor.call('saveEntry', entry, reroute)
 
@@ -196,7 +204,9 @@ Template.entry.events
         tag = $(evt.target).text()
         navigate( '/tag/' + tag ) if tag
 
-    'click a.internal-link': evtNavigate
+    'click a.internal-link': (e) ->
+        e.preventDefault()
+        evtNavigate(e) unless Session.get('edit-mode')
 
     'click #edit': (evt) ->
         evt.preventDefault()
