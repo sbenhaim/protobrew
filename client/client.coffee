@@ -8,17 +8,15 @@ navigate = (location) ->
 
 evtNavigate = (evt) ->
     evt.preventDefault()
-    href = $(evt.target).attr('href')
+    $a = $(evt.target).closest('a')
+    href = $a.attr('href')
     localhost = document.location.host
-    linkhost = evt.target.host
+    linkhost = $a[0].host
 
-    console.log( "localhost: ", localhost );
-    console.log( "linkhost: ", linkhost );
-    
     if localhost == linkhost
         navigate(href)
     else
-        document.location = evt.target.href
+        document.location = href
 
 ## Nav
 
