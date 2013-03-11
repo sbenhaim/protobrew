@@ -497,13 +497,6 @@ ul li.article-tag:after {
 /*
 	TOOLBAR
 */
-.redactor_box {
-    min-height: 10em;
-}
-
-.redactor_.redactor_editor {
-    min-height: 9em;
-}
 
 .redactor_toolbar {
 	font-family: Helvetica, Arial, Verdana, Tahoma, sans-serif !important; 

@@ -16,7 +16,7 @@ evtNavigate = (evt) ->
     if localhost == linkhost
         navigate(href)
     else
-        document.location = href
+        window.open( href, '_blank')
 
 ## Nav
 
@@ -44,6 +44,12 @@ Template.search.results = ->
     
     entries = Entries.find( {text: new RegExp( term, "i" )} )
     getSummaries( entries )
+
+Template.search.events
+    'click a': evtNavigate
+
+Template.tag.events
+    'click a': evtNavigate
 
 
 Template.tag.tag = ->
@@ -108,6 +114,19 @@ Template.index.content = ->
     if entry
         Session.set('entry', entry )
         Session.set('entry_id', entry._id )
+
+        source = $('<div>').html( entry.text )
+        titles = stackTitles( source.find( 'h1' ) )
+
+        if titles.length > 0
+            for e, i in source.find('h1,h2,h3,h4,h5')
+                e.id = "entry-title-" + i
+
+        ul = $('<ul>')
+        buildNav( ul, titles )
+
+        $("#sidebar").html(ul)
+
         entry
 
 Template.index.events
