@@ -86,7 +86,7 @@ Template.entry.entry = ->
             Session.set('entry_id', entry._id )
 
             source = $('<div>').html( entry.text )
-            titles = stackTitles( source.find( 'h1' ) )
+            titles = stackTitles( filterHeadlines( source.find( 'h1' ) ) )
 
             if titles.length > 0
                 for e, i in source.find('h1,h2,h3,h4,h5')
@@ -331,7 +331,7 @@ stackTitles = (items, cur, counter) ->
 
     for elem, index in items
         elem = $(elem)
-        children  =  elem.nextUntil( 'h' + cur, 'h' + next )
+        children  =  filterHeadlines( elem.nextUntil( 'h' + cur, 'h' + next ) )
 
         d = {};
         d.title = elem.html()
@@ -344,6 +344,8 @@ stackTitles = (items, cur, counter) ->
 
         d
 
+filterHeadlines = ( $hs ) ->
+    _.filter( $hs, ( h ) -> $(h).text().match(/[^\s]/) )
 
 buildNav = ( ul, items ) ->
     for child, index in items
