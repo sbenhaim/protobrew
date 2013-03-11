@@ -334,7 +334,7 @@ stackTitles = (items, cur, counter) ->
         children  =  filterHeadlines( elem.nextUntil( 'h' + cur, 'h' + next ) )
 
         d = {};
-        d.title = elem.html()
+        d.title = elem.text()
         # d.y  = elem.offset().top
         d.id = counter.n++
 
