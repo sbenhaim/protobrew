@@ -139,6 +139,7 @@ Template.editEntry.events
 
 Template.editEntry.rendered = ->
     el = $( '#entry-text' )
+    viewport_y = window.pageYOffset
     el.redactor(
         imageUpload: '/images'
         buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'deleted', '|', 
@@ -167,6 +168,7 @@ Template.editEntry.rendered = ->
                 filepicker.store(file, {location:"S3", path: Meteor.userId() + "/" + file.filename },
                 (file) -> callback( filelink: file.url )))
     )
+    window.scrollTo(0,viewport_y)
 
     tags = Tags.find({})
     entry = Session.get('entry')
@@ -205,7 +207,7 @@ saveEntry = (evt) ->
     entry._id = eid if eid
 
     Meteor.call('saveEntry', entry, reroute)
-
+    Entries.update({_id: entry._id}, entry)
     Session.set("edit-mode", false)
 
 
