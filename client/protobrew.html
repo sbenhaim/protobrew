@@ -74,7 +74,7 @@
 	
     {{#if edit_mode}}
     <form>
-    	<div id="action-toolbar">
+    	<div id="action-toolbar" class="edit_mode">
     		<a class="action-btn" href="#" value="delete" id="delete"><span aria-hidden="true" data-icon="&#x64;"></span></a>
     		<a class="action-btn" href="#" value="cancel" id="cancel"><span aria-hidden="true" data-icon="&#x62;"></span></a>
     		<a class="action-btn" href="#" value="save" id="save"><span aria-hidden="true" data-icon="&#x21;"></span> Save</a>
@@ -89,7 +89,7 @@
 	
     {{#if entry}}
     {{#if currentUser}}
-    	<div id="action-toolbar">
+    	<div id="action-toolbar" class="view_mode">
     		<a class="action-btn" href="#" value="edit" id="edit"><span aria-hidden="true" data-icon="&#x22;"></span> Edit</a>
     	</div>
     {{/if}}
@@ -134,24 +134,104 @@
 <template name="leftNav">
   <div id="left_nav">
     <div id="logo"><a href="/">ProtoBrew Wiki</a></div>
+    <div id="tw_bar"><a href="/">by Tin Whiskers</a></div>
     <div id="search"><input class="txtOptionInput searchField" type="search" results="5" size="15" accesskey="F" autocomplete="off" lastsearchtext="aasdfasdfsd" placeholder="" id="search-input" value="{{term}}"></div>
 
     <nav>
     	<ul>
-    		<li {{#if pageIs "/"}}class="selected"{{/if}}><a class="left-nav" href="/"><span aria-hidden="true" data-icon="&#x68;"></span> Home</a></li>
+    		<li {{#if articleIs "/"}}class="selected"{{/if}}><a class="left-nav" href="/"><span aria-hidden="true" data-icon="&#x68;"></span> Home</a></li>
 			<li {{#if pageIs "Articles"}}class="selected"{{/if}}><a class="left-nav" href="/Articles"><span aria-hidden="true" data-icon="&#x6e;"></span> Articles</a></li>
 			<li {{#if pageIs "Brew systems"}}class="selected"{{/if}}><a class="left-nav" href="/Brew systems"><span aria-hidden="true" data-icon="&#xe007;"></span> Brew systems</a></li>
     	</ul>
+    
+
+        <div id="buttons">
+            <!--
+        	<a href="javascript:void(0);"><span aria-hidden="true" data-icon="&#x73;"></span> Join</a>
+        	<a href="javascript:void(0);"><span aria-hidden="true" data-icon="&#x70;"></span> Sign In</a>
+            -->
+            {{loginButtons}}
+        </div>
     </nav>
+    <user>
+        <ul class="nav nav-tabs" id="tesTabs">
+          <li><a href="#Owned" data-toggle="tab">Owned</a></li>
+          <li><a href="#Starred" data-toggle="tab">Starred</a></li>
+          <li><a href="#Recent" data-toggle="tab">Recent</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="Owned">
+                <ul>
+                    <li><a href="one">wiki article one</a></li>
+                    <li><a href="two">wiki article two</a></li>
+                    <li><a href="three">wiki article three</a></li>
+                    <li><a href="four">wiki article four</a></li>
+                    <li><a href="five">wiki article five</a></li>
+                    <li><a href="six">wiki article six</a></li>
+                    <li><a href="seven">wiki article seven</a></li>
+                    <li><a href="eight">wiki article eight</a></li>
+                    <li><a href="niner">wiki article niner</a></li>
+                </ul>
+            </div>
+            <div class="tab-pane" id="Starred">
+                <ul>
+                    <li><a href="one"> starred article one</a></li>
+                    <li><a href="two">starred article two</a></li>
+                    <li><a href="three">starred article three</a></li>
+                    <li><a href="four">starred article four</a></li>
+                    <li><a href="five">starred article five</a></li>
+                    <li><a href="six">starred article six</a></li>
+                    <li><a href="seven">starred article seven</a></li>
+                    <li><a href="eight">starred article eight</a></li>
+                    <li><a href="niner">starred article niner</a></li>
+                </ul>
+            </div>
+            <div class="tab-pane" id="Recent">
+                <ul>
+                    <li><a href="one">recent article one</a></li>
+                    <li><a href="two">recent article two</a></li>
+                    <li><a href="three">recent article three</a></li>
+                    <li><a href="four">recent article four</a></li>
+                    <li><a href="five">recent article five</a></li>
+                    <li><a href="six">recent article six</a></li>
+                    <li><a href="seven">recent article seven</a></li>
+                    <li><a href="eight">recent article eight</a></li>
+                    <li><a href="niner">recent article niner</a></li>
+                </ul>
+            </div>
+        </div>
 
-    <div id="buttons">
-        <!--
-    	<a href="javascript:void(0);"><span aria-hidden="true" data-icon="&#x73;"></span> Join</a>
-    	<a href="javascript:void(0);"><span aria-hidden="true" data-icon="&#x70;"></span> Sign In</a>
-        -->
-        {{loginButtons}}
-    </div>
 
+
+
+
+<!--         <div class="accordion" id="accordion2">
+          <div class="accordion-group">
+            <div class="accordion-heading">
+              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+                Favorites
+              </a>
+            </div>
+            <div id="collapseOne" class="accordion-body collapse in">
+                <div class="accordion-inner">
+                    <a href=""> Sublink #1</a>
+                </div>
+            </div>
+          </div>
+          <div class="accordion-group">
+            <div class="accordion-heading">
+              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+                Owner
+              </a>
+            </div>
+            <div id="collapseTwo" class="accordion-body collapse">
+              <div class="accordion-inner">
+                Anim pariatur cliche...
+              </div>
+            </div>
+          </div>
+        </div> -->
+    </user>
 
   <!-- end #left_nav --></div>
 </template>
