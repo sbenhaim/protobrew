@@ -1,8 +1,30 @@
-Meteor.publish('entries', (title) ->
-    terms = {$or: [{'visibility': "public"}, {author: this.userId}]}
-    term['$or'].push( { 'title': title } ) if title
+Meteor.publish('entries', (context) ->
 
-    Entries.find(terms)
+    # Todo: Temporary
+    return Entries.find({})
+
+    # Todo: Use when Meteor gets aggregates
+    user = Meteor.users.findOne({_id: this.userId}) if this.userId
+
+    # Admins see all!
+    if user && user.group == "admin"
+        return Entries.find({})
+
+    conditions = [{$ne: ["$entry.mode", "private"]}]
+
+    if user
+        conditions.push( {$eq: ["$entry.context": user.profile.username] } ) if user.profile.username
+        conditions.push( {$eq: ["$entry.context": user.profile.group] } )    if user.profile.group
+    
+    visible = {$or: conditions}
+
+    entries = Entries.aggregate
+                $project:
+                    title: true
+                    mode: true
+                    context: true
+                    tags: {$cond: [visible, "$tags", ""]}
+                    text: {$cond: [visible, "$text", ""]}
 )
 
 
@@ -17,14 +39,22 @@ Meteor.methods
         return Entries.update( {_id: entry._id}, {$set: {'title': title}} )
 
     # Todo: lock down fields
-    saveEntry: (entry, callback) ->
-        throw new Meteor.Error(403, "You must be logged in") unless this.userId
-
-        entry.author = this.userId
-        entry.visibility = "public"
+    saveEntry: (entry, context, callback) ->
+        # Only members can edit
+        user = Meteor.user()
+        entry = verifySave( entry, user, context )
+        entry.context = context
 
         return Entries.insert(entry, callback) unless entry._id
         return Entries.update({_id: entry._id}, entry, callback)
+
+    updateUser: (value) ->
+        throw new Meteor.Error(403, "You must be logged in") unless this.userId
+
+        existing = Meteor.users.find( {"profile.username": value} ).count()
+        throw new Meteor.Error(403, "Username exists") if existing > 0
+
+        Meteor.users.update( {_id: this.userId}, {$set: {"profile.username": value}}) if value
 
     saveFile: (blob, name, path, encoding) ->
         throw new Meteor.Error(403, "You must be logged in") unless this.userId

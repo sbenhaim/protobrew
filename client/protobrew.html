@@ -41,11 +41,23 @@
     {{#if modeIs "entry"}}
     {{> entry}}
     {{/if}}
+
+    {{#if modeIs "profile"}}
+    {{> profile}}
+    {{/if}}
     </div>
 </template>
 
 <template name="index">
     {{{content.text}}}
+</template>
+
+<template name="profile">
+    <h2>Profile for {{user.profile.name}}</h2>
+    <label>Username
+        <input name="username" type="text" id="username" value="{{user.profile.username}}" />
+        <input type="submit" value="save" id="save" />
+    </label>
 </template>
 
 <template name="search">
@@ -70,7 +82,9 @@
 
 <template name="entry">
     
-    <h1 id="article-title" class="article-title">{{title}}</h1>
+    <h1 id="article-title" class="article-title">
+        {{#if userContext}}{{userContext}} / {{/if}}{{title}}
+    </h1>
 	
     {{#if edit_mode}}
     <form>
@@ -82,37 +96,60 @@
         {{#with entry}}
         {{> editEntry}}
         {{/with}}
+
+        {{#if adminable}}
+        <p>
+            <label>Mode
+                <select id="mode" name="mode">
+                    <option {{#if modeIs "public"}}selected{{/if}} value="public">Public</option>
+                    <option {{#if modeIs "read-only"}}selected{{/if}} value="read-only">Read-Only</option>
+                    <option {{#if modeIs "private"}}selected{{/if}} value="private">Private</option>
+                </select>
+            </label>
+        </p>
+        {{/if}}
     </form>
     {{else}}
 	
-	
-	
-    {{#if entry}}
-    {{#if currentUser}}
-    	<div id="action-toolbar">
-    		<a class="action-btn" href="#" value="edit" id="edit"><span aria-hidden="true" data-icon="&#x22;"></span> Edit</a>
-    	</div>
-    {{/if}}
-    <p>{{{entry.text}}}</p>
+        {{#if entry}}
 
-    {{#if entry.tags.length}}
-    <h2>Tags</h2>
-    <ul>
-        {{#each entry.tags}}
-        <li class="article-tag"><a href="javascript:void(0);">{{this}}</a></li>
-        {{/each}}
-    </ul>
-    {{/if}}
-    {{else}}
+            {{#if viewable}}
 
-    <p>{{title}} doesn't exist yet.</p>
-        {{#if currentUser}}
-        	<a class="action-btn" href="#" value="edit" id="edit"><span aria-hidden="true" data-icon="&#x22;"></span> Create it!</a>
+                {{#if editable}}
+                <div id="action-toolbar">
+                    <a class="action-btn" href="#" value="edit" id="edit"><span aria-hidden="true" data-icon="&#x22;"></span> Edit</a>
+                </div>
+                {{/if}}
+
+                <p>{{{entry.text}}}</p>
+
+                {{#if entry.tags.length}}
+                <h2>Tags</h2>
+                <ul>
+                    {{#each entry.tags}}
+                    <li class="article-tag"><a href="javascript:void(0);">{{this}}</a></li>
+                    {{/each}}
+                </ul>
+                {{/if}}
+
+            {{else}}
+
+            <p>{{entry.title}} is private.</p>
+
+            {{/if}}
+
+
+        {{else}}
+
+            <p>{{title}} doesn't exist yet.</p>
+                {{#if editable}}
+                    <a class="action-btn" href="#" value="edit" id="edit"><span aria-hidden="true" data-icon="&#x22;"></span> Create it!</a>
+                {{/if}}
+
         {{/if}}
 
     {{/if}}
 
-    {{/if}}
 </template>
 
 
