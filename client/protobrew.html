@@ -25,6 +25,7 @@
 </template>
 
 <template name="main">
+
     <div class="content">
     {{#if modeIs "index"}}
     {{> index}}
@@ -69,9 +70,12 @@
 </template>
 
 <template name="entry">
+
+    <!-- jpanel menu button -->
+    <a class="action-btn" href="#" value="sidenav_btn" id="sidenav_btn"><span aria-hidden="true" data-icon="&#x22;"></span> Panel</a> 
     
     <h1 id="article-title" class="article-title">{{title}}</h1>
-	
+
     {{#if edit_mode}}
     <form>
     	<div id="action-toolbar" class="edit_mode">
@@ -88,29 +92,28 @@
 	
 	
     {{#if entry}}
-    {{#if currentUser}}
-    	<div id="action-toolbar" class="view_mode">
-    		<a class="action-btn" href="#" value="edit" id="edit"><span aria-hidden="true" data-icon="&#x22;"></span> Edit</a>
-    	</div>
-    {{/if}}
-    <p>{{{entry.text}}}</p>
-
-    {{#if entry.tags.length}}
-    <h2>Tags</h2>
-    <ul>
-        {{#each entry.tags}}
-        <li class="article-tag"><a href="javascript:void(0);">{{this}}</a></li>
-        {{/each}}
-    </ul>
-    {{/if}}
-    {{else}}
-
-    <p>{{title}} doesn't exist yet.</p>
         {{#if currentUser}}
-        	<a class="action-btn" href="#" value="edit" id="edit"><span aria-hidden="true" data-icon="&#x22;"></span> Create it!</a>
+        	<div id="action-toolbar" class="view_mode">
+        		<a class="action-btn" href="#" value="edit" id="edit"><span aria-hidden="true" data-icon="&#x22;"></span> Edit</a>
+        	</div>
         {{/if}}
+        <p>{{{entry.text}}}</p>
 
-    {{/if}}
+        {{#if entry.tags.length}}
+            <h2>Tags</h2>
+            <ul>
+                {{#each entry.tags}}
+                <li class="article-tag"><a href="javascript:void(0);">{{this}}</a></li>
+                {{/each}}
+            </ul>
+        {{/if}}
+        {{else}}
+            <p>{{title}} doesn't exist yet.</p>
+                {{#if currentUser}}
+                	<a class="action-btn" href="#" value="edit" id="edit"><span aria-hidden="true" data-icon="&#x22;"></span> Create it!</a>
+                {{/if}}
+
+        {{/if}}
 
     {{/if}}
 </template>
@@ -155,7 +158,7 @@
     </nav>
     <user>
         <ul class="nav nav-tabs" id="tesTabs">
-          <li><a href="#Owned" data-toggle="tab">Owned</a></li>
+          <li class="active"><a href="#Owned" data-toggle="tab">Owned</a></li>
           <li><a href="#Starred" data-toggle="tab">Starred</a></li>
           <li><a href="#Recent" data-toggle="tab">Recent</a></li>
         </ul>

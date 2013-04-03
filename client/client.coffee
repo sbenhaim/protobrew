@@ -221,6 +221,14 @@ Template.entry.events
     'click a.entry-link': (e) ->
         evtNavigate(e) unless Session.get('edit-mode')
 
+    'click #sidenav_btn': (evt) ->
+        evt.preventDefault()
+        # jPM = $.jPanelMenu(
+        #     menu: '#left_nav'
+        #     trigger: '#sidenav_btn'
+        # )
+        # jPM.on()
+
     'click #edit': (evt) ->
         evt.preventDefault()
         Session.set('edit-mode', true )
@@ -315,9 +323,15 @@ EntryRouter = Backbone.Router.extend({
 
 Router = new EntryRouter
 
-Meteor.startup(-> Backbone.history.start({pushState: true}))
-
-
+Meteor.startup ->
+  jPM = $.jPanelMenu(
+    menu: "#left_nav"
+    trigger: "#sidenav_btn"
+    closeOnContentClick: false
+  )
+  jPM.on()
+  Backbone.history.start pushState: true
+  
 ##################################
 ## NAV
 

@@ -45,7 +45,8 @@
 .nav > li > a:hover,
 .nav > li > a:focus {
   text-decoration: none;
-  background-color: #eeeeee;
+  background-color: #9a9a9a; /*GK*/
+  border-bottom: 1px solid #9a9a9a;
 }
 .nav > li > a > img {
   max-width: none;
@@ -130,23 +131,31 @@
   line-height: 14px;
 }
 .nav-tabs {
-  border-bottom: 1px solid #ddd;
+  border-top: 0;
+  border-right: 0;
+  list-style: none;
 }
+
+#tesTabs.nav {
+  border-bottom: none;
+}
+
 .nav-tabs > li {
   margin-bottom: -1px;
+  font-family: OstrichSansMedium;
+  font-size: 18px;
 }
 .nav-tabs > li > a {
   text-decoration: none;
-  padding-top: 8px;
-  padding-bottom: 8px;
+  padding: 8px 3px 8px 3px; /*gk*/
   line-height: 20px;
-  border: 1px solid;
-  -webkit-border-radius: 2px 2px 2px 2px;
-  -moz-border-radius: 2px 2px 2px 2px;
-  border-radius: 2px 2px 2px 2px;
-  border-top: 1px solid #505558;
-  border-right: 1px solid #505558;
-  border-bottom: 1px solid #2f3335;
+  /* border: 1px solid;*/
+  -webkit-border-radius: 1px 1px 0px 0px;
+  -moz-border-radius: 1px 1px 0px 0px;
+  border-radius: 1px 1px 0px 0px;
+  /* border-top: 1px solid #505558; */
+  /* border-right: 1px solid #505558; */
+  /* border-bottom: 1px solid #2f3335; */
   border-left: 1px solid transparent;
   transition: background .15s ease-in-out;
   -moz-transition: background .15s ease-in-out;
@@ -155,14 +164,16 @@
 }
 .nav-tabs > li > a:hover,
 .nav-tabs > li > a:focus {
-  border-color: #eeeeee #eeeeee #dddddd;
+  border-color: #636667; /*GK*/
+  color: #fff;
 }
 .nav-tabs > .active > a,
 .nav-tabs > .active > a:hover,
 .nav-tabs > .active > a:focus {
-  color: #555555;
-  background-color: #ffffff;
-  border: 1px solid #ddd;
+  color: #FFF;
+  background-color: #636667; /*GK*/
+  border-top: 1px solid #505558; /*GK*/
+  border: 1px solid #636667; /*GK*/
   border-bottom-color: transparent;
   cursor: default;
 }
@@ -292,9 +303,12 @@
 .tabbable:after {
   clear: both;
 }
+
 .tab-content {
   overflow: auto;
+  background-color: #636667; /*GK*/
 }
+
 .tabs-below > .nav-tabs,
 .tabs-right > .nav-tabs,
 .tabs-left > .nav-tabs {

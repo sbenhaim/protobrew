@@ -235,7 +235,7 @@ h6 {
 #logo a {
     background: url('/images/protobrew_wiki_logo.png') left center no-repeat;
     display: block;
-    height: 135px;
+    height: 55px;
     width: 125px;
     margin: 0 auto;
     text-indent: -9999px;
@@ -247,6 +247,10 @@ h6 {
     height: 30px;
     margin: 0 auto;
     text-indent: -9999px;
+}
+
+#sidenav_btn {
+    display: none;
 }
 
 #left_nav {
@@ -269,7 +273,7 @@ h6 {
         position : absolute;
         text-align: center;
         height: auto;
-        top: 226px;
+        top: 147px;
         left: 0px;
         bottom: 0px;
         width: 60px;
@@ -287,13 +291,6 @@ h6 {
         border-top: 1px solid #2f3335;
         border-right: 1px solid #2f3335;
         border-bottom: 1px solid #505558;
-    }
-
-    #left_nav .nav-tabs {
-        border-top: 0;
-        border-right: 0;
-        border-bottom: 1px solid;
-        list-style: none;
     }
 
 
@@ -532,8 +529,8 @@ h6 {
     z-index: 70;
 } 
 #main .content {
-    display: table;
-    margin: 0 auto;
+  /*  display: table;
+    margin: 0 auto; */
     padding: 25px 50px;
     max-width: 700px;
 }
@@ -883,9 +880,17 @@ body .redactor_toolbar li a.redactor_btn_delete {
     }
 }
 
-// @media only screen and (max-width: 767px) {
-
-// }
+@media only screen and (max-width: 600px) {
+    #sidenav_btn{
+        display: block;
+    }
+    #left_nav{
+        display: none;
+    }
+    #main {
+        margin-left: 0;
+    }
+}
 
 // // IE10 Metro responsive
 // // Required for Windows 8 Metro split-screen snapping with IE10
