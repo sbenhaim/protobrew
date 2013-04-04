@@ -328,6 +328,7 @@ Meteor.startup ->
     menu: "#left_nav"
     trigger: "#sidenav_btn"
     closeOnContentClick: false
+    keyboardShortcuts: false
   )
   jPM.on()
   Backbone.history.start pushState: true
