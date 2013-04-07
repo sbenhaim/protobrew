@@ -1,5 +1,7 @@
-Entries = new Meteor.Collection("entries")
-Tags = new Meteor.Collection("tags")
+root = exports ? this
+root.Entries = new Meteor.Collection("entries")
+root.Tags = new Meteor.Collection("tags")
+    
 
 Entries.allow
   insert: (userId, entry) -> false
@@ -13,27 +15,27 @@ Tags.allow
 
 
 # Admins can admin anywhere, others can only admin in context
-adminable = ( user, context ) ->
+root.adminable = ( user, context ) ->
     user &&
     ( user.profile.group == "admin" ||
       user.profile.group == context ||
       user.profile.username == context )
 
 # View all in context, view public and read-only otherwise
-viewable = ( entry, user, context ) ->
+root.viewable = ( entry, user, context ) ->
     adminable( user, context ) ||
     ( context == null && entry == null ) ||
     ( entry && entry.mode != "private" )
 
 # Edit in context or public entries
-editable = ( entry, user, context ) ->
+root.editable = ( entry, user, context ) ->
     user && 
     ( adminable( user, context ) ||
       ( context == null && entry == null ) ||
       ( entry && entry.mode == "public" ) )
 
 
-verifySave = ( entry, user, context ) ->
+root.verifySave = ( entry, user, context ) ->
 
     bail = (message, status = 403) ->
         throw new Meteor.Error(status, message)
