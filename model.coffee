@@ -73,4 +73,3 @@ root.verifySave = ( entry, user, context ) ->
         entry.mode = "public"
 
     entry
->>>>>>> c3cfb04... new scoping on model.coffee
