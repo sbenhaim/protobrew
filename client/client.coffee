@@ -162,7 +162,6 @@ Template.editEntry.events
 
 Template.editEntry.rendered = ->
     el = $( '#entry-text' )
-    viewport_y = window.pageYOffset
     el.redactor(
         imageUpload: '/images'
         buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'deleted', '|', 
@@ -191,7 +190,8 @@ Template.editEntry.rendered = ->
                 filepicker.store(file, {location:"S3", path: Meteor.userId() + "/" + file.filename },
                 (file) -> callback( filelink: file.url )))
     )
-    window.scrollTo(0,viewport_y)
+
+    window.scrollTo(0,Session.get('y-offset'))
 
     tags = Tags.find({})
     entry = Session.get('entry')
@@ -248,6 +248,7 @@ Template.entry.events
         evtNavigate(e) unless Session.get('edit-mode')
 
     'click #edit': (evt) ->
+        Session.set( 'y-offset', window.pageYOffset )
         evt.preventDefault()
         Session.set('edit-mode', true )
 
