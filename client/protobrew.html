@@ -144,7 +144,11 @@
 
     <nav>
     	<ul>
-    		<li {{#if articleIs "/"}}class="selected"{{/if}}><a class="left-nav" href="/"><span aria-hidden="true" data-icon="&#x68;"></span> Home</a></li>
+    		<li {{#if articleIs "/"}}class="selected"{{/if}}>
+                <a class="left-nav" href="/">
+                    <span aria-hidden="true" data-icon="&#x68;"></span> Home
+                </a>
+            </li>
 			<li {{#if pageIs "Articles"}}class="selected"{{/if}}><a class="left-nav" href="/Articles"><span aria-hidden="true" data-icon="&#x6e;"></span> Articles</a></li>
 			<li {{#if pageIs "Brew systems"}}class="selected"{{/if}}><a class="left-nav" href="/Brew systems"><span aria-hidden="true" data-icon="&#xe007;"></span> Brew systems</a></li>
     	</ul>
@@ -167,15 +171,15 @@
         <div class="tab-content">
             <div class="tab-pane active" id="Owned">
                 <ul>
-                    <li><a href="one">wiki article one</a></li>
-                    <li><a href="two">wiki article two</a></li>
-                    <li><a href="three">wiki article three</a></li>
-                    <li><a href="four">wiki article four</a></li>
-                    <li><a href="five">wiki article five</a></li>
-                    <li><a href="six">wiki article six</a></li>
-                    <li><a href="seven">wiki article seven</a></li>
-                    <li><a href="eight">wiki article eight</a></li>
-                    <li><a href="niner">wiki article niner</a></li>
+                    <li><a class="left-nav" href="/one">wiki article one</a></li>
+                    <li><a class="left-nav" href="/two">wiki article two</a></li>
+                    <li><a class="left-nav" href="/three">wiki article three</a></li>
+                    <li><a class="left-nav" href="/four">wiki article four</a></li>
+                    <li><a class="left-nav" href="/five">wiki article five</a></li>
+                    <li><a class="left-nav" href="/six">wiki article six</a></li>
+                    <li><a class="left-nav" href="/seven">wiki article seven</a></li>
+                    <li><a class="left-nav" href="/eight">wiki article eight</a></li>
+                    <li><a class="left-nav" href="/niner">wiki article niner</a></li>
                 </ul>
             </div>
             <div class="tab-pane" id="Starred">
