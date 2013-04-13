@@ -163,7 +163,7 @@
         </div>
     </nav>
     <user>
-        <ul class="nav nav-tabs" id="tesTabs">
+        <ul class="nav nav-tabs" id="testTabs">
           <li class="active"><a href="#Owned" data-toggle="tab">Owned</a></li>
           <li><a href="#Starred" data-toggle="tab">Starred</a></li>
           <li><a href="#Recent" data-toggle="tab">Recent</a></li>
@@ -261,10 +261,12 @@
 
 	<!-- end #main --></div>
 	
-	<div id="sidebar">
-        {{> sidebar}}
+	<div id="sidebar_col">
+        <div id="sidebar">
+            {{> sidebar}}
+        </div>
 	<!-- end #sidebar --></div>
-	<!-- end #container --></div>
+<!-- end #container --></div>
 </body>
 
 <template name="sidebar">
