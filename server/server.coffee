@@ -72,6 +72,19 @@ Meteor.methods
 
             #   Click New Page button
             #   find all documents in the users namespace with the title "unnamed-*"
+            #       entries with user as author 
+
+            #       seq = 1
+            #       foreach in titles
+            #           if the title == unnamed+seq exists
+            #               seq = seq +1
+            #           else
+            #               newtitle = unnamed+seq
+            #               break
+            #       if ! newtitle
+            #           seq = seq + 1
+            #           newtitle = unnamed+seq
+            #           
             #   increment through titles starting at 1 until the nearest unnamed is found
             #   create entry with title and url as that in user space
             #   load page in edit mode
