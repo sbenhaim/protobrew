@@ -56,6 +56,53 @@ Meteor.methods
 
         Meteor.users.update( {_id: this.userId}, {$set: {"profile.username": value}}) if value
 
+    createUserLink: (value) ->
+        console.log(value);
+        Meteor.users.update( {_id: this.userId}, {
+            $set: {
+                profile: {
+                    userlinks: {
+                        owned: value
+                    }
+                }
+            }
+        });
+
+        
+
+            #   Click New Page button
+            #   find all documents in the users namespace with the title "unnamed-*"
+            #   increment through titles starting at 1 until the nearest unnamed is found
+            #   create entry with title and url as that in user space
+            #   load page in edit mode
+            #       if canceled
+            #           delete page from records
+            #       if navigated away from - warn!
+            #       if saved
+            #           save entry
+            #           save to user profile - created
+            #           save to user profile - recent
+            #
+
+    #insert if not present - owned links
+       # insertNearestField: (doc, targetCollection) ->
+            # while 1
+            #     Entries.find({})                               
+            #     user = Meteor.users({_id: this.userId})                
+            #     cursor = user.find( {}, { owned: 1 } ).sort( { _id: 1 } ).limit(1) # .find(query, projection)
+            #     seq = cursor.hasNext() ? cursor.next()._id + 1 : 1
+            #     owned.unnamed = seq
+            #     targetCollection.insert(doc)
+            #     err = db.getLastErrorObj()
+            #     if err && err.code 
+            #         if err.code == 11000 #/* dup key */ 
+            #             continue
+            #         else
+            #             print "unexpected error inserting data: " + tojson( err ) 
+            #     break
+    
+
+
     saveFile: (blob, name, path, encoding) ->
         throw new Meteor.Error(403, "You must be logged in") unless this.userId
 
