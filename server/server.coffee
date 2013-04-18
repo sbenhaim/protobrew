@@ -56,26 +56,60 @@ Meteor.methods
 
         Meteor.users.update( {_id: this.userId}, {$set: {"profile.username": value}}) if value
 
-    createUserLink: (value) ->
-        console.log(value);
-        Meteor.users.update( {_id: this.userId}, {
-            $set: {
-                profile: {
-                    userlinks: {
-                        owned: value
-                    }
-                }
-            }
-        });
+    
+    createNewPage: () ->
+        # ownUnnamedPages = Entries.find( { author : this.userId, title : {$regex: /^unnamed/ }}).sort( { title : 1 } ).fetch # .find(query, projection)
+        ownUnnamedPages = Entries.find( { author : this.userId, title : {$regex: /^unnamed/ }}).fetch() # .find(query, projection)
+        console.log(ownUnnamedPages)
+        if ownUnnamedPages.length == 0
+            console.log('1');
+            return 'unnamed-1'
+        else
+            seq = 1
+            posted = false
+            for pages in ownUnnamedPages
+                if ownUnnamedPages[_i].title == 'unnamed-'+seq
+                    seq = seq +1
+                    console.log('2');
+                else
+                    console.log('3');
+                    return 'unnamed-'+seq
+            if ! posted
+                seq = seq + 1
+                return 'unnamed-'+seq   
 
-        
+    createUserLink: (value) ->
 
             #   Click New Page button
             #   find all documents in the users namespace with the title "unnamed-*"
             #       entries with user as author 
+            #Keep in mind that regex queries can be very expensive as MongoDB will have to run the regex against every single location. If you can anchor your regexes at the beginning:
 
+            #   Users.where('location').$regex(/^unnamed/);
             #       seq = 1
-            #       foreach in titles
+
+                    #find nearest unnamed page & call new page with that name
+                    
+
+
+
+
+                    #         console.log(value);
+
+                    # Meteor.users.update( {_id: this.userId}, {
+                    #     $set: {
+                    #         profile: {
+                    #             userlinks: {
+                    #                 owned: value
+                    #             }
+                    #         }
+                    #     }
+                    # });
+
+
+            #       ownPosts = Entries.find({}) 
+            #       ownPosts.forEach ->
+            #       for titles in entries
             #           if the title == unnamed+seq exists
             #               seq = seq +1
             #           else

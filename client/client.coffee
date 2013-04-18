@@ -239,14 +239,19 @@ saveEntry = (evt) ->
 
 Template.entry.events
 
-    'click #new_article': (evt) ->
+    'click #new_page': (evt) ->
         evt.preventDefault()
         #retrieve list of articles in user space
                 ## does this need to be in a shared client/server file?
                 ## to be able to be latency compensated?
         # Meteor.call('saveEntry', entry, context, reroute)
         console.log("event")
-        Meteor.call('createUserLink', $("#new_article").attr("value"))
+        Meteor.call('createNewPage', 
+           (error, pageName) ->
+                console.log(error, pageName);
+                navigate(pageName)
+        )
+
         # user  = Meteor.user()
         # userLink_Ids = user.profile.userLink_Ids.owned
         # userLink_titles = Entries.find({ _id:userLink_Ids}).fetch()
@@ -265,9 +270,7 @@ Template.entry.events
         # });
     
         # Entries.findOne({title:"Articles"})
-    'click #old_article': (evt) ->
-        evt.preventDefault()
-        console.log("event")
+
 
     'click li.article-tag a': (evt) ->
         evt.preventDefault()
