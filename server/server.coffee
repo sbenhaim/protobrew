@@ -59,7 +59,7 @@ Meteor.methods
     
     createNewPage: () ->
         # ownUnnamedPages = Entries.find( { author : this.userId, title : {$regex: /^unnamed/ }}).sort( { title : 1 } ).fetch # .find(query, projection)
-        ownUnnamedPages = Entries.find( { author : this.userId, title : {$regex: /^unnamed/ }}).fetch() # .find(query, projection)
+        ownUnnamedPages = Entries.find( { author : this.userId, title : {$regex: /^unnamed-/ }}).fetch() # .find(query, projection)
         console.log(ownUnnamedPages)
         if ownUnnamedPages.length == 0
             console.log('1');
@@ -78,7 +78,8 @@ Meteor.methods
                 seq = seq + 1
                 return 'unnamed-'+seq   
 
-    createUserLink: (value) ->
+    # ignore below - psedo code / notes and / garbage
+    #createUserLink: (value) ->
 
             #   Click New Page button
             #   find all documents in the users namespace with the title "unnamed-*"
@@ -89,10 +90,6 @@ Meteor.methods
             #       seq = 1
 
                     #find nearest unnamed page & call new page with that name
-                    
-
-
-
 
                     #         console.log(value);
 
