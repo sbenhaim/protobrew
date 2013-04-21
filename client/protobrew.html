@@ -80,7 +80,7 @@
 
     {{#if edit_mode}}
     <form>
-    	<div id="action-toolbar" class="edit_mode">
+    	<div id='edit_mode_toolbar'class="action-toolbar edit_mode">
     		<a class="action-btn" href="#" value="delete" id="delete"><span aria-hidden="true" data-icon="&#x64;"></span></a>
     		<a class="action-btn" href="#" value="cancel" id="cancel"><span aria-hidden="true" data-icon="&#x62;"></span></a>
     		<a class="action-btn" href="#" value="save" id="save"><span aria-hidden="true" data-icon="&#x21;"></span> Save</a>
@@ -91,11 +91,14 @@
     </form>
     {{else}}
 	
-	
-	
     {{#if entry}}
+
+        <div id= "user_toolbar" class="action-toolbar">
+            <a class="action-btn" href="#" value="new_page" id="new_page"><span aria-hidden="true" data-icon="&#x22;"></span> New Page</a>
+            <a class="action-btn" href="#" value="toggle_star" id="toggle_star"><span aria-hidden="true" data-icon="&#x22;"></span> Star Page</a>
+        </div>
         {{#if currentUser}}
-        	<div id="action-toolbar" class="view_mode">
+        	<div id= "edit_button" class="action-toolbar" class="view_mode">
         		<a class="action-btn" href="#" value="edit" id="edit"><span aria-hidden="true" data-icon="&#x22;"></span> Edit</a>
         	</div>
         {{/if}}
@@ -161,90 +164,45 @@
             -->
             {{loginButtons}}
         </div>
+		
     </nav>
     <user>
-        <ul class="nav nav-tabs" id="testTabs">
-          <li class="active"><a href="#Owned" data-toggle="tab">Owned</a></li>
-          <li><a href="#Starred" data-toggle="tab">Starred</a></li>
-          <li><a href="#Recent" data-toggle="tab">Recent</a></li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane active" id="Owned">
-                <ul>
-                    <li><a class="left-nav" href="/one">wiki article one</a></li>
-                    <li><a class="left-nav" href="/two">wiki article two</a></li>
-                    <li><a class="left-nav" href="/three">wiki article three</a></li>
-                    <li><a class="left-nav" href="/four">wiki article four</a></li>
-                    <li><a class="left-nav" href="/five">wiki article five</a></li>
-                    <li><a class="left-nav" href="/six">wiki article six</a></li>
-                    <li><a class="left-nav" href="/seven">wiki article seven</a></li>
-                    <li><a class="left-nav" href="/eight">wiki article eight</a></li>
-                    <li><a class="left-nav" href="/niner">wiki article niner</a></li>
-                </ul>
-            </div>
-            <div class="tab-pane" id="Starred">
-                <ul>
-                    <li><a href="one"> starred article one</a></li>
-                    <li><a href="two">starred article two</a></li>
-                    <li><a href="three">starred article three</a></li>
-                    <li><a href="four">starred article four</a></li>
-                    <li><a href="five">starred article five</a></li>
-                    <li><a href="six">starred article six</a></li>
-                    <li><a href="seven">starred article seven</a></li>
-                    <li><a href="eight">starred article eight</a></li>
-                    <li><a href="niner">starred article niner</a></li>
-                </ul>
-            </div>
-            <div class="tab-pane" id="Recent">
-                <ul>
-                    <li><a href="one">recent article one</a></li>
-                    <li><a href="two">recent article two</a></li>
-                    <li><a href="three">recent article three</a></li>
-                    <li><a href="four">recent article four</a></li>
-                    <li><a href="five">recent article five</a></li>
-                    <li><a href="six">recent article six</a></li>
-                    <li><a href="seven">recent article seven</a></li>
-                    <li><a href="eight">recent article eight</a></li>
-                    <li><a href="niner">recent article niner</a></li>
-                </ul>
-            </div>
-        </div>
-
-
-
-
-
-<!--         <div class="accordion" id="accordion2">
-          <div class="accordion-group">
-            <div class="accordion-heading">
-              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
-                Favorites
-              </a>
-            </div>
-            <div id="collapseOne" class="accordion-body collapse in">
-                <div class="accordion-inner">
-                    <a href=""> Sublink #1</a>
+        {{> tabs}}
+        <div id="usernav">
+            <div class="tab-content">          
+                <div id="owned" class="tab-pane active">
+                    <ul>
+                        {{#isolate}}
+                        {{#each owned}}
+                            <li><a href="/{{title}}">{{title}}</a></li>
+                        {{/each}}
+                        {{/isolate}}
+                    </ul>
+                </div> 
+                <div id="starred" class="tab-pane" >
+                    <ul>
+                        {{#isolate}}
+                        {{#each starred}}
+                            <li><a href="/{{title}}">{{title}}</a></li>
+                        {{/each}}
+                        {{/isolate}}
+                    </ul>
                 </div>
             </div>
-          </div>
-          <div class="accordion-group">
-            <div class="accordion-heading">
-              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
-                Owner
-              </a>
-            </div>
-            <div id="collapseTwo" class="accordion-body collapse">
-              <div class="accordion-inner">
-                Anim pariatur cliche...
-              </div>
-            </div>
-          </div>
-        </div> -->
+        </div>
     </user>
+  </div><!-- end #left_nav -->
 
-  <!-- end #left_nav --></div>
+
 </template>
 
+
+<template name="tabs">
+    <ul class="nav nav-tabs" id="testTabs">
+          <li class="active"><a href="#owned" data-toggle="tab">Owned</a></li>
+          <li><a href="#starred" data-toggle="tab">Starred</a></li>
+    </ul>
+</template>
 
 <body>
 

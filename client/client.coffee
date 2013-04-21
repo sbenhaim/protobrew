@@ -8,6 +8,7 @@ navigate = (location) ->
 
 evtNavigate = (evt) ->
     evt.preventDefault()
+    window.scrollTo(0,0)
     $a = $(evt.target).closest('a')
     href = $a.attr('href')
     localhost = document.location.host
@@ -26,6 +27,8 @@ Template.leftNav.events =
     'change #search-input': (evt) ->
         term = $(evt.target).val()
         navigate( '/search/' + term ) if term
+
+    'click #usernav a': evtNavigate
 
 getSummaries = (entries) ->
     entries.map (e) ->
@@ -71,6 +74,21 @@ Template.leftNav.pageIs = (u) ->
     page = Session.get('title')
     return u == "/" if page == undefined
     return u == page
+
+Template.leftNav.owned = () ->
+    return Entries.find({ author : Meteor.userId()}).fetch()
+
+Template.leftNav.starred = () ->
+    user = Meteor.user()
+    if ! user 
+        return
+    else
+        starredPages = user.profile.starredPages
+        starred =  Entries.find({ _id :{$in: starredPages}}).fetch()
+        if starred.length == 0
+          return  starred = {starred:["nothing"]}
+        return starred
+
 
 ## Entry
 
@@ -212,6 +230,53 @@ saveEntry = (evt) ->
 
 
 Template.entry.events
+
+    'click #new_page': (evt) ->
+        evt.preventDefault()
+        console.log('event')
+        #retrieve list of articles in user space
+                ## does this need to be in a shared client/server file?
+                ## to be able to be latency compensated?
+        # Meteor.call('saveEntry', entry, context, reroute)
+        Meteor.call('createNewPage', 
+           (error, pageName) ->
+                console.log(error, pageName);
+                #fix non-editable navigate
+                navigate(pageName)
+        )
+
+    'click #toggle_star': (evt) ->
+        evt.preventDefault()
+        console.log("star")
+        # Meteor.call('toggleStarPage', 
+        #    (error, pageName) ->
+        #         # highlight star button/icon
+        #         navigate(pageName)
+        user  = Meteor.user()
+        starredPages = user.profile.starredPages
+        # starredPages = Entries.find({starredPages}).fetch()
+        # userLink_titles
+        title = Session.get("title")
+        entry = Entries.findOne({'title': Session.get('title')})
+        matches = false
+        for star in user.profile.starredPages 
+            if star == entry._id
+                matches = true
+                break
+        console.log('this far')
+        if matches is false
+            console.log(matches)
+            console.log('no match pushing')
+            Meteor.users.update(Meteor.userId(), {
+                $push: {'profile.starredPages': entry._id}
+            })
+        else
+            console.log(matches)
+            console.log('match pulling')
+            Meteor.users.update(Meteor.userId(), {
+                $pull: {'profile.starredPages': entry._id}
+            })
+        
 
     'click li.article-tag a': (evt) ->
         evt.preventDefault()

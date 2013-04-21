@@ -623,11 +623,14 @@ ul li.article-tag:after {
 #footer { 
 
 } 
-    #action-toolbar {
+    .action-toolbar {
         position: fixed;
         top: 15px;
         z-index: 200;
         right: 260px;
+    }
+    #user_toolbar {
+        right: 325px;
     }
     .action-btn {
         font-family: OstrichSansBlack;
@@ -931,6 +934,12 @@ body .redactor_toolbar li a.redactor_btn_delete {
             max-width: @max_content_width;
         }
     }
+    .action-toolbar {
+        right: 180px;
+    }
+    #user_toolbar {
+        right: 245px;
+    }
     #action-toolbar.edit_mode{
         top: 75px;
     }
@@ -948,10 +957,13 @@ body .redactor_toolbar li a.redactor_btn_delete {
             // max-width: @max_content_width;
         }
     }
-    #action-toolbar {
+    .action-toolbar {
         right: 20px;
     }
-    #action-toolbar.edit_mode{
+    #user_toolbar {
+        right: 85px;
+    }
+    .action-toolbar.edit_mode{
         top: 75px;
         right: 20px;
     }
