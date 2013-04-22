@@ -87,7 +87,7 @@ Template.leftNav.starred = () ->
         if ! starredPages
             return
         starred =  Entries.find({ _id :{$in: starredPages}}).fetch()
-        if starred.length == 0
+        if ! starred or starred.length == 0
           return # starred = {starred:["nothing"]} #would need to make this not a link
         return starred
 
