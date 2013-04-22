@@ -84,9 +84,14 @@ Template.leftNav.starred = () ->
         return
     else
         starredPages = user.profile.starredPages
+        console.log('starredPages')
+        console.log(starredPages)
         if ! starredPages
+            console.log('starredPages return')
             return
         starred =  Entries.find({ _id :{$in: starredPages}}).fetch()
+        console.log('starred')
+        console.log(starred)
         if ! starred or starred.length == 0
           return # starred = {starred:["nothing"]} #would need to make this not a link
         return starred
