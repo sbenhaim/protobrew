@@ -250,17 +250,16 @@ Template.entry.events
 
     'click #toggle_star': (evt) ->
         evt.preventDefault()
-        console.log("star")
         user  = Meteor.user()
         starredPages = user.profile.starredPages
         title = Session.get("title")
         entry = Entries.findOne({'title': Session.get('title')})
         matches = false
-        for star in user.profile.starredPages 
-            if star == entry._id
-                matches = true
-                break
-        console.log('this far')
+        if starredPages # needed for first profile star
+            for star in user.profile.starredPages 
+                if star == entry._id
+                    matches = true
+                    break
         if matches is false
             console.log(matches)
             console.log('no match pushing')
