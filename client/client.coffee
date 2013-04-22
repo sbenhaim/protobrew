@@ -84,9 +84,11 @@ Template.leftNav.starred = () ->
         return
     else
         starredPages = user.profile.starredPages
+        if ! starredPages
+            return
         starred =  Entries.find({ _id :{$in: starredPages}}).fetch()
         if starred.length == 0
-          return  starred = {starred:["nothing"]}
+          return # starred = {starred:["nothing"]} #would need to make this not a link
         return starred
 
 
@@ -234,28 +236,18 @@ Template.entry.events
     'click #new_page': (evt) ->
         evt.preventDefault()
         console.log('event')
-        #retrieve list of articles in user space
-                ## does this need to be in a shared client/server file?
-                ## to be able to be latency compensated?
-        # Meteor.call('saveEntry', entry, context, reroute)
         Meteor.call('createNewPage', 
            (error, pageName) ->
                 console.log(error, pageName);
-                #fix non-editable navigate
+                #TODO: fix non-editable navigate
                 navigate(pageName)
         )
 
     'click #toggle_star': (evt) ->
         evt.preventDefault()
         console.log("star")
-        # Meteor.call('toggleStarPage', 
-        #    (error, pageName) ->
-        #         # highlight star button/icon
-        #         navigate(pageName)
         user  = Meteor.user()
         starredPages = user.profile.starredPages
-        # starredPages = Entries.find({starredPages}).fetch()
-        # userLink_titles
         title = Session.get("title")
         entry = Entries.findOne({'title': Session.get('title')})
         matches = false
@@ -391,7 +383,7 @@ Router = new EntryRouter
 
 Meteor.startup ->
   jPM = $.jPanelMenu(
-    menu: "#left_nav"
+    menu: "#leftNavContainer"
     trigger: "#sidenav_btn"
     closeOnContentClick: false
     keyboardShortcuts: false

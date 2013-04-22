@@ -53,8 +53,6 @@ Meteor.methods
 
     createNewPage: () ->
         ownUnnamedPages = Entries.find( { author : this.userId, title : {$regex: /^unnamed-/ }}, {sort: { title: 1 }}).fetch() # .find(query, projection)
-        console.log(ownUnnamedPages)
-        console.log(ownUnnamedPages)
         if ownUnnamedPages.length == 0
             console.log('1')
             return 'unnamed-1'
