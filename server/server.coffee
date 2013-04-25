@@ -1,3 +1,5 @@
+DOMAIN = "@wikraft\.mygbiz\.com$"
+
 Meteor.publish('entries', (context) ->
 
     # Todo: Temporary
@@ -30,9 +32,12 @@ Meteor.publish('entries', (context) ->
 
 Meteor.publish('tags', -> return Tags.find({}))
 
-
-
 Meteor.methods
+
+    viewable: ->
+        return true unless DOMAIN
+        user = Meteor.user()
+        user and user.services.google.email.match( DOMAIN )
 
     updateTitle: (entry, title, callback) ->
         throw new Meteor.Error(403, "You must be logged in") unless this.userId
@@ -45,8 +50,15 @@ Meteor.methods
         entry = verifySave( entry, user, context )
         entry.context = context
 
-        return Entries.insert(entry, callback) unless entry._id
-        return Entries.update({_id: entry._id}, entry, callback)
+        if entry._id
+            Entries.update({_id: entry._id}, entry)
+            id = entry._id
+        else
+            id =  Entries.insert(entry)
+
+        Revisions.insert( { entryId: id, date: new Date(), text: entry.text } )
+
+        return id
 
     updateUser: (value) ->
         throw new Meteor.Error(403, "You must be logged in") unless this.userId
@@ -67,9 +79,9 @@ Meteor.methods
         else
             seq = 1
             posted = false
-            for pages in ownUnnamedPages
-                if ownUnnamedPages[_i].title == 'unnamed-'+seq
-                    seq = seq +1
+            for page in ownUnnamedPages
+                if page.title == 'unnamed-'+seq
+                    seq++
                     console.log('2');
                 else
                     console.log('3');

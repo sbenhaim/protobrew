@@ -1,7 +1,7 @@
 root = exports ? this
 root.Entries = new Meteor.Collection("entries")
 root.Tags = new Meteor.Collection("tags")
-    
+root.Revisions = new Meteor.Collection("revisions")
 
 Entries.allow
   insert: (userId, entry) -> false

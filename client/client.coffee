@@ -22,6 +22,15 @@ evtNavigate = (evt) ->
 
 ## Nav
 
+Deps.autorun ->
+    # Random user call to force reactivity
+    Meteor.user()
+    Meteor.call( 'viewable', (x, result) -> Session.set("viewable", result) )
+
+Template.leftNav.viewable = -> Session.get('viewable')
+Template.main.viewable = -> Session.get('viewable')
+Template.null.viewable = -> Session.get('viewable')
+
 Template.leftNav.events =
     'click a.left-nav': evtNavigate
 
@@ -101,6 +110,7 @@ Template.entry.modeIs = (v) ->
     return v == Session.get('entry').mode
 
 Template.entry.entry = ->
+
     title = Session.get("title")
     context = Session.get('context')
     if title
