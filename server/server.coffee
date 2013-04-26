@@ -56,7 +56,7 @@ Meteor.methods
         else
             id =  Entries.insert(entry)
 
-        Revisions.insert( { entryId: id, date: new Date(), text: entry.text } )
+        Revisions.insert( { entryId: id, date: new Date(), text: entry.text, author: user._id } )
 
         return id
 
