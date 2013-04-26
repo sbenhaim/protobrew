@@ -147,13 +147,15 @@
 
     <nav>
     	<ul>
-    		<li {{#if articleIs "/"}}class="selected"{{/if}}>
+            {{#isolate}}
+    		<li {{#if pageIs "/"}}class="selected"{{/if}}>
                 <a class="left-nav" href="/">
                     <span aria-hidden="true" data-icon="&#x68;"></span> Home
                 </a>
             </li>
 			<li {{#if pageIs "Articles"}}class="selected"{{/if}}><a class="left-nav" href="/Articles"><span aria-hidden="true" data-icon="&#x6e;"></span> Articles</a></li>
 			<li {{#if pageIs "Brew systems"}}class="selected"{{/if}}><a class="left-nav" href="/Brew systems"><span aria-hidden="true" data-icon="&#xe007;"></span> Brew systems</a></li>
+            {{/isolate}}
     	</ul>
     
 
@@ -167,14 +169,19 @@
 		
     </nav>
     <user>
-        {{> tabs}}
+
+        <ul class="nav nav-tabs" id="testTabs">
+              <li class="active"><a href="#owned" data-toggle="tab">Owned</a></li>
+              <li><a href="#starred" data-toggle="tab">Starred</a></li>
+        </ul>
+
         <div id="usernav">
             <div class="tab-content">          
                 <div id="owned" class="tab-pane active">
                     <ul>
                         {{#isolate}}
                         {{#each owned}}
-                            <li><a href="/{{title}}">{{title}}</a></li>
+                            <li><a class="left-nav" href="/{{title}}">{{title}}</a></li>
                         {{/each}}
                         {{/isolate}}
                     </ul>
@@ -183,7 +190,7 @@
                     <ul>
                         {{#isolate}}
                         {{#each starred}}
-                            <li><a href="/{{title}}">{{title}}</a></li>
+                            <li><a class="left-nav" href="/{{title}}">{{title}}</a></li>
                         {{/each}}
                         {{/isolate}}
                     </ul>
@@ -196,13 +203,6 @@
 
 </template>
 
-
-<template name="tabs">
-    <ul class="nav nav-tabs" id="testTabs">
-          <li class="active"><a href="#owned" data-toggle="tab">Owned</a></li>
-          <li><a href="#starred" data-toggle="tab">Starred</a></li>
-    </ul>
-</template>
 
 <body>
 

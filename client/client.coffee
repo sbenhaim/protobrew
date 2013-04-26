@@ -125,7 +125,7 @@ Template.entry.entry = ->
             entry.text = source.html()
             entry
         else
-            Session.set( 'entry', null )
+            Session.set( 'entry', {} )
             Session.set( 'entry_id', null )
 
 Template.entry.edit_mode = ->
@@ -159,7 +159,6 @@ Template.index.events
 
 Template.editEntry.events
     'focus #entry-tags': (evt) ->
-        console.log( "hello" );
         $("#tag-init").show()
 
 Template.editEntry.rendered = ->
