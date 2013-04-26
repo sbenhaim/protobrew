@@ -319,11 +319,17 @@ Template.entry.events
 
     'click #sidenav_btn': (evt) ->
         evt.preventDefault()
-        # jPM = $.jPanelMenu(
-        #     menu: '#left_nav'
-        #     trigger: '#sidenav_btn'
-        # )
-        # jPM.on()
+        jPM = $.jPanelMenu(
+            menu: "#leftNavContainer"
+            trigger: "#sidenav_btn"
+            closeOnContentClick: false
+            keyboardShortcuts: false
+            afterOpen: -> $('a.left-nav').click( evtNavigate )
+        )
+        if jPM.isOpen()
+            jPM.off()
+        else
+            jPM.on()
 
     'click #edit': (evt) ->
         Session.set( 'y-offset', window.pageYOffset )
@@ -439,14 +445,6 @@ EntryRouter = Backbone.Router.extend({
 Router = new EntryRouter
 
 Meteor.startup ->
-  jPM = $.jPanelMenu(
-    menu: "#leftNavContainer"
-    trigger: "#sidenav_btn"
-    closeOnContentClick: false
-    keyboardShortcuts: false
-    afterOpen: -> $('a.left-nav').click( evtNavigate )
-  )
-  jPM.on()
 
   Backbone.history.start pushState: true
   
