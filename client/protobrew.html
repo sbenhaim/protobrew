@@ -19,33 +19,45 @@
 <script type="text/javascript" src="//api.filepicker.io/v1/filepicker.js"></script>
 </head>
 
-<template name="null">
-  {{> menu}}
-  {{> main}}
-</template>
-
 <template name="main">
     <div class="content">
     {{#if modeIs "index"}}
     {{> index}}
     {{/if}}
 
-    {{#if modeIs "search"}}
-    {{> search}}
+    {{#if viewable}}
+      {{#if modeIs "search"}}
+      {{> search}}
+      {{/if}}
+  
+      {{#if modeIs "tag"}}
+      {{> tag}}
+      {{/if}}
+  
+      {{#if modeIs "entry"}}
+      {{> entry}}
+      {{/if}}
+  
+      {{#if modeIs "profile"}}
+      {{> profile}}
+      {{/if}}
+    {{else}}
+      Unauthrorized
     {{/if}}
 
-    {{#if modeIs "tag"}}
-    {{> tag}}
-    {{/if}}
-
-    {{#if modeIs "entry"}}
-    {{> entry}}
-    {{/if}}
     </div>
 </template>
 
 <template name="index">
     {{{content.text}}}
+</template>
+
+<template name="profile">
+    <h2>Profile for {{user.profile.name}}</h2>
+    <label>Username
+        <input name="username" type="text" id="username" value="{{user.profile.username}}" />
+        <input type="submit" value="save" id="save" />
+    </label>
 </template>
 
 <template name="search">
@@ -70,7 +82,9 @@
 
 <template name="entry">
     
-    <h1 id="article-title" class="article-title">{{title}}</h1>
+    <h1 id="article-title" class="article-title">
+        {{#if userContext}}{{userContext}} / {{/if}}{{title}}
+    </h1>
 	
     {{#if edit_mode}}
     <form>
@@ -82,37 +96,63 @@
         {{#with entry}}
         {{> editEntry}}
         {{/with}}
+
+        {{#if adminable}}
+        <p>
+            <label>Mode
+                <select id="mode" name="mode">
+                    <option {{#if modeIs "public"}}selected{{/if}} value="public">Public</option>
+                    <option {{#if modeIs "read-only"}}selected{{/if}} value="read-only">Read-Only</option>
+                    <option {{#if modeIs "private"}}selected{{/if}} value="private">Private</option>
+                </select>
+            </label>
+        </p>
+        {{/if}}
     </form>
     {{else}}
 	
-	
-	
-    {{#if entry}}
-    {{#if currentUser}}
-    	<div id="action-toolbar">
-    		<a class="action-btn" href="#" value="edit" id="edit"><span aria-hidden="true" data-icon="&#x22;"></span> Edit</a>
-    	</div>
-    {{/if}}
-    <p>{{{entry.text}}}</p>
+        {{#if entry}}
 
-    {{#if entry.tags.length}}
-    <h2>Tags</h2>
-    <ul>
-        {{#each entry.tags}}
-        <li class="article-tag"><a href="javascript:void(0);">{{this}}</a></li>
-        {{/each}}
-    </ul>
-    {{/if}}
-    {{else}}
+            <div id="action-toolbar">
+                <a class="action-btn" href="#" value="new_page" id="new_page"><span aria-hidden="true" data-icon="&#x22;"></span> New Page</a>
+            </div>
+            {{#if viewable}}
 
-    <p>{{title}} doesn't exist yet.</p>
-        {{#if currentUser}}
-        	<a class="action-btn" href="#" value="edit" id="edit"><span aria-hidden="true" data-icon="&#x22;"></span> Create it!</a>
+                {{#if editable}}
+                <div id="action-toolbar">
+                    <a class="action-btn" href="#" value="edit" id="edit"><span aria-hidden="true" data-icon="&#x22;"></span> Edit</a>
+                </div>
+                {{/if}}
+
+                <p>{{{entry.text}}}</p>
+
+                {{#if entry.tags.length}}
+                <h2>Tags</h2>
+                <ul>
+                    {{#each entry.tags}}
+                    <li class="article-tag"><a href="javascript:void(0);">{{this}}</a></li>
+                    {{/each}}
+                </ul>
+                {{/if}}
+
+            {{else}}
+
+            <p>{{entry.title}} is private.</p>
+
+            {{/if}}
+
+
+        {{else}}
+
+            <p>{{title}} doesn't exist yet.</p>
+                {{#if editable}}
+                    <a class="action-btn" href="#" value="edit" id="edit"><span aria-hidden="true" data-icon="&#x22;"></span> Create it!</a>
+                {{/if}}
+
         {{/if}}
 
     {{/if}}
 
-    {{/if}}
 </template>
 
 
@@ -134,6 +174,8 @@
 <template name="leftNav">
   <div id="left_nav">
     <div id="logo"><a href="/">ProtoBrew Wiki</a></div>
+
+    {{#if viewable }}
     <div id="search"><input class="txtOptionInput searchField" type="search" results="5" size="15" accesskey="F" autocomplete="off" lastsearchtext="aasdfasdfsd" placeholder="" id="search-input" value="{{term}}"></div>
 
     <nav>
@@ -143,6 +185,7 @@
 			<li {{#if pageIs "Brew systems"}}class="selected"{{/if}}><a class="left-nav" href="/Brew systems"><span aria-hidden="true" data-icon="&#xe007;"></span> Brew systems</a></li>
     	</ul>
     </nav>
+    {{/if}}
 
     <div id="buttons">
         <!--
@@ -156,26 +199,30 @@
   <!-- end #left_nav --></div>
 </template>
 
+<template name="null">
 
-<body>
-
-<div id="container">
   <div id="header"></div>
 
-    {{> leftNav}}
-  
+  {{> leftNav}}
+ 
   <div id="main">
     {{> main}}
 
-	<div id="footer">
-  	<!-- end #footer --></div>
+    <div id="footer">
+    </div>
+  </div>
+    
+  {{#if viewable}}
+  <div id="sidebar">
+    {{> sidebar}}
+  </div>
+  {{/if}}
+</template>
 
-	<!-- end #main --></div>
-	
-	<div id="sidebar">
-        {{> sidebar}}
-	<!-- end #sidebar --></div>
-	<!-- end #container --></div>
+<body>
+  <div id="container">
+      {{> null}}
+  </div>
 </body>
 
 <template name="sidebar">

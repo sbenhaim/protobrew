@@ -1,18 +1,14 @@
 root = exports ? this
 root.Entries = new Meteor.Collection("entries")
 root.Tags = new Meteor.Collection("tags")
-    
+root.Revisions = new Meteor.Collection("revisions")
 
 Entries.allow
   insert: (userId, entry) -> false
 
-  update: (userId, entries, fields, modifier) ->
-    return false unless _.all( entries, (entry) -> userId == entry.author )
-    # Todo: Verify fields
-    # return false if _.difference(fields, allowed).length
-    true
+  update: (userId, entries, fields, modifier) -> false
 
-  remove: (userId, entries) -> _.all( entries, (entry) -> userId == entry.author )
+  remove: (userId, entries) -> false
 
 Tags.allow
     insert: (userId, entry) -> true if userId

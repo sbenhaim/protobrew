@@ -3,7 +3,9 @@ Meteor.subscribe('tags')
 
 Session.set('edit-mode', false)
 
-navigate = (location) ->
+# Todo: reloadEntry = true
+navigate = (location, context) ->
+    location = "/u/#{context}/#{location}" if context
     Router.navigate(location, true)
 
 evtNavigate = (evt) ->
@@ -19,6 +21,15 @@ evtNavigate = (evt) ->
         window.open( href, '_blank')
 
 ## Nav
+
+Deps.autorun ->
+    # Random user call to force reactivity
+    Meteor.user()
+    Meteor.call( 'viewable', (x, result) -> Session.set("viewable", result) )
+
+Template.leftNav.viewable = -> Session.get('viewable')
+Template.main.viewable = -> Session.get('viewable')
+Template.null.viewable = -> Session.get('viewable')
 
 Template.leftNav.events =
     'click a.left-nav': evtNavigate
@@ -61,8 +72,6 @@ Template.tag.results = ->
     return unless tag
     
     entries = Entries.find( { tags: tag } )
-    console.log( "tag: ", tag );
-    console.log( "entries: ", entries );
     getSummaries( entries )
 
 Template.leftNav.term = -> Session.get( 'search-term' )
@@ -77,10 +86,35 @@ Template.leftNav.pageIs = (u) ->
 Template.entry.title = ->
     Session.get("title")
 
+Template.entry.userContext = ->
+    Session.get("context")
+
+Template.entry.editable = ->
+    entry = Session.get('entry')
+    context = Session.get("context")
+    user  = Meteor.user()
+    editable( entry, user, context )
+
+Template.entry.adminable = ->
+    context = Session.get("context")
+    user  = Meteor.user()
+    adminable( user, context )
+
+Template.entry.viewable = ->
+    entry = Session.get('entry')
+    context = Session.get("context")
+    user  = Meteor.user()
+    viewable( entry, user, context )
+
+Template.entry.modeIs = (v) ->
+    return v == Session.get('entry').mode
+
 Template.entry.entry = ->
+
     title = Session.get("title")
+    context = Session.get('context')
     if title
-        entry = Entries.findOne({'title': Session.get('title')})
+        entry = Entries.findOne({title: title, context: context})
         if entry
             Session.set('entry', entry )
             Session.set('entry_id', entry._id )
@@ -134,7 +168,6 @@ Template.index.events
 
 Template.editEntry.events
     'focus #entry-tags': (evt) ->
-        console.log( "hello" );
         $("#tag-init").show()
 
 Template.editEntry.rendered = ->
@@ -187,13 +220,14 @@ deleteEntry = (evt) ->
 
 saveEntry = (evt) ->
     reroute = ( e ) ->
-        Router.setTitle( entry.title ) unless entry.title == "home"
+        navigate( entry.title, Session.get( "context" ) ) unless entry.title == "home"
 
     title = Session.get('title')
 
     entry = {
         'title': title
         'text': rewriteLinks( $('#entry-text').val() )
+        'mode': $('#mode').val()
     }
 
     tags = $('#entry-tags').nextAll('input[type=hidden]').val()
@@ -206,12 +240,47 @@ saveEntry = (evt) ->
     eid = Session.get('entry_id')
     entry._id = eid if eid
 
-    Meteor.call('saveEntry', entry, reroute)
+    context = Session.get('context')
+
+    Meteor.call('saveEntry', entry, context, reroute)
     Entries.update({_id: entry._id}, entry)
     Session.set("edit-mode", false)
 
 
 Template.entry.events
+
+    'click #new_page': (evt) ->
+        evt.preventDefault()
+        #retrieve list of articles in user space
+                ## does this need to be in a shared client/server file?
+                ## to be able to be latency compensated?
+        # Meteor.call('saveEntry', entry, context, reroute)
+        console.log("event")
+        Meteor.call('createNewPage', 
+           (error, pageName) ->
+                console.log(error, pageName);
+                navigate(pageName)
+        )
+
+        # user  = Meteor.user()
+        # userLink_Ids = user.profile.userLink_Ids.owned
+        # userLink_titles = Entries.find({ _id:userLink_Ids}).fetch()
+        # userLink_titles
+        #created article <unnamed_x> where x is the first unused #
+        #navigate to that userspace article
+        #pop-unamed link into userspace list
+        # Meteor.users.update( {_id: Meteor.userId()}, {
+        #     $set: {
+        #         profile: {
+        #             userlinks: {
+        #                 owned: "_entry_id"
+        #             }
+        #         }
+        #     }
+        # });
+    
+        # Entries.findOne({title:"Articles"})
+
 
     'click li.article-tag a': (evt) ->
         evt.preventDefault()
@@ -239,11 +308,14 @@ Template.entry.events
         deleteEntry(evt)
 
     'click #article-title': (evt) ->
-        return unless Meteor.userId() && Session.get('entry')
+
+        entry = Session.get('entry')
+        context = Session.get("context")
+        user  = Meteor.user()
+        return unless editable( entry, user, context )
 
         $el = $(evt.target)
         $in = $("<input class='entry-title-input'/>")
-        console.log( "$el.text(): ", $el.text().trim() );
         $in.val( $el.text().trim() )
         $el.replaceWith($in)
         $in.focus()
@@ -270,11 +342,17 @@ Template.entry.events
             cancel(e, true) if e.keyCode == 27
         )
 
+Template.profile.user = ->
+    Meteor.user()
+
+Template.profile.events
+
+    'click #save': (evt) ->
+        result = Meteor.call('updateUser', $("#username").val(), (e) -> console.log( e ) )
+
 
 Template.user.info = ->
-    user = Meteor.user()
-    console.log( "user: ", user );
-    user
+    Meteor.user()
 
 rewriteLinks = ( text ) ->
     $html = $('<div>')
@@ -294,21 +372,30 @@ EntryRouter = Backbone.Router.extend({
     routes: {
         "search/:term": "search"
         "tag/:tag": "tag",
+        "profile": "profile",
         "images": "images",
+        "u/:user/:title": "userSpace",
         ":title": "main",
         "": "index"
     },
     index: ->
         Session.set("mode", 'index')
         Session.set("title", undefined)
+    profile: (term) ->
+        Session.set( 'mode', 'profile' )
     search: (term) ->
         Session.set( 'mode', 'search' )
         Session.set( 'search-term', decodeURIComponent( term ) )
     tag: (tag) ->
         Session.set( 'mode', 'tag' )
         Session.set( 'tag', decodeURIComponent( tag ) )
+    userSpace: (username, title) ->
+        Session.set("mode", 'entry')
+        Session.set("context", username)
+        Session.set("title", decodeURIComponent( title ))
     main: (title) ->
         Session.set("mode", 'entry')
+        Session.set("context", null)
         Session.set("title", decodeURIComponent( title ))
     setTitle: (title) ->
         this.navigate(title, true)
