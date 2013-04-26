@@ -1,5 +1,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Welcome to Protobrew</title>
 
 <!--[if IE 5]>
@@ -20,6 +21,7 @@
 </head>
 
 <template name="main">
+
     <div class="content">
     {{#if modeIs "index"}}
     {{> index}}
@@ -49,6 +51,7 @@
 </template>
 
 <template name="index">
+    <a class="action-btn" href="#" value="sidenav_btn" id="sidenav_btn"><span aria-hidden="true" data-icon="&#x22;"></span> Panel</a> 
     {{{content.text}}}
 </template>
 
@@ -81,14 +84,17 @@
 </template>
 
 <template name="entry">
+
+    <!-- jpanel menu button -->
+    <a class="action-btn" href="#" value="sidenav_btn" id="sidenav_btn"><span aria-hidden="true" data-icon="&#x22;"></span> Panel</a> 
     
     <h1 id="article-title" class="article-title">
         {{#if userContext}}{{userContext}} / {{/if}}{{title}}
     </h1>
-	
+
     {{#if edit_mode}}
     <form>
-    	<div id="action-toolbar">
+    	<div id='edit_mode_toolbar'class="action-toolbar edit_mode">
     		<a class="action-btn" href="#" value="delete" id="delete"><span aria-hidden="true" data-icon="&#x64;"></span></a>
     		<a class="action-btn" href="#" value="cancel" id="cancel"><span aria-hidden="true" data-icon="&#x62;"></span></a>
     		<a class="action-btn" href="#" value="save" id="save"><span aria-hidden="true" data-icon="&#x21;"></span> Save</a>
@@ -115,6 +121,7 @@
 
             <div id="action-toolbar">
                 <a class="action-btn" href="#" value="new_page" id="new_page"><span aria-hidden="true" data-icon="&#x22;"></span> New Page</a>
+                <a class="action-btn" href="#" value="toggle_star" id="toggle_star"><span aria-hidden="true" data-icon="&#x22;"></span> Star Page</a>
             </div>
             {{#if viewable}}
 
@@ -142,15 +149,25 @@
             {{/if}}
 
 
-        {{else}}
 
+            <p>{{{entry.text}}}</p>
+
+            {{#if entry.tags.length}}
+                <h2>Tags</h2>
+                <ul>
+                    {{#each entry.tags}}
+                    <li class="article-tag"><a href="javascript:void(0);">{{this}}</a></li>
+                    {{/each}}
+                </ul>
+            {{/if}}
+
+        {{else}}
             <p>{{title}} doesn't exist yet.</p>
-                {{#if editable}}
-                    <a class="action-btn" href="#" value="edit" id="edit"><span aria-hidden="true" data-icon="&#x22;"></span> Create it!</a>
+                {{#if currentUser}}
+                	<a class="action-btn" href="#" value="edit" id="edit"><span aria-hidden="true" data-icon="&#x22;"></span> Create it!</a>
                 {{/if}}
 
         {{/if}}
-
     {{/if}}
 
 </template>
@@ -175,36 +192,75 @@
   <div id="left_nav">
     <div id="logo"><a href="/">ProtoBrew Wiki</a></div>
 
+    <div id="tw_bar"><a href="/">by Tin Whiskers</a></div>
     {{#if viewable }}
     <div id="search"><input class="txtOptionInput searchField" type="search" results="5" size="15" accesskey="F" autocomplete="off" lastsearchtext="aasdfasdfsd" placeholder="" id="search-input" value="{{term}}"></div>
 
     <nav>
     	<ul>
-    		<li {{#if pageIs "/"}}class="selected"{{/if}}><a class="left-nav" href="/"><span aria-hidden="true" data-icon="&#x68;"></span> Home</a></li>
+            {{#isolate}}
+    		<li {{#if pageIs "/"}}class="selected"{{/if}}>
+                <a class="left-nav" href="/">
+                    <span aria-hidden="true" data-icon="&#x68;"></span> Home
+                </a>
+            </li>
 			<li {{#if pageIs "Articles"}}class="selected"{{/if}}><a class="left-nav" href="/Articles"><span aria-hidden="true" data-icon="&#x6e;"></span> Articles</a></li>
 			<li {{#if pageIs "Brew systems"}}class="selected"{{/if}}><a class="left-nav" href="/Brew systems"><span aria-hidden="true" data-icon="&#xe007;"></span> Brew systems</a></li>
+            {{/isolate}}
     	</ul>
     </nav>
     {{/if}}
 
-    <div id="buttons">
-        <!--
-    	<a href="javascript:void(0);"><span aria-hidden="true" data-icon="&#x73;"></span> Join</a>
-    	<a href="javascript:void(0);"><span aria-hidden="true" data-icon="&#x70;"></span> Sign In</a>
-        -->
-        {{loginButtons}}
-    </div>
+        <div id="buttons">
+            <!--
+        	<a href="javascript:void(0);"><span aria-hidden="true" data-icon="&#x73;"></span> Join</a>
+        	<a href="javascript:void(0);"><span aria-hidden="true" data-icon="&#x70;"></span> Sign In</a>
+            -->
+            {{loginButtons}}
+        </div>
+		
+    </nav>
+    <user>
+
+        <ul class="nav nav-tabs" id="testTabs">
+              <li class="active"><a href="#owned" data-toggle="tab">Owned</a></li>
+              <li><a href="#starred" data-toggle="tab">Starred</a></li>
+        </ul>
+
+        <div id="usernav">
+            <div class="tab-content">          
+                <div id="owned" class="tab-pane active">
+                    <ul>
+                        {{#isolate}}
+                        {{#each owned}}
+                            <li><a class="left-nav" href="/{{title}}">{{title}}</a></li>
+                        {{/each}}
+                        {{/isolate}}
+                    </ul>
+                </div> 
+                <div id="starred" class="tab-pane" >
+                    <ul>
+                        {{#isolate}}
+                        {{#each starred}}
+                            <li><a class="left-nav" href="/{{title}}">{{title}}</a></li>
+                        {{/each}}
+                        {{/isolate}}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </user>
+  </div><!-- end #left_nav -->
 
 
-  <!-- end #left_nav --></div>
 </template>
 
 <template name="null">
 
   <div id="header"></div>
-
-  {{> leftNav}}
- 
+    <div id = "leftNavContainer">
+        {{> leftNav}}
+    </div>
   <div id="main">
     {{> main}}
 
@@ -213,9 +269,11 @@
   </div>
     
   {{#if viewable}}
-  <div id="sidebar">
-    {{> sidebar}}
-  </div>
+	<div id="sidebar_col">
+        <div id="sidebar">
+            {{> sidebar}}
+        </div>
+	<!-- end #sidebar --></div>
   {{/if}}
 </template>
 

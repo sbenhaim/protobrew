@@ -10,6 +10,7 @@ navigate = (location, context) ->
 
 evtNavigate = (evt) ->
     evt.preventDefault()
+    window.scrollTo(0,0)
     $a = $(evt.target).closest('a')
     href = $a.attr('href')
     localhost = document.location.host
@@ -37,6 +38,8 @@ Template.leftNav.events =
     'change #search-input': (evt) ->
         term = $(evt.target).val()
         navigate( '/search/' + term ) if term
+
+    'click #usernav a': evtNavigate
 
 getSummaries = (entries) ->
     entries.map (e) ->
@@ -80,6 +83,28 @@ Template.leftNav.pageIs = (u) ->
     page = Session.get('title')
     return u == "/" if page == undefined
     return u == page
+
+Template.leftNav.owned = () ->
+    return Entries.find({ author : Meteor.userId()}).fetch()
+
+Template.leftNav.starred = () ->
+    user = Meteor.user()
+    if ! user 
+        return
+    else
+        starredPages = user.profile.starredPages
+        console.log('starredPages')
+        console.log(starredPages)
+        if ! starredPages
+            console.log('starredPages return')
+            return
+        starred =  Entries.find({ _id :{$in: starredPages}}).fetch()
+        console.log('starred')
+        console.log(starred)
+        if ! starred or starred.length == 0
+          return # starred = {starred:["nothing"]} #would need to make this not a link
+        return starred
+
 
 ## Entry
 
@@ -134,7 +159,7 @@ Template.entry.entry = ->
             entry.text = source.html()
             entry
         else
-            Session.set( 'entry', null )
+            Session.set( 'entry', {} )
             Session.set( 'entry_id', null )
 
 Template.entry.edit_mode = ->
@@ -251,36 +276,38 @@ Template.entry.events
 
     'click #new_page': (evt) ->
         evt.preventDefault()
-        #retrieve list of articles in user space
-                ## does this need to be in a shared client/server file?
-                ## to be able to be latency compensated?
-        # Meteor.call('saveEntry', entry, context, reroute)
-        console.log("event")
+        console.log('event')
         Meteor.call('createNewPage', 
            (error, pageName) ->
                 console.log(error, pageName);
+                #TODO: fix non-editable navigate
                 navigate(pageName)
         )
 
-        # user  = Meteor.user()
-        # userLink_Ids = user.profile.userLink_Ids.owned
-        # userLink_titles = Entries.find({ _id:userLink_Ids}).fetch()
-        # userLink_titles
-        #created article <unnamed_x> where x is the first unused #
-        #navigate to that userspace article
-        #pop-unamed link into userspace list
-        # Meteor.users.update( {_id: Meteor.userId()}, {
-        #     $set: {
-        #         profile: {
-        #             userlinks: {
-        #                 owned: "_entry_id"
-        #             }
-        #         }
-        #     }
-        # });
-    
-        # Entries.findOne({title:"Articles"})
-
+    'click #toggle_star': (evt) ->
+        evt.preventDefault()
+        user  = Meteor.user()
+        starredPages = user.profile.starredPages
+        title = Session.get("title")
+        entry = Entries.findOne({'title': Session.get('title')})
+        matches = false
+        if starredPages # needed for first profile star
+            for star in user.profile.starredPages 
+                if star == entry._id
+                    matches = true
+                    break
+        if matches is false
+            console.log(matches)
+            console.log('no match pushing')
+            Meteor.users.update(Meteor.userId(), {
+                $push: {'profile.starredPages': entry._id}
+            })
+        else
+            console.log(matches)
+            console.log('match pulling')
+            Meteor.users.update(Meteor.userId(), {
+                $pull: {'profile.starredPages': entry._id}
+            })
 
     'click li.article-tag a': (evt) ->
         evt.preventDefault()
@@ -289,6 +316,14 @@ Template.entry.events
 
     'click a.entry-link': (e) ->
         evtNavigate(e) unless Session.get('edit-mode')
+
+    'click #sidenav_btn': (evt) ->
+        evt.preventDefault()
+        # jPM = $.jPanelMenu(
+        #     menu: '#left_nav'
+        #     trigger: '#sidenav_btn'
+        # )
+        # jPM.on()
 
     'click #edit': (evt) ->
         Session.set( 'y-offset', window.pageYOffset )
@@ -403,9 +438,18 @@ EntryRouter = Backbone.Router.extend({
 
 Router = new EntryRouter
 
-Meteor.startup(-> Backbone.history.start({pushState: true}))
+Meteor.startup ->
+  jPM = $.jPanelMenu(
+    menu: "#leftNavContainer"
+    trigger: "#sidenav_btn"
+    closeOnContentClick: false
+    keyboardShortcuts: false
+    afterOpen: -> $('a.left-nav').click( evtNavigate )
+  )
+  jPM.on()
 
-
+  Backbone.history.start pushState: true
+  
 ##################################
 ## NAV
 
