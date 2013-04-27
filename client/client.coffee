@@ -286,6 +286,7 @@ Template.entry.events
         jPM = $.jPanelMenu(
             menu: "#leftNavContainer"
             trigger: "#sidenav_btn"
+            openPosition: '235px'
             closeOnContentClick: false
             keyboardShortcuts: false
             afterOpen: -> $('a.left-nav').click( evtNavigate )
