@@ -629,8 +629,11 @@ ul li.article-tag:after {
         z-index: 200;
         right: 260px;
     }
-    #user_toolbar {
-        right: 325px;
+    #sidenav_btn {
+        position: fixed;
+        top: 15px;
+        z-index: 200;
+        left: 5px;
     }
     .action-btn {
         font-family: OstrichSansBlack;
@@ -653,9 +656,7 @@ ul li.article-tag:after {
             background: #17879f;
             color: #fff;
         }
-        .action-btn#edit {
-            margin: 0;
-        }
+
     .action-btn:hover {
         color: #5c5c5c;
         background: #c2c2c2;
@@ -899,6 +900,9 @@ body .redactor_toolbar li a.redactor_btn_delete {
     #action-toolbar.edit_mode{
         top: 75px;
     }
+    .action-toolbar {
+        right: 230px;
+    }
 }
 
 /*layouts smaller than 900px*/
@@ -937,9 +941,6 @@ body .redactor_toolbar li a.redactor_btn_delete {
     .action-toolbar {
         right: 180px;
     }
-    #user_toolbar {
-        right: 245px;
-    }
     #action-toolbar.edit_mode{
         top: 75px;
     }
@@ -959,9 +960,6 @@ body .redactor_toolbar li a.redactor_btn_delete {
     }
     .action-toolbar {
         right: 20px;
-    }
-    #user_toolbar {
-        right: 85px;
     }
     .action-toolbar.edit_mode{
         top: 75px;
