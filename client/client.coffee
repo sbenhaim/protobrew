@@ -1,4 +1,6 @@
-Meteor.subscribe('entries');
+Meteor.subscribe 'entries', onComplete = ->
+  Session.set('entryLoaded', true)
+
 Meteor.subscribe('tags')
 
 Session.set('edit-mode', false)
@@ -127,6 +129,8 @@ Template.entry.entry = ->
         else
             Session.set( 'entry', {} )
             Session.set( 'entry_id', null )
+            Session.get('entryLoaded')
+
 
 Template.entry.edit_mode = ->
     Session.get('edit-mode')
