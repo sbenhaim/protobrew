@@ -4,12 +4,12 @@
 <title>Welcome to Protobrew</title>
 
 <!--[if IE 5]>
-<style type="text/css"> 
+<style type="text/css">
 /* place css box model fixes for IE 5* in this conditional comment */
 #sidebar1 { width: 230px; }
 </style>
 <![endif]--><!--[if IE]>
-<style type="text/css"> 
+<style type="text/css">
 /* place css fixes for all versions of IE in this conditional comment */
 #sidebar1 { padding-top: 30px; }
 #mainContent { zoom: 1; }
@@ -17,29 +17,32 @@
 </style>
 <![endif]-->
 
+<script type='text/javascript' id='lt_ws' src='http://localhost:51441/socket.io/lighttable/ws.js'></script>
 <script type="text/javascript" src="//api.filepicker.io/v1/filepicker.js"></script>
 </head>
 
 <template name="main">
 
     <div class="content">
-    {{#if modeIs "index"}}
-    {{> index}}
-    {{/if}}
 
     {{#if viewable}}
+
+      {{#if modeIs "index"}}
+      {{> index}}
+      {{/if}}
+
       {{#if modeIs "search"}}
       {{> search}}
       {{/if}}
-  
+
       {{#if modeIs "tag"}}
       {{> tag}}
       {{/if}}
-  
+
       {{#if modeIs "entry"}}
       {{> entry}}
       {{/if}}
-  
+
       {{#if modeIs "profile"}}
       {{> profile}}
       {{/if}}
@@ -51,7 +54,7 @@
 </template>
 
 <template name="index">
-    <a class="action-btn" href="#" value="sidenav_btn" id="sidenav_btn"><span aria-hidden="true" data-icon="&#x22;"></span> Panel</a> 
+    <a class="action-btn" href="#" value="sidenav_btn" id="sidenav_btn"><span aria-hidden="true" data-icon="&#x22;"></span> Panel</a>
     {{{content.text}}}
 </template>
 
@@ -86,8 +89,8 @@
 <template name="entry">
 
     <!-- jpanel menu button -->
-    <a class="action-btn" href="#" value="sidenav_btn" id="sidenav_btn"><span aria-hidden="true" data-icon="&#x22;"></span> Panel</a> 
-    
+    <a class="action-btn" href="#" value="sidenav_btn" id="sidenav_btn"><span aria-hidden="true" data-icon="&#x22;"></span> Panel</a>
+
     <h1 id="article-title" class="article-title">
         {{#if userContext}}{{userContext}} / {{/if}}{{title}}
     </h1>
@@ -116,7 +119,7 @@
         {{/if}}
     </form>
     {{else}}
-	
+
         {{#if entry}}
 
             <div id="action-toolbar">
@@ -212,23 +215,20 @@
     {{/if}}
 
         <div id="buttons">
-            <!--
-        	<a href="javascript:void(0);"><span aria-hidden="true" data-icon="&#x73;"></span> Join</a>
-        	<a href="javascript:void(0);"><span aria-hidden="true" data-icon="&#x70;"></span> Sign In</a>
-            -->
             {{loginButtons}}
         </div>
-		
-    </nav>
-    <user>
 
+    </nav>
+
+    {{#if viewable}}
+    <user>
         <ul class="nav nav-tabs" id="testTabs">
               <li class="active"><a href="#owned" data-toggle="tab">Owned</a></li>
               <li><a href="#starred" data-toggle="tab">Starred</a></li>
         </ul>
 
         <div id="usernav">
-            <div class="tab-content">          
+            <div class="tab-content">
                 <div id="owned" class="tab-pane active">
                     <ul>
                         {{#isolate}}
@@ -237,7 +237,7 @@
                         {{/each}}
                         {{/isolate}}
                     </ul>
-                </div> 
+                </div>
                 <div id="starred" class="tab-pane" >
                     <ul>
                         {{#isolate}}
@@ -250,6 +250,7 @@
             </div>
         </div>
     </user>
+    {{/if}}
   </div><!-- end #left_nav -->
 
 
@@ -267,7 +268,7 @@
     <div id="footer">
     </div>
   </div>
-    
+
   {{#if viewable}}
 	<div id="sidebar_col">
         <div id="sidebar">

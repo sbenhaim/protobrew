@@ -93,14 +93,9 @@ Template.leftNav.starred = () ->
         return
     else
         starredPages = user.profile.starredPages
-        console.log('starredPages')
-        console.log(starredPages)
         if ! starredPages
-            console.log('starredPages return')
             return
         starred =  Entries.find({ _id :{$in: starredPages}}).fetch()
-        console.log('starred')
-        console.log(starred)
         if ! starred or starred.length == 0
           return # starred = {starred:["nothing"]} #would need to make this not a link
         return starred
@@ -288,25 +283,16 @@ Template.entry.events
         evt.preventDefault()
         user  = Meteor.user()
         starredPages = user.profile.starredPages
-        title = Session.get("title")
-        entry = Entries.findOne({'title': Session.get('title')})
-        matches = false
-        if starredPages # needed for first profile star
-            for star in user.profile.starredPages 
-                if star == entry._id
-                    matches = true
-                    break
-        if matches is false
-            console.log(matches)
-            console.log('no match pushing')
-            Meteor.users.update(Meteor.userId(), {
-                $push: {'profile.starredPages': entry._id}
-            })
-        else
-            console.log(matches)
+        entryId = Session.get('entry_id')
+        if entryId in starredPages
             console.log('match pulling')
             Meteor.users.update(Meteor.userId(), {
-                $pull: {'profile.starredPages': entry._id}
+                $pull: {'profile.starredPages': entryId}
+            })
+        else
+            console.log('no match pushing')
+            Meteor.users.update(Meteor.userId(), {
+                $push: {'profile.starredPages': entryId}
             })
 
     'click li.article-tag a': (evt) ->

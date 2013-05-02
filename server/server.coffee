@@ -1,4 +1,20 @@
+# Accounts
 DOMAIN = "@wikraft\.mygbiz\.com$"
+
+Accounts.onCreateUser( (options, user) ->
+    if DOMAIN && ! user.services.google.email.match( DOMAIN )
+        throw new Meteor.Error(403, "Unauthorized")
+
+    users = Meteor.users.find({})
+    if ( users.count() == 0 )
+        user.group = 'admin'
+
+    user.username = user._id
+    user.profile = {starredPages: []}
+
+    user
+)
+
 
 Meteor.publish('entries', (context) ->
 
@@ -37,7 +53,8 @@ Meteor.methods
     viewable: ->
         return true unless DOMAIN
         user = Meteor.user()
-        user and user.services.google.email.match( DOMAIN )
+        viewable = user and user.services.google.email.match( DOMAIN )
+        viewable
 
     updateTitle: (entry, title, callback) ->
         throw new Meteor.Error(403, "You must be logged in") unless this.userId
@@ -66,7 +83,7 @@ Meteor.methods
         existing = Meteor.users.find( {"profile.username": value} ).count()
         throw new Meteor.Error(403, "Username exists") if existing > 0
 
-        Meteor.users.update( {_id: this.userId}, {$set: {"profile.username": value}}) if value
+        Meteor.users.update( {_id: this.userId}, {$set: {"username": value}}) if value
 
     
     createNewPage: () ->
