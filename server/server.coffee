@@ -1,8 +1,8 @@
 # Accounts
-DOMAIN = "@wikraft\.mygbiz\.com$"
+# DOMAIN = "@wikraft\.mygbiz\.com$"
 
 Accounts.onCreateUser( (options, user) ->
-    if DOMAIN && ! user.services.google.email.match( DOMAIN )
+    if DOMAIN? && ! user.services.google.email.match( DOMAIN )
         throw new Meteor.Error(403, "Unauthorized")
 
     users = Meteor.users.find({})
@@ -15,6 +15,9 @@ Accounts.onCreateUser( (options, user) ->
     user
 )
 
+Meteor.publish("userData", ->
+    Meteor.users.find({_id: this.userId}, {fields: {'username': 1, 'group': 1, 'profile': 1}})
+)
 
 Meteor.publish('entries', (context) ->
 
@@ -31,8 +34,8 @@ Meteor.publish('entries', (context) ->
     conditions = [{$ne: ["$entry.mode", "private"]}]
 
     if user
-        conditions.push( {$eq: ["$entry.context": user.profile.username] } ) if user.profile.username
-        conditions.push( {$eq: ["$entry.context": user.profile.group] } )    if user.profile.group
+        conditions.push( {$eq: ["$entry.context": user.username] } ) if user.username
+        conditions.push( {$eq: ["$entry.context": user.group] } )    if user.group
     
     visible = {$or: conditions}
 
@@ -51,7 +54,7 @@ Meteor.publish('tags', -> return Tags.find({}))
 Meteor.methods
 
     viewable: ->
-        return true unless DOMAIN
+        return true unless DOMAIN?
         user = Meteor.user()
         viewable = user and user.services.google.email.match( DOMAIN )
         viewable
@@ -80,7 +83,7 @@ Meteor.methods
     updateUser: (value) ->
         throw new Meteor.Error(403, "You must be logged in") unless this.userId
 
-        existing = Meteor.users.find( {"profile.username": value} ).count()
+        existing = Meteor.users.find( {"username": value} ).count()
         throw new Meteor.Error(403, "Username exists") if existing > 0
 
         Meteor.users.update( {_id: this.userId}, {$set: {"username": value}}) if value

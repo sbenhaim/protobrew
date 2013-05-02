@@ -16,10 +16,11 @@ Tags.allow
 
 # Admins can admin anywhere, others can only admin in context
 root.adminable = ( user, context ) ->
+    console.log( "user: ", user );
     user &&
-    ( user.profile.group == "admin" ||
-      user.profile.group == context ||
-      user.profile.username == context )
+    ( user.group == "admin" ||
+      user.group == context ||
+      user.username == context )
 
 # View all in context, view public and read-only otherwise
 root.viewable = ( entry, user, context ) ->
@@ -54,14 +55,14 @@ root.verifySave = ( entry, user, context ) ->
             bail( "Title taken" )
 
     # Admins can do anything
-    return entry if user.profile.group == "admin"
+    return entry if user.group == "admin"
 
     # Non-admins may only edit public entries in root context
     if context == null && oldEntry && oldEntry.mode != "public"
         bail("Can't edit non-public entry")
 
     # Users may only edit in their own context or group context
-    if context != null && context != user.profile.username && context != user.profile.group 
+    if context != null && context != user.username && context != user.group 
         bail("Only #{context} may edit")
 
     # Non-admins may only create public entries in root context

@@ -1,6 +1,10 @@
 Meteor.subscribe('entries');
 Meteor.subscribe('tags')
 
+Meteor.autosubscribe( ->
+    Meteor.subscribe("userData");
+);
+
 Session.set('edit-mode', false)
 
 # Todo: reloadEntry = true
