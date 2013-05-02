@@ -1,7 +1,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Welcome to Protobrew</title>
+<title>Welcome to the Taoglas Wiki</title>
 
 <!--[if IE 5]>
 <style type="text/css"> 
@@ -47,7 +47,6 @@
 </template>
 
 <template name="index">
-<!--     <a class="action-btn" href="#" value="sidenav_btn" id="sidenav_btn"><span aria-hidden="true" data-icon="&#x22;"></span> Panel</a>  -->
     {{{content.text}}}
 </template>
 
@@ -73,17 +72,14 @@
 
 <template name="entry">
 
-    <!-- jpanel menu button -->
-    <a class="action-btn" href="#" value="sidenav_btn" id="sidenav_btn"><span aria-hidden="true" data-icon="&#xe002;"></span> Panel</a> 
-    
     <h1 id="article-title" class="article-title">{{title}}</h1>
 
     {{#if edit_mode}}
     <form>
     	<div id='edit_mode_toolbar'class="action-toolbar edit_mode">
-    		<a class="action-btn" href="#" value="delete" id="delete"><span aria-hidden="true" data-icon="&#x64;"></span></a>
-    		<a class="action-btn" href="#" value="cancel" id="cancel"><span aria-hidden="true" data-icon="&#x62;"></span></a>
-    		<a class="action-btn" href="#" value="save" id="save"><span aria-hidden="true" data-icon="&#x22;"></span> Save</a>
+    		<a class="btn btn-danger" href="#" value="delete" id="delete"><span aria-hidden="true" data-icon="&#x64;"></span></a>
+    		<a class="btn btn-warning" href="#" value="cancel" id="cancel"><span aria-hidden="true" data-icon="&#x62;"></span></a>
+    		<a class="btn btn-success" href="#" value="save" id="save"><span aria-hidden="true" data-icon="&#x22;"></span> Save</a>
         </div>
         {{#with entry}}
         {{> editEntry}}
@@ -95,19 +91,32 @@
 
         {{#if currentUser}}
             <div id= "user_toolbar" class="action-toolbar">
-                <a class="action-btn" href="#" value="new_page" id="new_page">
+                <a class="btn" href="#" value="sidenav_btn" id="sidenav_btn">
+                    <span aria-hidden="true" data-icon="&#xe002;"></span> 
+                    Panel
+                </a> 
+                <a class="btn" href="#" value="new_page" id="new_page">
                     <span aria-hidden="true" data-icon="&#xe001;"></span> 
                     New Page
                 </a>
-                <a class="action-btn" href="#" value="toggle_star" id="toggle_star">
+                <a class="btn"  href="#" value="toggle_star" id="toggle_star">
                     <span aria-hidden="true" data-icon="&#xe004;"></span> 
                     Star Page
                 </a>
-        		<a class="action-btn" href="#" value="edit" id="edit">
+        		<a class="btn"  href="#" value="edit" id="edit">
                     <span aria-hidden="true" data-icon="&#x23;"></span> 
                     Edit
                 </a>
         	</div>
+
+        {{else}}
+            <div id= "user_toolbar" class="action-toolbar">
+                <a class="btn" href="#" value="sidenav_btn" id="sidenav_btn">
+                    <span aria-hidden="true" data-icon="&#xe002;"></span> 
+                    Panel
+                </a> 
+            </div>
+
         {{/if}}
         <p>{{{entry.text}}}</p>
 
@@ -152,12 +161,15 @@
 
 <template name="leftNav">
   <div id="left_nav">
-    <div id="logo"><a href="/">ProtoBrew Wiki</a></div>
-    <div id="tw_bar"><a href="/">by Tin Whiskers</a></div>
-    <div id="search"><input class="txtOptionInput searchField" type="search" results="5" size="15" accesskey="F" autocomplete="off" lastsearchtext="aasdfasdfsd" placeholder="" id="search-input" value="{{term}}"></div>
+    <div id="logo">
+        <a href="/">
+            <img src='/images/logo.png' alt='Toaglas Wiki'>
+        </a></div>
+    <div id="search" class"navbar-search pull-left" >
+            <input class="txtOptionInput searchField search-query" type="search" results="5" size="15" placeholder="Search" accesskey="F" autocomplete="off" lastsearchtext="aasdfasdfsd" placeholder="" id="search-input" value="{{term}}"></div>
 
     <nav>
-    	<ul>
+    	<ul class="nav nav-list">
             {{#isolate}}
     		<li {{#if pageIs "/"}}class="selected"{{/if}}>
                 <a class="left-nav" href="/">
@@ -168,19 +180,19 @@
 			<li {{#if pageIs "Brew systems"}}class="selected"{{/if}}><a class="left-nav" href="/Brew systems"><span aria-hidden="true" data-icon="&#x0021;"></span> Brew systems</a></li>
             {{/isolate}}
     	</ul>
-    
-
-        <div id="buttons">
-            <!--
-        	<a href="javascript:void(0);"><span aria-hidden="true" data-icon="&#x73;"></span> Join</a>
-        	<a href="javascript:void(0);"><span aria-hidden="true" data-icon="&#x70;"></span> Sign In</a>
-            -->
-            {{loginButtons}}
-        </div>
 		
     </nav>
-    <user>
 
+    <div id="buttons" >
+        <!--
+        <a href="javascript:void(0);"><span aria-hidden="true" data-icon="&#x73;"></span> Join</a>
+        <a href="javascript:void(0);"><span aria-hidden="true" data-icon="&#x70;"></span> Sign In</a>
+        -->
+        {{loginButtons}}
+    </div>
+
+
+    <user>
         <ul class="nav nav-tabs" id="testTabs">
               <li class="active"><a href="#owned" data-toggle="tab">Owned</a></li>
               <li><a href="#starred" data-toggle="tab">Starred</a></li>
