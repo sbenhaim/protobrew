@@ -171,6 +171,10 @@
     font-style: normal;
 
 }
+
+
+
+
 ///////////////////////////////////////////////////////////////////////////////
 // variables
 ///////////////////////////////////////////////////////////////////////////////
@@ -285,13 +289,18 @@ h6 {
     display: none;
 }
 
+
+
+
+
+
 #left_nav {
-    position: fixed; 
-    left: 0;
-    top: 5px;
+    position: fixed;
     width: @left_nav_w;
+    top: 0;
+    bottom: 0;
+    overflow: hidden;
     background: #404548; 
-    height: 100%;
     z-index: 90;
 }
     #search {
@@ -302,13 +311,13 @@ h6 {
             width: 100%;
         }
     nav {
-        position : absolute;
-        text-align: center;
-        height: auto;
-        top: 147px;
-        left: 0px;
-        bottom: 0px;
+        position: fixed;
         width: @left_nav_w;
+        text-align: center;
+        top: 147px;
+        // left: 0;
+        // right: 0;
+
         ul {
             border-top: 1px solid #2f3335;
             border-right: 1px solid #2f3335;
@@ -363,31 +372,48 @@ h6 {
             padding: 0;
         }
     }
-    .tab-content {
-        ul {
-            padding-left: 0px;
-            margin: 10px 0 10px 0;
-            border-top: 0;
-            border-right: 0;
-            border-bottom: 0;
-            list-style: none;
-            color: white;
-            li a{
-              text-decoration: none;
-              font-size: 13px;
+    user {
+      position: fixed;
+      width: @left_nav_w;
+      top: 310px;
+      bottom: 0;
+      left: 0 ;
+      right: 0;
+      overflow-y: auto;
+
+        .tab-content {
+            position: fixed;
+            width: @left_nav_w;
+            top: 345px;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            overflow-y: auto;
+            ul {
+                padding-left: 0px;
+                margin: 10px 0 10px 0;
+                border-top: 0;
+                border-right: 0;
+                border-bottom: 0;
+                list-style: none;
+                color: white;
+                li a{
+                  text-decoration: none;
+                  font-size: 13px;
+                }
+                li a:hover{
+                  text-decoration: underline;
+                }
             }
-            li a:hover{
-              text-decoration: underline;
+            a {
+                display: block;
+                color: white;
+                padding-left: 10px;
             }
-        }
-        a {
-            display: block;
-            color: white;
-            padding-left: 10px;
-        }
-        a:hover {
-            background-color: #CCC;
-            color: #333;
+            a:hover {
+                background-color: #CCC;
+                color: #333;
+            }
         }
     }
 
@@ -428,16 +454,10 @@ h6 {
     }
 
     /* 
-    USER
+    bootstrap
     */
 
-    #left_nav user {
-        position: fixed;
-        // left: 60px;
-        top: 310px;
-        width: @left_nav_w;
-        overflow: hidden;
-    }
+
 
     // boostrap css for collapse
     .hide-text {
@@ -506,7 +526,7 @@ h6 {
     height: 100%;
     z-index: 80;
     right: 0;
-    top: 5px;
+    top: 0;
 }
 
 #sidebar {
@@ -567,6 +587,14 @@ h6 {
     position: relative;
     border-left: 1px solid #d5d7d8;
     z-index: 70;
+
+    // //margin: @content_top_margin @sidebar_width 0 @left_nav_w; 
+    // margin: 0 @sidebar_width 0 @left_nav_w; 
+    // position: absolute;
+    // top: 0;
+    // bottom: 0;
+    // overflow-y:auto;
+
     .content {
         padding: 25px @content_gut_r 25px @content_gut_l;
         max-width: @max_content_width;
@@ -992,6 +1020,31 @@ body .redactor_toolbar li a.redactor_btn_delete {
 }
 
 @media only screen and (max-width: 600px) {
+
+  #left_nav {
+      position: absolute;
+      overflow: visible;
+      nav {
+        position: absolute;
+      }
+      user {
+        position: absolute;
+        overflow-y: visible;
+      //  height: 100%;
+        .tab-content {
+          position: absolute;
+          overflow-y: visible;
+          top:  35px;
+          bottom: auto;
+          //height: 100%;
+        }
+      }
+  }
+
+
+
+
+
     #sidenav_btn{
         display: block;
     }
@@ -1008,6 +1061,7 @@ body .redactor_toolbar li a.redactor_btn_delete {
     #main {
         margin-left: 0;
     }
+
 }
 
 // // IE10 Metro responsive

@@ -218,24 +218,19 @@
 <body>
 
 <div id="container">
-  <div id="header"></div>
     <div id = "leftNavContainer">
         {{> leftNav}}
     </div>
-  <div id="main">
-    {{> main}}
-
-	<div id="footer">
-  	<!-- end #footer --></div>
-
-	<!-- end #main --></div>
-	
+    <div id="main">
+        {{> main}}
+    	<div id="footer"></div>
+    </div>  
 	<div id="sidebar_col">
         <div id="sidebar">
             {{> sidebar}}
-        </div>
-	<!-- end #sidebar --></div>
-<!-- end #container --></div>
+         </div>      
+	</div>
+</div>
 </body>
 
 <template name="sidebar">
