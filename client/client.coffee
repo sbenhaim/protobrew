@@ -145,10 +145,11 @@ Template.entry.entry = ->
 
             source = $('<div>').html( entry.text )
             titles = stackTitles( filterHeadlines( source.find( 'h1' ) ) )
+            titles.unshift( {id: 0, target: "article-title", title: Session.get('title') } )
 
             if titles.length > 0
                 for e, i in source.find('h1,h2,h3,h4,h5')
-                    e.id = "entry-title-" + i
+                    e.id = "entry-title-" + (i + 1)
 
             ul = $('<ul>')
             buildNav( ul, titles )
@@ -178,7 +179,7 @@ Template.index.content = ->
 
         if titles.length > 0
             for e, i in source.find('h1,h2,h3,h4,h5')
-                e.id = "entry-title-" + i
+                e.id = "entry-title-" + (i + 1)
 
         ul = $('<ul>')
         buildNav( ul, titles )
@@ -447,7 +448,7 @@ Template.sidebar.navItems = ->
 stackTitles = (items, cur, counter) ->
 
     cur = 1 if cur == undefined
-    counter = { n: 0 } if counter == undefined
+    counter ?= 1
 
     next = cur + 1
 
@@ -458,7 +459,8 @@ stackTitles = (items, cur, counter) ->
         d = {};
         d.title = elem.text()
         # d.y  = elem.offset().top
-        d.id = counter.n++
+        d.id = counter++
+        d.target = "entry-title-#{d.id}"
 
         d.style = "top" if cur == 0
 
@@ -476,11 +478,12 @@ buildNav = ( ul, items ) ->
         $( ul ).append( li )
         $a = $("<a/>")
         $a.attr( "id", "nav-title-" + child.id )
+        $a.data("target", child.target )
         $a.addClass( child.style )
 
         $a.on( "click", ->
             id = this.id
-            target_id = id.replace( /nav/, 'entry' )
+            target_id = $(this).data('target')
             offset = $('#' + target_id).offset()
             adjust = if Session.get( 'edit-mode' ) then 70 else 20
             $( 'html,body' ).animate( { scrollTop: offset.top - adjust }, 500 )
