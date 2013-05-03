@@ -611,13 +611,13 @@ ul li.article-tag:after {
 } 
     .action-toolbar {
         position: fixed;
-        top: 15px;
+        top: 10px;
         z-index: 200;
         right: 260px;
     }
     #sidenav_btn {
        // position: fixed;
-        top: 15px;
+        top: 10px;
         z-index: 200;
         left: 5px;
     }
@@ -886,10 +886,9 @@ body .redactor_toolbar li a.redactor_btn_delete {
     Media Queries
 */
 
-/*layouts smaller than 1100px*/
-@media only screen and (max-width: 1160px)  {
-    #action-toolbar.edit_mode{
-        top: 75px;
+@media only screen and (max-width: 1175px)  {
+    #edit_mode_toolbar{
+        top: 60px;
     }
 }
 
@@ -908,16 +907,13 @@ body .redactor_toolbar li a.redactor_btn_delete {
             max-width: @max_content_width;
         }
     }
-    #action-toolbar.edit_mode{
-        top: 75px;
-    }
     .action-toolbar {
-        right: 230px;
+      right:230px;
     }
+
 }
 
-/*layouts smaller than 900px*/
-@media only screen and (max-width: 950px)  {
+@media only screen and (max-width: 960px)  {
     #sidebar_col{
         width: (@sidebar_width - 30);
     }
@@ -932,13 +928,9 @@ body .redactor_toolbar li a.redactor_btn_delete {
             max-width: @max_content_width;
         }
     }
-    #action-toolbar.edit_mode{
-        top: 75px;
-    }
 }
 
-/*layouts smaller than 900px*/
-@media only screen and (max-width: 900px)  {
+@media only screen and (max-width: 940px)  {
     #sidebar_col{
         width: (@sidebar_width - 90);
     }
@@ -950,14 +942,10 @@ body .redactor_toolbar li a.redactor_btn_delete {
         }
     }
     .action-toolbar {
-        right: 180px;
-    }
-    #action-toolbar.edit_mode{
-        top: 75px;
+        right: 170px;
     }
 }
 
-/*layouts smaller than 850px*/
 @media only screen and (max-width: 850px)  {
     #sidebar_col {
         display: none;
@@ -966,15 +954,13 @@ body .redactor_toolbar li a.redactor_btn_delete {
       margin: @content_top_margin 0 0 @left_nav_w; 
         .content {
             padding: 25px (@content_gut_r - 45) 25px (@content_gut_l - 45);
-            // max-width: @max_content_width;
         }
     }
     .action-toolbar {
         right: 20px;
     }
-    .action-toolbar.edit_mode{
-        top: 75px;
-        right: 20px;
+    .redactor_toolbar {
+      left: 0px;
     }
 }
 
