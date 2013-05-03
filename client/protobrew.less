@@ -573,9 +573,9 @@ h6 {
     }
 } 
 
-#main .content img {
-    width: 100%;
-}
+// #main .content img {
+//     width: 100%;
+// }
 #main .content ul {
     margin-left: 0;
 }
@@ -629,8 +629,11 @@ ul li.article-tag:after {
         z-index: 200;
         right: 260px;
     }
-    #user_toolbar {
-        right: 325px;
+    #sidenav_btn {
+        position: fixed;
+        top: 15px;
+        z-index: 200;
+        left: 5px;
     }
     .action-btn {
         font-family: OstrichSansBlack;
@@ -653,9 +656,7 @@ ul li.article-tag:after {
             background: #17879f;
             color: #fff;
         }
-        .action-btn#edit {
-            margin: 0;
-        }
+
     .action-btn:hover {
         color: #5c5c5c;
         background: #c2c2c2;
@@ -874,6 +875,30 @@ body .redactor_toolbar li a.redactor_btn_delete {
 .redactor_color_none {
     font-size: 11px;
 }
+
+/*
+    Redactor content
+*/
+
+.redactor_editor table {
+  border-collapse: collapse;
+  font-size: 1em !important;
+}
+.redactor_editor table td {
+  border: 1px solid #ddd;
+  padding: 5px !important;
+  vertical-align: top;
+}
+.redactor_editor table thead td {
+  border-bottom: 2px solid #000 !important;
+  font-weight: bold !important;
+}
+
+
+/*
+    Media Queries
+*/
+
 /*layouts smaller than 1100px*/
 @media only screen and (max-width: 1160px)  {
     #action-toolbar.edit_mode{
@@ -898,6 +923,9 @@ body .redactor_toolbar li a.redactor_btn_delete {
     }
     #action-toolbar.edit_mode{
         top: 75px;
+    }
+    .action-toolbar {
+        right: 230px;
     }
 }
 
@@ -937,9 +965,6 @@ body .redactor_toolbar li a.redactor_btn_delete {
     .action-toolbar {
         right: 180px;
     }
-    #user_toolbar {
-        right: 245px;
-    }
     #action-toolbar.edit_mode{
         top: 75px;
     }
@@ -960,9 +985,6 @@ body .redactor_toolbar li a.redactor_btn_delete {
     .action-toolbar {
         right: 20px;
     }
-    #user_toolbar {
-        right: 85px;
-    }
     .action-toolbar.edit_mode{
         top: 75px;
         right: 20px;
@@ -973,6 +995,13 @@ body .redactor_toolbar li a.redactor_btn_delete {
     #sidenav_btn{
         display: block;
     }
+    #sidenav_btn{
+        display: block;
+    }
+    .jPanelMenu-panel #sidenav_btn{
+        left: 240px;
+    }
+
     #leftNavContainer{
         display: none;
     }

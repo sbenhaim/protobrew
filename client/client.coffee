@@ -1,4 +1,6 @@
-Meteor.subscribe('entries');
+Meteor.subscribe 'entries', onComplete = ->
+  Session.set('entryLoaded', true)
+
 Meteor.subscribe('tags')
 
 Meteor.autosubscribe( ->
@@ -161,6 +163,8 @@ Template.entry.entry = ->
         else
             Session.set( 'entry', {} )
             Session.set( 'entry_id', null )
+            Session.get('entryLoaded')
+
 
 Template.entry.edit_mode = ->
     Session.get('edit-mode')
@@ -313,6 +317,7 @@ Template.entry.events
         jPM = $.jPanelMenu(
             menu: "#leftNavContainer"
             trigger: "#sidenav_btn"
+            openPosition: '235px'
             closeOnContentClick: false
             keyboardShortcuts: false
             afterOpen: -> $('a.left-nav').click( evtNavigate )
