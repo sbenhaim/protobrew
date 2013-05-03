@@ -54,7 +54,6 @@
 </template>
 
 <template name="index">
-<!--     <a class="action-btn" href="#" value="sidenav_btn" id="sidenav_btn"><span aria-hidden="true" data-icon="&#x22;"></span> Panel</a>  -->
     {{{content.text}}}
 </template>
 
@@ -88,8 +87,6 @@
 
 <template name="entry">
 
-    <!-- jpanel menu button -->
-    <a class="action-btn" href="#" value="sidenav_btn" id="sidenav_btn"><span aria-hidden="true" data-icon="&#xe002;"></span> Panel</a>
 
     <h1 id="article-title" class="article-title">
         {{#if userContext}}{{userContext}} / {{/if}}{{title}}
@@ -125,13 +122,17 @@
             {{#if viewable}}
 
                 <div id= "user_toolbar" class="action-toolbar">
-                    <a class="action-btn" href="#" value="new_page" id="new_page">
+		            <a class="action-btn" href="#" value="sidenav_btn" id="sidenav_btn">
+		                <span aria-hidden="true" data-icon="&#xe002;"></span>
+		                Panel
+		            </a> 
+					<a class="action-btn" href="#" value="new_page" id="new_page">
                         <span aria-hidden="true" data-icon="&#xe001;"></span> 
-                        New Page
+                        New
                     </a>
                     <a class="action-btn" href="#" value="toggle_star" id="toggle_star">
                         <span aria-hidden="true" data-icon="&#xe004;"></span> 
-                        Star Page
+                        Star
                     </a>
                     {{#if editable}}
                     <a class="action-btn" href="#" value="edit" id="edit">
@@ -153,23 +154,17 @@
                 {{/if}}
 
             {{else}}
-
+                <div id= "user_toolbar" class="action-toolbar">
+		            <a class="btn" href="#" value="sidenav_btn" id="sidenav_btn">
+		                <span aria-hidden="true" data-icon="&#xe002;"></span> 
+		                Panel
+		            </a> 
+                </div>
             <p>{{entry.title}} is private.</p>
 
             {{/if}}
 
 
-
-            <p>{{{entry.text}}}</p>
-
-            {{#if entry.tags.length}}
-                <h2>Tags</h2>
-                <ul>
-                    {{#each entry.tags}}
-                    <li class="article-tag"><a href="javascript:void(0);">{{this}}</a></li>
-                    {{/each}}
-                </ul>
-            {{/if}}
 
         {{else}}
             {{#if entryLoaded}}
@@ -226,11 +221,10 @@
     </nav>
     {{/if}}
 
-        <div id="buttons">
-            {{loginButtons}}
-        </div>
+    <div id="buttons">
+        {{loginButtons}}
+    </div>
 
-    </nav>
 
     {{#if viewable}}
     <user>
@@ -240,7 +234,7 @@
         </ul>
 
         <div id="usernav">
-            <div class="tab-content">
+            <div class="tab-content">          
                 <div id="owned" class="tab-pane active">
                     <ul>
                         {{#isolate}}
@@ -249,7 +243,7 @@
                         {{/each}}
                         {{/isolate}}
                     </ul>
-                </div>
+                </div> 
                 <div id="starred" class="tab-pane" >
                     <ul>
                         {{#isolate}}
@@ -276,7 +270,6 @@
     </div>
   <div id="main">
     {{> main}}
-
     <div id="footer">
     </div>
   </div>
