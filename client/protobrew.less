@@ -501,56 +501,44 @@ body  {
 }
 
 #sidebar {
-    margin: 25px @sidebar_gut_r 25px @sidebar_gut_l; 
-    // ul {
-    //     padding: 0;
-    //     overflow: hidden;
-    //     li {
-    //         list-style: none;
-
+    padding: 25px 0 25px 0;
+   // padding: 25px @sidebar_gut_r 25px @sidebar_gut_l; 
+    ul {
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+        li {
+            list-style: none;
     //         margin: 0 0 0 0;
     //         padding: 0;
-    //         ul {
-    //             margin: 0 0 0 0;
-    //             li {
-    //                 margin: 0 0 0px 18px;
-    //                 a {
-    //                     font-family: PTSansRegular;
-    //                     font-size: 13px;
-    //                 }
-    //                 a:before {
-    //                     font-family: 'icomoon';
-    //                     content: "\61";
-    //                     font-size: 9px;
-    //                     padding: 0 5px 0 6px;
-    //                 }
-    //             }
-    //         }
-    //         a {
-    //             text-decoration: none;
-    //             font-family: PTSansBold;
-    //             font-size: 18px;
-    //             transition: color .15s ease-in-out;
-    //             -moz-transition: color .15s ease-in-out;
-    //             -webkit-transition: color .15s ease-in-out;
-    //         }
-    //         a.selected {
-    //             color: #9c1923;
-    //             background: url("/public/images/bg_sidebar_selected.gif") top 
-    //         }
-    //         a:hover {
-    //             color: #23bfe0;
-    //         }
-    //         a:before {
-    //             font-family: 'icomoon';
-    //             content: "\63";
-    //             padding: 0 5px 0 0;
-    //             font-size: 14px;
+                ul {
+                    margin: 0 0 0 0;
+                    li {
+                        a {
+                          padding: 0 10px 0 20px;
+                          display: block;
+                        }
+                    }
+                 }
+            a {
+                padding: 0 10px 0 10px;
+                display: block;
+                text-decoration: none;
+                transition: color .15s ease-in-out;
+                -moz-transition: color .15s ease-in-out;
+                -webkit-transition: color .15s ease-in-out;
+            }
+            a.selected {
+                color: #ffffff;
+                background-color: #0088cc;
+            }
+            a:hover {
+                color: #23bfe0;
+                background-color: #dadada;
+            }
+         }   
 
-    //         }
-    //     }   
-
-    // }
+     }
 }
 
 #main { 

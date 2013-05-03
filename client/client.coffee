@@ -445,7 +445,7 @@ buildNav = ( ul, items ) ->
             target_id = id.replace( /nav/, 'entry' )
             offset = $('#' + target_id).offset()
             adjust = if Session.get( 'edit-mode' ) then 70 else 20
-            $( 'html,body' ).animate( { scrollTop: offset.top - adjust }, 500 )
+            $( 'html,body' ).animate( { scrollTop: offset.top - adjust }, 350 )
         )
 
         $a.attr( 'href', 'javscript:void(0)' )
