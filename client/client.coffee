@@ -383,7 +383,6 @@ Template.profile.user = ->
     Meteor.user()
 
 Template.profile.events
-
     'click #save': (evt) ->
         result = Meteor.call('updateUser', $("#username").val(), (e) -> console.log( e ) )
 
