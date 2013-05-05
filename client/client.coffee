@@ -326,6 +326,19 @@ Template.entry.events
             jPM.off()
         else
             jPM.on()
+            #todo: Selah review below code
+            #tab fix for tab functionality in jPanelMenu/sidebar
+            # issue: cloned ids need unique names for the bootstrap
+            # tab code to wrok
+            # soltion - change the ids in question to have _panel appended
+            $( "#jPanelMenu-menu .tabButton" ).each ->
+                tab_id_name = $(this).attr('href')
+                $(this).attr('href', tab_id_name+'_panel')
+
+            $( "#jPanelMenu-menu .tab-pane" ).each ->
+                tab_id_name = $(this).attr('id')
+                $(this).attr('id', tab_id_name+'_panel')
+
 
     'click #edit': (evt) ->
         Session.set( 'y-offset', window.pageYOffset )

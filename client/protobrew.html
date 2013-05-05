@@ -228,13 +228,17 @@
 
     {{#if viewable}}
     <user>
-        <ul class="nav nav-tabs" id="testTabs">
-              <li class="active"><a href="#owned" data-toggle="tab">Owned</a></li>
-              <li><a href="#starred" data-toggle="tab">Starred</a></li>
-        </ul>
+        <div class='tabbable'>
+            <ul class="nav nav-tabs" id="userTabs">
+                <li class="active">
+                    <a class='tabButton' href="#owned" data-toggle="tab">Owned</a>
+                </li>
+                <li>
+                    <a class='tabButton' href="#starred" data-toggle="tab">Starred</a>
+                </li>
+            </ul>
 
-        <div id="usernav">
-            <div class="tab-content">          
+            <div id="usernav" class="tab-content">      
                 <div id="owned" class="tab-pane active">
                     <ul>
                         {{#isolate}}
