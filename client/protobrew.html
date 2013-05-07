@@ -1,7 +1,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Welcome to Protobrew</title>
+<title>Welcome to the Taoglas Wiki</title>
 
 <!--[if IE 5]>
 <style type="text/css">
@@ -17,7 +17,6 @@
 </style>
 <![endif]-->
 
-<script type='text/javascript' id='lt_ws' src='http://localhost:51441/socket.io/lighttable/ws.js'></script>
 <script type="text/javascript" src="//api.filepicker.io/v1/filepicker.js"></script>
 </head>
 
@@ -47,7 +46,7 @@
       {{> profile}}
       {{/if}}
     {{else}}
-      Unauthrorized
+        Unauthrorized
     {{/if}}
 
     </div>
@@ -95,9 +94,9 @@
     {{#if edit_mode}}
     <form>
     	<div id='edit_mode_toolbar'class="action-toolbar edit_mode">
-    		<a class="action-btn" href="#" value="delete" id="delete"><span aria-hidden="true" data-icon="&#x64;"></span></a>
-    		<a class="action-btn" href="#" value="cancel" id="cancel"><span aria-hidden="true" data-icon="&#x62;"></span></a>
-    		<a class="action-btn" href="#" value="save" id="save"><span aria-hidden="true" data-icon="&#x22;"></span> Save</a>
+    		<a class="btn btn-danger" href="#" value="delete" id="delete"><span aria-hidden="true" data-icon="&#x64;"></span></a>
+    		<a class="btn btn-warning" href="#" value="cancel" id="cancel"><span aria-hidden="true" data-icon="&#x62;"></span></a>
+    		<a class="btn btn-success" href="#" value="save" id="save"><span aria-hidden="true" data-icon="&#x22;"></span> Save</a>
         </div>
         {{#with entry}}
         {{> editEntry}}
@@ -122,20 +121,20 @@
             {{#if viewable}}
 
                 <div id= "user_toolbar" class="action-toolbar">
-		            <a class="action-btn" href="#" value="sidenav_btn" id="sidenav_btn">
+		            <a class="btn" href="#" value="sidenav_btn" id="sidenav_btn">
 		                <span aria-hidden="true" data-icon="&#xe002;"></span>
 		                Panel
 		            </a> 
-					<a class="action-btn" href="#" value="new_page" id="new_page">
+					<a class="btn" href="#" value="new_page" id="new_page">
                         <span aria-hidden="true" data-icon="&#xe001;"></span> 
                         New
                     </a>
-                    <a class="action-btn" href="#" value="toggle_star" id="toggle_star">
+                    <a class="btn" href="#" value="toggle_star" id="toggle_star">
                         <span aria-hidden="true" data-icon="&#xe004;"></span> 
                         Star
                     </a>
                     {{#if editable}}
-                    <a class="action-btn" href="#" value="edit" id="edit">
+                    <a class="btn" href="#" value="edit" id="edit">
                         <span aria-hidden="true" data-icon="&#x23;"></span> 
                         Edit
                     </a>
@@ -164,9 +163,8 @@
 
             {{/if}}
 
-
-
         {{else}}
+
             {{#if entryLoaded}}
                 <p>{{title}} doesn't exist yet.</p>
                     {{#if currentUser}}
@@ -178,6 +176,7 @@
             {{/if}}
 
         {{/if}}
+
     {{/if}}
 
 </template>
@@ -200,14 +199,16 @@
 
 <template name="leftNav">
   <div id="left_nav">
-    <div id="logo"><a href="/">ProtoBrew Wiki</a></div>
-
-    <div id="tw_bar"><a href="/">by Tin Whiskers</a></div>
+    <div id="logo">
+        <a href="/">
+            <img src='/images/logo.png' alt='Toaglas Wiki'>
+        </a></div>
     {{#if viewable }}
-    <div id="search"><input class="txtOptionInput searchField" type="search" results="5" size="15" accesskey="F" autocomplete="off" lastsearchtext="aasdfasdfsd" placeholder="" id="search-input" value="{{term}}"></div>
+    <div id="search" class"navbar-search pull-left" >
+            <input class="txtOptionInput searchField search-query" type="search" results="5" size="15" placeholder="Search" accesskey="F" autocomplete="off" lastsearchtext="aasdfasdfsd" placeholder="" id="search-input" value="{{term}}"></div>
 
     <nav>
-    	<ul>
+    	<ul class="nav nav-list">
             {{#isolate}}
     		<li {{#if pageIs "/"}}class="selected"{{/if}}>
                 <a class="left-nav" href="/">
@@ -221,17 +222,17 @@
     </nav>
     {{/if}}
 
-    <div id="buttons">
+    <div id="buttons" >
         {{loginButtons}}
     </div>
 
-
     {{#if viewable}}
     <user>
+
         <div class='tabbable'>
             <ul class="nav nav-tabs" id="userTabs">
                 <li class="active">
-                    <a class='tabButton' href="#owned" data-toggle="tab">Owned</a>
+                    <a class='tabButton' href="#edited" data-toggle="tab">Edited</a>
                 </li>
                 <li>
                     <a class='tabButton' href="#starred" data-toggle="tab">Starred</a>
@@ -239,11 +240,11 @@
             </ul>
 
             <div id="usernav" class="tab-content">      
-                <div id="owned" class="tab-pane active">
+                <div id="edited" class="tab-pane active">
                     <ul>
                         {{#isolate}}
-                        {{#each owned}}
-                            <li><a class="left-nav" href="/{{title}}">{{title}}</a></li>
+                        {{#each edited}}
+                            <li><a class="left-nav" href="{{entryLink this}}">{{title}}</a></li>
                         {{/each}}
                         {{/isolate}}
                     </ul>
@@ -252,7 +253,7 @@
                     <ul>
                         {{#isolate}}
                         {{#each starred}}
-                            <li><a class="left-nav" href="/{{title}}">{{title}}</a></li>
+                        <li><a class="left-nav" href="{{entryLink this}}">{{title}}</a></li>
                         {{/each}}
                         {{/isolate}}
                     </ul>
@@ -291,10 +292,34 @@
   <div id="container">
       {{> null}}
   </div>
+  {{> newUserModal }}
 </body>
 
 <template name="sidebar">
     <ul>
-    {{{ navItems }}}
+         {{{ navItems }}}
     </ul>
+</template>
+
+<template name="newUserModal">
+
+    <div id="new-user-modal" class="modal hide fade">
+        <div class="modal-header">
+            <h3>Welcome</h3>
+        </div>
+        
+        {{#isolate}}
+        <div class="modal-body">
+            <p>Please pick a username</p>
+            <input type="text" id="initial-username-input"/>
+            {{#if usernameTaken }}
+            <span class="red">Taken</span>
+            {{/if}}
+        </div>
+        
+        <div class="modal-footer">
+            <a id="new-username-button" href="javascript:void(0);" class="btn btn-primary{{#if continueDisabled}} disabled{{/if}}">Continue</a>
+        </div>
+        {{/isolate}}
+    </div>
 </template>

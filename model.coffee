@@ -16,7 +16,6 @@ Tags.allow
 
 # Admins can admin anywhere, others can only admin in context
 root.adminable = ( user, context ) ->
-    console.log( "user: ", user );
     user &&
     ( user.group == "admin" ||
       user.group == context ||

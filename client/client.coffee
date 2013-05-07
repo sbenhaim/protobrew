@@ -3,6 +3,10 @@ Meteor.subscribe 'entries', onComplete = ->
 
 Meteor.subscribe('tags')
 
+Meteor.subscribe('revisions')
+
+Meteor.subscribe('allUserData')
+
 Meteor.autosubscribe( ->
     Meteor.subscribe("userData");
 );
@@ -33,10 +37,38 @@ Deps.autorun ->
     # Random user call to force reactivity
     Meteor.user()
     Meteor.call( 'viewable', (x, result) -> Session.set("viewable", result) )
+    if Meteor.user() && ! Meteor.user().username
+        $('#new-user-modal').modal({'backdrop':'static', 'keyboard': false})
+
 
 Template.leftNav.viewable = -> Session.get('viewable')
 Template.main.viewable = -> Session.get('viewable')
 Template.null.viewable = -> Session.get('viewable')
+
+Template.newUserModal.rendered = () ->
+    Session.set('selected-username', $('#initial-username-input').val() )
+
+usernameTaken = (username) ->
+    Meteor.users.find({username: username}).count() > 0
+
+Template.newUserModal.continueDisabled = () ->
+    Session.get('selected-username')
+    username = $('#initial-username-input').val()
+    username == '' || usernameTaken( username )
+
+Template.newUserModal.usernameTaken = () ->
+    Session.get('selected-username')
+    username = $('#initial-username-input').val()
+    usernameTaken( username )
+
+Template.newUserModal.events =
+    'keyup #initial-username-input': () ->
+        Session.set('selected-username', $('#initial-username-input').val() )
+
+    'click #new-username-button': (e) ->
+        if ! $(e.target).hasClass('disabled')
+            console.log( "click" );
+            Meteor.call('updateUser', $("#initial-username-input").val(), (e) -> $("#new-user-modal").modal("hide") )
 
 Template.leftNav.events =
     'click a.left-nav': evtNavigate
@@ -90,8 +122,12 @@ Template.leftNav.pageIs = (u) ->
     return u == "/" if page == undefined
     return u == page
 
-Template.leftNav.owned = () ->
-    return Entries.find({ author : Meteor.userId()}).fetch()
+Template.leftNav.edited = () ->
+    revisions = Revisions.find({author: Meteor.userId()}, {entryId: true}).fetch()
+    ids = _.map( revisions, (r) -> r.entryId )
+    entries = Entries.find({_id: {$in: ids}}).fetch()
+    _.sortBy( entries, (e) -> e.date ).reverse()
+
 
 Template.leftNav.starred = () ->
     user = Meteor.user()
@@ -106,6 +142,9 @@ Template.leftNav.starred = () ->
           return # starred = {starred:["nothing"]} #would need to make this not a link
         return starred
 
+Handlebars.registerHelper( 'entryLink', (entry) ->
+    unless entry.context then "/#{entry.title}" else "/u/#{entry.context}/#{entry.title}"
+    )
 
 ## Entry
 
@@ -503,7 +542,7 @@ buildNav = ( ul, items ) ->
             target_id = $(this).data('target')
             offset = $('#' + target_id).offset()
             adjust = if Session.get( 'edit-mode' ) then 70 else 20
-            $( 'html,body' ).animate( { scrollTop: offset.top - adjust }, 500 )
+            $( 'html,body' ).animate( { scrollTop: offset.top - adjust }, 350 )
         )
 
         $a.attr( 'href', 'javscript:void(0)' )

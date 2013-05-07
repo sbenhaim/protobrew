@@ -9,7 +9,6 @@ Accounts.onCreateUser( (options, user) ->
     if ( users.count() == 0 )
         user.group = 'admin'
 
-    user.username = user._id
     user.profile = {starredPages: []}
 
     user
@@ -18,6 +17,12 @@ Accounts.onCreateUser( (options, user) ->
 Meteor.publish("userData", ->
     Meteor.users.find({_id: this.userId}, {fields: {'username': 1, 'group': 1, 'profile': 1}})
 )
+
+Meteor.publish("allUserData", () ->
+  Meteor.users.find({}, {fields: {'username': 1}});
+)
+
+Meteor.publish('revisions', -> Revisions.find({}))
 
 Meteor.publish('entries', (context) ->
 
@@ -91,7 +96,7 @@ Meteor.methods
 
     createNewPage: () ->
         #ownUnnamedPages = Entries.find( { author : this.userId, title : {$regex: /^unnamed-/ }}, {sort: { title: 1 }}).fetch() # .find(query, projection)
-        ownUnnamedPages = Entries.find( { title : {$regex: /^unnamed-/ }}, {sort: { title: 1 }}).fetch() # .find(query, projection)
+        ownUnnamedPages = Entries.find( { context: null, title : {$regex: /^unnamed-/ }}, {sort: { title: 1 }}).fetch() # .find(query, projection)
         if ownUnnamedPages.length == 0
             console.log('1')
             return 'unnamed-1'
