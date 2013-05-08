@@ -58,12 +58,6 @@ Meteor.publish('tags', -> return Tags.find({}))
 
 Meteor.methods
 
-    viewable: ->
-        return true unless DOMAIN?
-        user = Meteor.user()
-        viewable = user and user.services.google.email.match( DOMAIN )
-        viewable
-
     updateTitle: (entry, title, callback) ->
         throw new Meteor.Error(403, "You must be logged in") unless this.userId
         return Entries.update( {_id: entry._id}, {$set: {'title': title}} )

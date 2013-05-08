@@ -36,14 +36,9 @@ evtNavigate = (evt) ->
 Deps.autorun ->
     # Random user call to force reactivity
     Meteor.user()
-    Meteor.call( 'viewable', (x, result) -> Session.set("viewable", result) )
     if Meteor.user() && ! Meteor.user().username
         $('#new-user-modal').modal({'backdrop':'static', 'keyboard': false})
 
-
-Template.leftNav.viewable = -> Session.get('viewable')
-Template.main.viewable = -> Session.get('viewable')
-Template.null.viewable = -> Session.get('viewable')
 
 Template.newUserModal.rendered = () ->
     Session.set('selected-username', $('#initial-username-input').val() )

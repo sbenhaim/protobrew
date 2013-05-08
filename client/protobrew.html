@@ -24,7 +24,7 @@
 
     <div class="content">
 
-    {{#if viewable}}
+    {{#if currentUser}}
 
       {{#if modeIs "index"}}
       {{> index}}
@@ -203,8 +203,8 @@
         <a href="/">
             <img src='/images/logo.png' alt='Toaglas Wiki'>
         </a></div>
-    {{#if viewable }}
-    <div id="search" class"navbar-search pull-left" >
+    {{#if currentUser}}
+    <div id="search" class="navbar-search pull-left" >
             <input class="txtOptionInput searchField search-query" type="search" results="5" size="15" placeholder="Search" accesskey="F" autocomplete="off" lastsearchtext="aasdfasdfsd" placeholder="" id="search-input" value="{{term}}"></div>
 
     <nav>
@@ -226,7 +226,7 @@
         {{loginButtons}}
     </div>
 
-    {{#if viewable}}
+    {{#if currentUser}}
     <user>
 
         <div class='tabbable'>
@@ -279,7 +279,7 @@
     </div>
   </div>
 
-  {{#if viewable}}
+  {{#if currentUser}}
 	<div id="sidebar_col">
         <div id="sidebar">
             {{> sidebar}}
