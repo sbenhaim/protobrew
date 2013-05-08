@@ -1,5 +1,5 @@
 # Accounts
-# DOMAIN = "@wikraft\.mygbiz\.com$"
+DOMAIN = "@wikraft\.mygbiz\.com$"
 
 Accounts.onCreateUser( (options, user) ->
     if DOMAIN? && ! user.services.google.email.match( DOMAIN )
