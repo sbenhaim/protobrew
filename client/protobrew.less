@@ -662,6 +662,7 @@ ul li.article-tag:after {
     width: 100%;
     left: @left_nav_w;
     top: 0px;
+    z-index: 5;
     margin: 0 250px 0 0 !important;
     padding: 0 !important;
     padding-left: 2px !important;
@@ -971,9 +972,6 @@ table thead td {
     .action-toolbar {
         right: 20px;
     }
-    .redactor_toolbar {
-      left: 0px;
-    }
 }
 
 @media only screen and (max-width: 600px) {
@@ -1002,21 +1000,23 @@ table thead td {
   }
 
 
-    #sidenav_btn{
-        display: inline-block;
-    }
+  #sidenav_btn{
+      display: inline-block;
+  }
 
-    .jPanelMenu-panel #sidenav_btn{
-        left: 240px;
-    }
+  .jPanelMenu-panel #sidenav_btn{
+      left: 240px;
+  }
 
-    #leftNavContainer{
-        display: none;
-    }
-    #main {
-        margin-left: 0;
-    }
-
+  #leftNavContainer{
+      display: none;
+  }
+  #main {
+      margin-left: 0;
+  }
+  .redactor_toolbar {
+    left: 0px;
+  }
 }
 
 // // IE10 Metro responsive
