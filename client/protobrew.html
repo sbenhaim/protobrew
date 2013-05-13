@@ -134,10 +134,17 @@
                         Star
                     </a>
                     {{#if editable}}
-                    <a class="btn" href="#" value="edit" id="edit">
+                    {{#if locked }}
+                    <a class="btn disabled" href="javascript:void(0)" value="" id="">
+                        <i class="icon-lock"></i>
+                        Locked
+                    </a>
+                    {{else}}
+                    <a class="btn" href="javascript:void(0);" value="edit" id="edit">
                         <span aria-hidden="true" data-icon="&#x23;"></span> 
                         Edit
                     </a>
+                    {{/if}}
                     {{/if}}
                 </div>
 

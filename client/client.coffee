@@ -11,7 +11,21 @@ Meteor.autosubscribe( ->
     Meteor.subscribe("userData");
 );
 
-Session.set('edit-mode', false)
+lockEntry = ->
+    Meteor.call( 'lockEntry', Session.get('entryId') ) if Session.get('entryId')
+    Session.set('entryLocked', true)
+
+unlockEntry = ->
+    if Session.get('entryLocked')
+        Meteor.call( 'unlockEntry', Session.get('entryId') ) if Session.get('entryId')
+        Session.set('editMode', false)
+        Session.set('entryLocked', false)
+
+
+window.onbeforeunload = ->
+    unlockEntry()
+
+Session.set('editMode', false)
 
 # Todo: reloadEntry = true
 navigate = (location, context) ->
@@ -41,24 +55,24 @@ Deps.autorun ->
 
 
 Template.newUserModal.rendered = () ->
-    Session.set('selected-username', $('#initial-username-input').val() )
+    Session.set('selectedUsername', $('#initial-username-input').val() )
 
 usernameTaken = (username) ->
     Meteor.users.find({username: username}).count() > 0
 
 Template.newUserModal.continueDisabled = () ->
-    Session.get('selected-username')
+    Session.get('selectedUsername')
     username = $('#initial-username-input').val()
     username == '' || usernameTaken( username )
 
 Template.newUserModal.usernameTaken = () ->
-    Session.get('selected-username')
+    Session.get('selectedUsername')
     username = $('#initial-username-input').val()
     usernameTaken( username )
 
 Template.newUserModal.events =
     'keyup #initial-username-input': () ->
-        Session.set('selected-username', $('#initial-username-input').val() )
+        Session.set('selectedUsername', $('#initial-username-input').val() )
 
     'click #new-username-button': (e) ->
         if ! $(e.target).hasClass('disabled')
@@ -138,7 +152,7 @@ Template.leftNav.starred = () ->
         return starred
 
 Handlebars.registerHelper( 'entryLink', (entry) ->
-    unless entry.context then "/#{entry.title}" else "/u/#{entry.context}/#{entry.title}"
+    entryLink( entry )
     )
 
 ## Entry
@@ -154,6 +168,10 @@ Template.entry.editable = ->
     context = Session.get("context")
     user  = Meteor.user()
     editable( entry, user, context )
+
+Template.entry.locked = ->
+    entry = Session.get('entry')
+    return entry && entry.editing
 
 Template.entry.adminable = ->
     context = Session.get("context")
@@ -177,7 +195,7 @@ Template.entry.entry = ->
         entry = Entries.findOne({title: title, context: context})
         if entry
             Session.set('entry', entry )
-            Session.set('entry_id', entry._id )
+            Session.set('entryId', entry._id )
 
             source = $('<div>').html( entry.text )
             titles = stackTitles( filterHeadlines( source.find( 'h1' ) ) )
@@ -196,12 +214,12 @@ Template.entry.entry = ->
             entry
         else
             Session.set( 'entry', {} )
-            Session.set( 'entry_id', null )
+            Session.set( 'entryId', null )
             Session.get('entryLoaded')
 
 
 Template.entry.edit_mode = ->
-    Session.get('edit-mode')
+    Session.get('editMode')
 
 Template.main.modeIs = (mode) ->
     Session.get('mode') == mode;
@@ -210,7 +228,7 @@ Template.index.content = ->
     entry = Entries.findOne({title:"index"})
     if entry
         Session.set('entry', entry )
-        Session.set('entry_id', entry._id )
+        Session.set('entryId', entry._id )
 
         source = $('<div>').html( entry.text )
         titles = stackTitles( source.find( 'h1' ) )
@@ -249,7 +267,7 @@ Template.editEntry.rendered = ->
             cancel:
                 title: 'Cancel'
                 callback: ->
-                    Session.set("edit-mode", false)
+                    Session.set("editMode", false)
             delete:
                 title: 'Delete'
                 callback: deleteEntry
@@ -279,7 +297,7 @@ deleteEntry = (evt) ->
     entry = Session.get('entry')
     if entry && confirm( "Are you sure you want to delete #{entry.title}?")
         Entries.remove({_id: entry._id})
-        Session.set('edit-mode', false)
+        Session.set('editMode', false)
 
 saveEntry = (evt) ->
     reroute = ( e ) ->
@@ -300,14 +318,14 @@ saveEntry = (evt) ->
         entry.tags = tags;
         Tags.insert({'name':tag}) for tag in tags
 
-    eid = Session.get('entry_id')
+    eid = Session.get('entryId')
     entry._id = eid if eid
 
     context = Session.get('context')
 
     Meteor.call('saveEntry', entry, context, reroute)
     Entries.update({_id: entry._id}, entry)
-    Session.set("edit-mode", false)
+    Session.set("editMode", false)
 
 
 Template.entry.events
@@ -326,7 +344,7 @@ Template.entry.events
         evt.preventDefault()
         user  = Meteor.user()
         starredPages = user.profile.starredPages
-        entryId = Session.get('entry_id')
+        entryId = Session.get('entryId')
         if entryId in starredPages
             console.log('match pulling')
             Meteor.users.update(Meteor.userId(), {
@@ -344,7 +362,7 @@ Template.entry.events
         navigate( '/tag/' + tag ) if tag
 
     'click a.entry-link': (e) ->
-        evtNavigate(e) unless Session.get('edit-mode')
+        evtNavigate(e) unless Session.get('editMode')
 
     'click #sidenav_btn': (evt) ->
         evt.preventDefault()
@@ -377,15 +395,18 @@ Template.entry.events
     'click #edit': (evt) ->
         Session.set( 'y-offset', window.pageYOffset )
         evt.preventDefault()
-        Session.set('edit-mode', true )
+        lockEntry()
+        Session.set('editMode', true)
 
     'click #save': (evt) ->
         evt.preventDefault()
+        unlockEntry()
         saveEntry( evt )
 
     'click #cancel': (evt) ->
         evt.preventDefault()
-        Session.set("edit-mode", false)
+        unlockEntry()
+        Session.set("editMode", false)
 
     'click #delete': (evt) ->
         evt.preventDefault()
@@ -462,21 +483,27 @@ EntryRouter = Backbone.Router.extend({
         "": "index"
     },
     index: ->
+        unlockEntry()
         Session.set("mode", 'index')
         Session.set("title", undefined)
     profile: (term) ->
+        unlockEntry()
         Session.set( 'mode', 'profile' )
     search: (term) ->
+        unlockEntry()
         Session.set( 'mode', 'search' )
         Session.set( 'search-term', decodeURIComponent( term ) )
     tag: (tag) ->
+        unlockEntry()
         Session.set( 'mode', 'tag' )
         Session.set( 'tag', decodeURIComponent( tag ) )
     userSpace: (username, title) ->
+        unlockEntry()
         Session.set("mode", 'entry')
         Session.set("context", username)
         Session.set("title", decodeURIComponent( title ))
     main: (title) ->
+        unlockEntry()
         Session.set("mode", 'entry')
         Session.set("context", null)
         Session.set("title", decodeURIComponent( title ))
@@ -536,7 +563,7 @@ buildNav = ( ul, items ) ->
             id = this.id
             target_id = $(this).data('target')
             offset = $('#' + target_id).offset()
-            adjust = if Session.get( 'edit-mode' ) then 70 else 20
+            adjust = if Session.get( 'editMode' ) then 70 else 20
             $( 'html,body' ).animate( { scrollTop: offset.top - adjust }, 350 )
         )
 

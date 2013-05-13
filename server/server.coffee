@@ -79,6 +79,12 @@ Meteor.methods
 
         return id
 
+    lockEntry: ( entryId ) ->
+        Entries.update( {_id: entryId}, {$set: {"editing": true}}) if entryId
+
+    unlockEntry: ( entryId ) ->
+        Entries.update( {_id: entryId}, {$set: {"editing": false}}) if entryId
+
     updateUser: (value) ->
         throw new Meteor.Error(403, "You must be logged in") unless this.userId
 
