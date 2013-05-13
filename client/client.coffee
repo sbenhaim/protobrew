@@ -39,11 +39,11 @@ evtNavigate = (evt) ->
     href = $a.attr('href')
     localhost = document.location.host
     linkhost = $a[0].host
-
     if localhost == linkhost
         navigate(href)
     else
         window.open( href, '_blank')
+   
 
 ## Nav
 
@@ -191,6 +191,7 @@ Template.entry.entry = ->
 
     title = Session.get("title")
     context = Session.get('context')
+    $("#sidebar").html('') #clear sidebar of previous state
     if title
         entry = Entries.findOne({title: title, context: context})
         if entry
@@ -206,8 +207,7 @@ Template.entry.entry = ->
                     e.id = "entry-title-" + (i + 1)
 
             ul = $('<ul>')
-            buildNav( ul, titles )
-
+            buildNav( ul, titles)
             $("#sidebar").html(ul)
 
             entry.text = source.html()
@@ -226,6 +226,7 @@ Template.main.modeIs = (mode) ->
 
 Template.index.content = ->
     entry = Entries.findOne({title:"index"})
+    $("#sidebar").html('') #clear sidebar of previous state
     if entry
         Session.set('entry', entry )
         Session.set('entryId', entry._id )

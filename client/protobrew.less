@@ -662,6 +662,7 @@ ul li.article-tag:after {
     width: 100%;
     left: @left_nav_w;
     top: 0px;
+    z-index: 5;
     margin: 0 250px 0 0 !important;
     padding: 0 !important;
     padding-left: 2px !important;
@@ -865,7 +866,19 @@ body .redactor_toolbar li a.redactor_btn_delete {
 /*
     Redactor content
 */
-
+table {
+  border-collapse: collapse;
+  font-size: 1em !important;
+}
+table td {
+  border: 1px solid #ddd;
+  padding: 5px !important;
+  vertical-align: top;
+}
+table thead td {
+  border-bottom: 2px solid #000 !important;
+  font-weight: bold !important;
+}
 
 .redactor_editor table {
   border-collapse: collapse;
@@ -959,9 +972,6 @@ body .redactor_toolbar li a.redactor_btn_delete {
     .action-toolbar {
         right: 20px;
     }
-    .redactor_toolbar {
-      left: 0px;
-    }
 }
 
 @media only screen and (max-width: 600px) {
@@ -990,21 +1000,23 @@ body .redactor_toolbar li a.redactor_btn_delete {
   }
 
 
-    #sidenav_btn{
-        display: inline-block;
-    }
+  #sidenav_btn{
+      display: inline-block;
+  }
 
-    .jPanelMenu-panel #sidenav_btn{
-        left: 240px;
-    }
+  .jPanelMenu-panel #sidenav_btn{
+      left: 240px;
+  }
 
-    #leftNavContainer{
-        display: none;
-    }
-    #main {
-        margin-left: 0;
-    }
-
+  #leftNavContainer{
+      display: none;
+  }
+  #main {
+      margin-left: 0;
+  }
+  .redactor_toolbar {
+    left: 0px;
+  }
 }
 
 // // IE10 Metro responsive
