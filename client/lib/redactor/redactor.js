@@ -299,7 +299,7 @@ var RLANG = {
 						'<label>Email</label><input type="text" id="redactor_link_mailto" class="redactor_input" />' +
 						'<label>' + RLANG.text + '</label><input type="text" class="redactor_input redactor_link_text" id="redactor_link_mailto_text" />' +
 					'</div>' +
-					'<div class="redactor_tab" id="redactor_tab3" style="display: none;">' +
+					'<div class="redactor_tab" id="redactor_tab4" style="display: none;">' +
 						'<label>' + RLANG.anchor + '</label><input type="text" class="redactor_input" id="redactor_link_anchor"  />' +
 						'<label>' + RLANG.text + '</label><input type="text" class="redactor_input redactor_link_text" id="redactor_link_anchor_text" />' +
 					'</div>' +
@@ -520,6 +520,11 @@ var RLANG = {
 					func: 'show',
 					dropdown:
 					{
+						wiki_link:
+						{
+							title: RLANG.wiki_link,
+							func: 'showWikiLink'
+						},
 						link:
 						{
 							title: RLANG.link_insert,
