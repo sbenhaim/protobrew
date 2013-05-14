@@ -183,7 +183,7 @@
 
 
 <template name="editEntry">
-    <textarea id="entry-text" placeholder="Tell your story.">{{text}}</textarea>
+    <textarea id="entry-text" placeholder="Just some friendly placeholder text.">{{text}}</textarea>
 
     <p>
         <h2>Tags</h2>
@@ -216,7 +216,7 @@
                 </a>
             </li>
 			<li {{#if pageIs "Articles"}}class="selected"{{/if}}><a class="left-nav" href="/Articles"><span aria-hidden="true" data-icon="&#x6e;"></span> Articles</a></li>
-			<li {{#if pageIs "Brew systems"}}class="selected"{{/if}}><a class="left-nav" href="/Brew systems"><span aria-hidden="true" data-icon="&#x0021;"></span> Brew systems</a></li>
+			<li {{#if pageIs "Help"}}class="selected"{{/if}}><a class="left-nav" href="/Help"><span aria-hidden="true" data-icon="&#x6e;"></span> Help</a></li>
             {{/isolate}}
     	</ul>
     </nav>

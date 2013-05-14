@@ -23,7 +23,8 @@ var RLANG = {
 	image: 'Insert Image',
 	table: 'Table',
 	link: 'Link',
-	link_insert: 'Insert link',
+	wiki_link: 'Add Wiki Link',
+	link_insert: 'Add External link',
 	unlink: 'Unlink',
 	formatting: 'Formatting',
 	paragraph: 'Paragraph',
@@ -276,17 +277,25 @@ var RLANG = {
 				'<div id="redactor_modal_content">' +
 				'<form id="redactorInsertLinkForm" method="post" action="">' +
 					'<div id="redactor_tabs">' +
-						'<a href="javascript:void(null);" class="redactor_tabs_act">URL</a>' +
+						'<a href="javascript:void(null);" class="redactor_tabs_act">Wiki Link</a>' +
+						'<a href="javascript:void(null);">URL</a>' +
 						'<a href="javascript:void(null);">Email</a>' +
 						'<a href="javascript:void(null);">' + RLANG.anchor + '</a>' +
 					'</div>' +
 					'<input type="hidden" id="redactor_tab_selected" value="1" />' +
 					'<div class="redactor_tab" id="redactor_tab1">' +
-						'<label>URL</label><input type="text" id="redactor_link_url" class="redactor_input"  />' +
-						'<label>' + RLANG.text + '</label><input type="text" class="redactor_input redactor_link_text" id="redactor_link_url_text" />' +
+						'<label>Wiki Link</label>             <input type="text" class="redactor_input"                    id="redactor_wiki_link"   />' +
+						'<p>example: New Page</p>' +
+						'<label>' + 'Display Text' + '</label><input type="text" class="redactor_input redactor_link_text" id="redactor_wiki_link_text" />' +
 						'<label><input type="checkbox" id="redactor_link_blank"> ' + RLANG.link_new_tab + '</label>' +
 					'</div>' +
 					'<div class="redactor_tab" id="redactor_tab2" style="display: none;">' +
+						'<label>' + 'URL' + '     </label><input type="text" class="redactor_input"                    id="redactor_link_url"/>' +
+						'<p>example: www.example.com</p>' +
+						'<label>' + 'Display Text' + '</label><input type="text" class="redactor_input redactor_link_text" id="redactor_link_url_text" />' +
+						'<label><input type="checkbox" id="redactor_link_blank"> ' + RLANG.link_new_tab + '</label>' +
+					'</div>' +
+					'<div class="redactor_tab" id="redactor_tab3" style="display: none;">' +
 						'<label>Email</label><input type="text" id="redactor_link_mailto" class="redactor_input" />' +
 						'<label>' + RLANG.text + '</label><input type="text" class="redactor_input redactor_link_text" id="redactor_link_mailto_text" />' +
 					'</div>' +
@@ -3357,10 +3366,17 @@ var RLANG = {
 			this.observeImages();
 		},
 
+		showWikiLink: function() {
+			this.showLink(true);
+		},
+
 		// INSERT LINK
-		showLink: function()
+		showLink: function(insert_type)
 		{
 			this.saveSelection();
+
+			var isWikiLink = false;
+			if(insert_type === true) isWikiLink = insert_type;
 
 			var callback = $.proxy(function()
 			{
@@ -3374,7 +3390,7 @@ var RLANG = {
 					if (parent.nodeName === 'A')
 					{
 						this.insert_link_node = $(parent);
-						text = this.insert_link_node.text();
+						text = this.insert_link_node.text(); // also wiki link? - only for root
 						url = this.insert_link_node.attr('href');
 						target = this.insert_link_node.attr('target');
 					}
@@ -3395,10 +3411,10 @@ var RLANG = {
 					if (sel && sel.anchorNode && sel.anchorNode.parentNode.tagName === 'A')
 					{
 						url = sel.anchorNode.parentNode.href;
-						text = sel.anchorNode.parentNode.text;
+						text = sel.anchorNode.parentNode.text; // also wiki link? - only for root
 						target = sel.anchorNode.parentNode.target;
 
-						if (sel.toString() === '')
+						if (sel.toString() !== '') // GK: was === switched to !== 'possible bug?'
 						{
 							this.insert_link_node = sel.anchorNode.parentNode;
 						}
@@ -3411,25 +3427,44 @@ var RLANG = {
 
 				$('.redactor_link_text').val(text);
 
-				var thref = self.location.href.replace(/\/$/i, '');
+				//populate wiki link with plain text 
+				//TODO: -deal with %20
+				// - takes current URL and replaces the
+				$('#redactor_wiki_link').val(text); 
+				
+				var thref = self.location.href.replace(/\/$/i, ''); 
 				var turl = url.replace(thref, '');
 
 				if (url.search('mailto:') === 0)
 				{
-					this.setModalTab(2);
+					this.setModalTab(3);
 
 					$('#redactor_tab_selected').val(2);
 					$('#redactor_link_mailto').val(url.replace('mailto:', ''));
 				}
 				else if (turl.search(/^#/gi) === 0)
 				{
-					this.setModalTab(3);
+					this.setModalTab(4);
 
 					$('#redactor_tab_selected').val(3);
 					$('#redactor_link_anchor').val(turl.replace(/^#/gi, ''));
 				}
+				else if (isWikiLink)
+				{
+					this.setModalTab(1);
+
+					// remove baseURL from wiki href and decode to plain text
+					// TODO: does not explcitly handle external links and is likely to break
+					var pathArray = thref.split("/");
+					var baseURL = 'http://' + pathArray[2] + '/';
+					var wikiURL = url.replace(baseURL, '');
+					wikiURL = wikiURL.replace('%20', " ");
+
+					$('#redactor_wiki_link').val(wikiURL);
+				}
 				else
 				{
+					this.setModalTab(2);
 					$('#redactor_link_url').val(turl);
 				}
 
@@ -3442,7 +3477,7 @@ var RLANG = {
 
 				setTimeout(function()
 				{
-					$('#redactor_link_url').focus();
+					$('#redactor_wiki_link').focus();
 				}, 200);
 
 			}, this);
@@ -3455,7 +3490,30 @@ var RLANG = {
 			var tab_selected = $('#redactor_tab_selected').val();
 			var link = '', text = '', targettext = '', target = '';
 
-			if (tab_selected === '1') // url
+
+			if (tab_selected === '1') // wiki link
+			{
+				link = $('#redactor_wiki_link').val();
+				text = $('#redactor_wiki_link_text').val();
+
+				if ($('#redactor_link_blank').prop('checked'))
+				{
+					targettext = ' target="_blank"';
+					target = '_blank';
+				}
+
+				// test url
+				var pattern = '/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/';
+				//var pattern = '((xn--)?[a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}';
+				var re = new RegExp('^(http|ftp|https)://' + pattern,'i');
+				var re2 = new RegExp('^' + pattern,'i');
+				if (link.search(re) == -1 && link.search(re2) == 0 && this.opts.protocol !== false)
+				{
+					link = this.opts.protocol + link;
+				}
+
+			}
+			else if (tab_selected === '2') // url
 			{
 				link = $('#redactor_link_url').val();
 				text = $('#redactor_link_url_text').val();
@@ -3477,12 +3535,12 @@ var RLANG = {
 				}
 
 			}
-			else if (tab_selected === '2') // mailto
+			else if (tab_selected === '3') // mailto
 			{
 				link = 'mailto:' + $('#redactor_link_mailto').val();
 				text = $('#redactor_link_mailto_text').val();
 			}
-			else if (tab_selected === '3') // anchor
+			else if (tab_selected === '4') // anchor
 			{
 				link = '#' + $('#redactor_link_anchor').val();
 				text = $('#redactor_link_anchor_text').val();
@@ -3496,7 +3554,7 @@ var RLANG = {
 			this.$editor.focus();
 			this.restoreSelection();
 
-			if (text !== '')
+			if (text !== '') //TODO: if no text then it should put in URL
 			{
 				if (this.insert_link_node)
 				{
