@@ -243,17 +243,17 @@ Template.editEntry.rendered = ->
             'image', 'table', 'link', '|',
             'fontcolor', 'backcolor', '|', 'alignment', '|', 'horizontalrule', '|',
             'save', 'cancel', 'delete'],
-        buttonsCustom:
-            save:
-                title: 'Save'
-                callback: saveEntry
-            cancel:
-                title: 'Cancel'
-                callback: ->
-                    Session.set("edit-mode", false)
-            delete:
-                title: 'Delete'
-                callback: deleteEntry
+        # buttonsCustom:
+        #     save:
+        #         title: 'Save'
+        #         callback: saveEntry
+        #     cancel:
+        #         title: 'Cancel'
+        #         callback: ->
+        #             Session.set("edit-mode", false)
+        #     delete:
+        #         title: 'Delete'
+        #         callback: deleteEntry
         focus: true
         autoresize: true
         filepicker: (callback) ->
