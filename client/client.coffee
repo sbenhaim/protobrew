@@ -13,7 +13,6 @@ Meteor.autosubscribe( ->
 
 Session.set('edit-mode', false)
 
-
 # Todo: reloadEntry = true
 navigate = (location, context) ->
     location = "/u/#{context}/#{location}" if context
