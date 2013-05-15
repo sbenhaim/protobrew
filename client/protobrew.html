@@ -23,7 +23,6 @@
 <template name="main">
 
     <div class="content">
-
     {{#if currentUser}}
 
       {{#if modeIs "index"}}
@@ -46,7 +45,11 @@
       {{> profile}}
       {{/if}}
     {{else}}
-        Not Authorized
+        {{#if loginConfigured}}
+            Not Authorized
+        {{else}}    
+            <img src="http://viewvc.svn.mozilla.org/vc/addons/trunk/bandwagon/skin/images/spinner.gif?revision=18591&view=co&pathrev=18591" height="32" width="32">
+        {{/if}}
     {{/if}}
 
     </div>

@@ -13,6 +13,7 @@ Meteor.autosubscribe( ->
 
 Session.set('edit-mode', false)
 
+
 # Todo: reloadEntry = true
 navigate = (location, context) ->
     location = "/u/#{context}/#{location}" if context
@@ -205,6 +206,12 @@ Template.entry.edit_mode = ->
 
 Template.main.modeIs = (mode) ->
     Session.get('mode') == mode;
+
+Template.main.loginConfigured = () ->
+    if Accounts.loginServicesConfigured()
+        return true;
+    else
+        return false;
 
 Template.index.content = ->
     entry = Entries.findOne({title:"index"})
@@ -601,3 +608,12 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
     )
 
   fileReader[method](blob)
+
+# call this after initial code load has run and it will print out all templates that re-render
+# logRenders = ->
+#   _.each Template, (template, name) ->
+#     oldRender = template.rendered
+#     counter = 0
+#     template.rendered = ->
+#       console.log name, "render count: ", ++counter
+#       oldRender and oldRender.apply(this, arguments_)
