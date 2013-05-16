@@ -506,9 +506,8 @@ EntryRouter = Backbone.Router.extend({
 Router = new EntryRouter
 
 Meteor.startup ->
-  Backbone.history.start pushState: true
-    Session.set('activeTab', 'activeTab')
-    Session.set('activePanel', 'editedPanel')
+    Backbone.history.start pushState: true
+    Session.set('activeTab', 'editedTab')
   
 ##################################
 ## NAV
