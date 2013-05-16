@@ -233,35 +233,29 @@
     {{#if currentUser}}
     <user>
 
-        <div class='tabbable'>
             <ul class="nav nav-tabs" id="userTabs">
-                <li class="active">
-                    <a class='tabButton' href="#edited" data-toggle="tab">Edited</a>
+                <li id="editedTab" class="{{#if isActiveTab 'editedTab'}} active {{/if}}">
+                    <a class='tabButton'>Edited</a>
                 </li>
-                <li>
-                    <a class='tabButton' href="#starred" data-toggle="tab">Starred</a>
+                <li id="starredTab" class="{{#if isActiveTab 'starredTab'}} active {{/if}}">
+                    <a class='tabButton'>Starred</a>
                 </li>
             </ul>
 
-            <div id="usernav" class="tab-content">      
-                <div id="edited" class="tab-pane active">
+        <div id="usernav" class="tab-content">   
+                <div id="edited" class="tab-pane {{#if isActiveTab 'editedTab'}} active {{/if}}">
                     <ul>
-                        {{#isolate}}
                         {{#each edited}}
                             <li><a class="left-nav" href="{{entryLink this}}">{{title}}</a></li>
                         {{/each}}
-                        {{/isolate}}
                     </ul>
                 </div> 
-                <div id="starred" class="tab-pane" >
+            <div id="starred" class="tab-pane {{#if isActiveTab 'starredTab'}} active {{/if}}" >
                     <ul>
-                        {{#isolate}}
                         {{#each starred}}
                         <li><a class="left-nav" href="{{entryLink this}}">{{title}}</a></li>
                         {{/each}}
-                        {{/isolate}}
                     </ul>
-                </div>
             </div>
         </div>
     </user>

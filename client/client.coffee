@@ -74,6 +74,10 @@ Template.leftNav.events =
 
     'click #usernav a': evtNavigate
 
+    'click #userTabs > li' : (evt) ->
+        $el = $(evt.currentTarget)
+        Session.set( 'activeTab' , $el.attr('id'))
+
 getSummaries = (entries) ->
     entries.map (e) ->
         
@@ -110,7 +114,15 @@ Template.tag.results = ->
     entries = Entries.find( { tags: tag } )
     getSummaries( entries )
 
-Template.leftNav.term = -> Session.get( 'search-term' )
+
+Template.leftNav.isActiveTab = (tab, options)->
+    Session.equals "activeTab", tab 
+
+Template.leftNav.isActivePanel = (panel, options)->
+    Session.equals "activePanel", panel
+
+Template.leftNav.term = -> 
+    Session.get( 'search-term' )
 
 Template.leftNav.pageIs = (u) ->
     page = Session.get('title')
@@ -494,8 +506,9 @@ EntryRouter = Backbone.Router.extend({
 Router = new EntryRouter
 
 Meteor.startup ->
-
   Backbone.history.start pushState: true
+    Session.set('activeTab', 'activeTab')
+    Session.set('activePanel', 'editedPanel')
   
 ##################################
 ## NAV
