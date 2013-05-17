@@ -88,6 +88,10 @@ Template.leftNav.events =
 
     'click #usernav a': evtNavigate
 
+    'click #userTabs > li' : (evt) ->
+        $el = $(evt.currentTarget)
+        Session.set( 'activeTab' , $el.attr('id'))
+
 getSummaries = (entries) ->
     entries.map (e) ->
         
@@ -124,7 +128,15 @@ Template.tag.results = ->
     entries = Entries.find( { tags: tag } )
     getSummaries( entries )
 
-Template.leftNav.term = -> Session.get( 'search-term' )
+
+Template.leftNav.isActiveTab = (tab, options)->
+    Session.equals "activeTab", tab 
+
+Template.leftNav.isActivePanel = (panel, options)->
+    Session.equals "activePanel", panel
+
+Template.leftNav.term = -> 
+    Session.get( 'search-term' )
 
 Template.leftNav.pageIs = (u) ->
     page = Session.get('title')
@@ -224,6 +236,12 @@ Template.entry.edit_mode = ->
 Template.main.modeIs = (mode) ->
     Session.get('mode') == mode;
 
+Template.main.loginConfigured = () ->
+    if Accounts.loginServicesConfigured()
+        return true;
+    else
+        return false;
+
 Template.index.content = ->
     entry = Entries.findOne({title:"index"})
     $("#sidebar").html('') #clear sidebar of previous state
@@ -261,17 +279,18 @@ Template.editEntry.rendered = ->
             'image', 'table', 'link', '|',
             'fontcolor', 'backcolor', '|', 'alignment', '|', 'horizontalrule', '|',
             'save', 'cancel', 'delete'],
-        buttonsCustom:
-            save:
-                title: 'Save'
-                callback: saveEntry
-            cancel:
-                title: 'Cancel'
-                callback: ->
-                    Session.set("editMode", false)
-            delete:
-                title: 'Delete'
-                callback: deleteEntry
+        # buttonsCustom:
+        #     save:
+        #         title: 'Save'
+        #         callback: saveEntry
+        #     cancel:
+        #         title: 'Cancel'
+        #         callback: ->
+        #             Session.set("edit-mode", false)
+        #     delete:
+        #         title: 'Delete'
+        #         callback: deleteEntry
+
         focus: true
         autoresize: true
         filepicker: (callback) ->
@@ -515,8 +534,8 @@ EntryRouter = Backbone.Router.extend({
 Router = new EntryRouter
 
 Meteor.startup ->
-
-  Backbone.history.start pushState: true
+    Backbone.history.start pushState: true
+    Session.set('activeTab', 'editedTab')
   
 ##################################
 ## NAV
@@ -628,3 +647,12 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
     )
 
   fileReader[method](blob)
+
+# call this after initial code load has run and it will print out all templates that re-render
+# logRenders = ->
+#   _.each Template, (template, name) ->
+#     oldRender = template.rendered
+#     counter = 0
+#     template.rendered = ->
+#       console.log name, "render count: ", ++counter
+#       oldRender and oldRender.apply(this, arguments_)

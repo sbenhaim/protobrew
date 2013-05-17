@@ -46,7 +46,11 @@
       {{> profile}}
       {{/if}}
     {{else}}
-        Unauthrorized
+        {{#if loginConfigured}}
+            Not Authorized
+        {{else}}    
+            <img src="http://viewvc.svn.mozilla.org/vc/addons/trunk/bandwagon/skin/images/spinner.gif?revision=18591&view=co&pathrev=18591" height="32" width="32">
+        {{/if}}
     {{/if}}
 
     </div>
@@ -190,7 +194,7 @@
 
 
 <template name="editEntry">
-    <textarea id="entry-text" placeholder="Tell your story.">{{text}}</textarea>
+    <textarea id="entry-text" placeholder="Just some friendly placeholder text.">{{text}}</textarea>
 
     <p>
         <h2>Tags</h2>
@@ -223,7 +227,7 @@
                 </a>
             </li>
 			<li {{#if pageIs "Articles"}}class="selected"{{/if}}><a class="left-nav" href="/Articles"><span aria-hidden="true" data-icon="&#x6e;"></span> Articles</a></li>
-			<li {{#if pageIs "Brew systems"}}class="selected"{{/if}}><a class="left-nav" href="/Brew systems"><span aria-hidden="true" data-icon="&#x0021;"></span> Brew systems</a></li>
+			<li {{#if pageIs "Help"}}class="selected"{{/if}}><a class="left-nav" href="/Help"><span aria-hidden="true" data-icon="&#x6e;"></span> Help</a></li>
             {{/isolate}}
     	</ul>
     </nav>
@@ -236,35 +240,29 @@
     {{#if currentUser}}
     <user>
 
-        <div class='tabbable'>
             <ul class="nav nav-tabs" id="userTabs">
-                <li class="active">
-                    <a class='tabButton' href="#edited" data-toggle="tab">Edited</a>
+                <li id="editedTab" class="{{#if isActiveTab 'editedTab'}} active {{/if}}">
+                    <a class='tabButton'>Edited</a>
                 </li>
-                <li>
-                    <a class='tabButton' href="#starred" data-toggle="tab">Starred</a>
+                <li id="starredTab" class="{{#if isActiveTab 'starredTab'}} active {{/if}}">
+                    <a class='tabButton'>Starred</a>
                 </li>
             </ul>
 
-            <div id="usernav" class="tab-content">      
-                <div id="edited" class="tab-pane active">
+        <div id="usernav" class="tab-content">   
+                <div id="edited" class="tab-pane {{#if isActiveTab 'editedTab'}} active {{/if}}">
                     <ul>
-                        {{#isolate}}
                         {{#each edited}}
                             <li><a class="left-nav" href="{{entryLink this}}">{{title}}</a></li>
                         {{/each}}
-                        {{/isolate}}
                     </ul>
                 </div> 
-                <div id="starred" class="tab-pane" >
+            <div id="starred" class="tab-pane {{#if isActiveTab 'starredTab'}} active {{/if}}" >
                     <ul>
-                        {{#isolate}}
                         {{#each starred}}
                         <li><a class="left-nav" href="{{entryLink this}}">{{title}}</a></li>
                         {{/each}}
-                        {{/isolate}}
                     </ul>
-                </div>
             </div>
         </div>
     </user>
