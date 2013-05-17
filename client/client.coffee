@@ -215,6 +215,13 @@ Template.entry.entry = ->
 Template.entry.edit_mode = ->
     Session.get('edit-mode')
 
+
+Template.main.events
+    'click #sidenav_btn': (evt) ->
+        evt.preventDefault()
+        $('#leftNavContainer').toggle(0)
+        $("#main").toggleClass('wLeftNav')
+
 Template.main.modeIs = (mode) ->
     Session.get('mode') == mode;
 
@@ -364,33 +371,6 @@ Template.entry.events
 
     'click a.entry-link': (e) ->
         evtNavigate(e) unless Session.get('edit-mode')
-
-    'click #sidenav_btn': (evt) ->
-        evt.preventDefault()
-        jPM = $.jPanelMenu(
-            menu: "#leftNavContainer"
-            trigger: "#sidenav_btn"
-            openPosition: '235px'
-            closeOnContentClick: false
-            keyboardShortcuts: false
-            afterOpen: -> $('a.left-nav').click( evtNavigate )
-        )
-        if jPM.isOpen()
-            jPM.off()
-        else
-            jPM.on()
-            #todo: Selah review below code
-            #tab fix for tab functionality in jPanelMenu/sidebar
-            # issue: cloned ids need unique names for the bootstrap
-            # tab code to wrok
-            # soltion - change the ids in question to have _panel appended
-            $( "#jPanelMenu-menu .tabButton" ).each ->
-                tab_id_name = $(this).attr('href')
-                $(this).attr('href', tab_id_name+'_panel')
-
-            $( "#jPanelMenu-menu .tab-pane" ).each ->
-                tab_id_name = $(this).attr('id')
-                $(this).attr('id', tab_id_name+'_panel')
 
 
     'click #edit': (evt) ->

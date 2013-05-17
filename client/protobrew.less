@@ -976,9 +976,17 @@ table thead td {
 
 @media only screen and (max-width: 600px) {
 
+  #leftNavContainer{
+      display: none;
+      position: absolute;
+      height: 100%;
+      top: 44px;
+  }
   #left_nav {
       position: absolute;
       overflow: visible;
+      background-color: white;
+      height: 100%;
       nav {
         position: absolute;
       }
@@ -999,23 +1007,45 @@ table thead td {
       }
   }
 
+  .action-toolbar {
+    position: fixed;
+    top : 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    width: 100%;
+    left: 0;
+    right: 0;
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+    border-bottom: 1px solid #d4d4d4;
+    background-color: white;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
+    z-index: 100
+  }
+
 
   #sidenav_btn{
+      position: fixed;
       display: inline-block;
+      z-index: 120;
+      top: 5px;
+      left: 10px;
   }
 
-  .jPanelMenu-panel #sidenav_btn{
-      left: 240px;
-  }
 
-  #leftNavContainer{
-      display: none;
-  }
   #main {
       margin-left: 0;
+      z-index: 100;
+      padding-top: 0px;
+  }
+
+  #main.wLeftNav {
+      margin-left: 220px;
   }
   .redactor_toolbar {
     left: 0px;
+    top: 40px;
   }
 }
 

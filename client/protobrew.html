@@ -23,6 +23,9 @@
 <template name="main">
 
     <div class="content">
+        <a class="btn btn-inverse" href="#" value="sidenav_btn" id="sidenav_btn">
+            <span aria-hidden="true" data-icon="&#xe002;"></span> 
+        </a> 
 
     {{#if currentUser}}
 
@@ -125,10 +128,6 @@
             {{#if viewable}}
 
                 <div id= "user_toolbar" class="action-toolbar">
-		            <a class="btn" href="#" value="sidenav_btn" id="sidenav_btn">
-		                <span aria-hidden="true" data-icon="&#xe002;"></span>
-		                Panel
-		            </a> 
 					<a class="btn" href="#" value="new_page" id="new_page">
                         <span aria-hidden="true" data-icon="&#xe001;"></span> 
                         New
@@ -157,12 +156,7 @@
                 {{/if}}
 
             {{else}}
-                <div id= "user_toolbar" class="action-toolbar">
-		            <a class="btn" href="#" value="sidenav_btn" id="sidenav_btn">
-		                <span aria-hidden="true" data-icon="&#xe002;"></span> 
-		                Panel
-		            </a> 
-                </div>
+
             <p>{{entry.title}} is private.</p>
 
             {{/if}}
