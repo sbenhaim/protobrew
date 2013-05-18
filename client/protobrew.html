@@ -133,10 +133,19 @@
                         <span aria-hidden="true" data-icon="&#xe001;"></span> 
                         New
                     </a>
+
+                    {{#if isStarred}}
+                        <a class="btn" href="#" value="toggle_star" id="toggle_star">
+                            <span aria-hidden="true" data-icon="&#xe003;"></span> 
+                            Unstar
+                        </a>
+                    {{else}}
                     <a class="btn" href="#" value="toggle_star" id="toggle_star">
                         <span aria-hidden="true" data-icon="&#xe004;"></span> 
                         Star
                     </a>
+                    {{/if}}
+
                     {{#if editable}}
                     {{#if locked }}
                     <a class="btn disabled" href="javascript:void(0)" value="" id="">

@@ -185,6 +185,14 @@ Template.entry.locked = ->
     entry = Session.get('entry')
     return entry && entry.editing
 
+Template.entry.isStarred = ->
+    user  = Meteor.user()
+    starredPages = user.profile.starredPages
+    entryId = Session.get('entryId')
+    if entryId in starredPages
+        return  true
+
+
 Template.entry.adminable = ->
     context = Session.get("context")
     user  = Meteor.user()
