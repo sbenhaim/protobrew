@@ -181,6 +181,9 @@ Template.entry.viewable = ->
 Template.entry.modeIs = (v) ->
     return v == Session.get('entry').mode
 
+Template.entry.entryLoaded = ->
+    Session.get('entryLoaded')
+
 Template.entry.entry = ->
 
     title = Session.get("title")
@@ -209,7 +212,6 @@ Template.entry.entry = ->
         else
             Session.set( 'entry', {} )
             Session.set( 'entry_id', null )
-            Session.get('entryLoaded')
 
 
 Template.entry.edit_mode = ->
