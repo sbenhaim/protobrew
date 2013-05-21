@@ -264,12 +264,13 @@ Template.editEntry.events
 Template.editEntry.rendered = ->
     el = $( '#entry-text' )
     el.redactor(
+        plugins: ['autoSuggest']
         imageUpload: '/images'
         buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'deleted', '|', 
             'unorderedlist', 'orderedlist', 'outdent', 'indent', '|',
             'image', 'table', 'link', '|',
-            'fontcolor', 'backcolor', '|', 'alignment', '|', 'horizontalrule', '|',
-            'save', 'cancel', 'delete'],
+            'fontcolor', 'backcolor', '|', 'alignment', '|', 'horizontalrule'],
+        #    'save', 'cancel', 'delete'],
         # buttonsCustom:
         #     save:
         #         title: 'Save'
@@ -610,3 +611,29 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
 #     template.rendered = ->
 #       console.log name, "render count: ", ++counter
 #       oldRender and oldRender.apply(this, arguments_)
+
+
+@RedactorPlugins = {}  if typeof RedactorPlugins is "undefined"
+@RedactorPlugins.autoSuggest = 
+    init: ->
+
+        #.on to catch creation of modal (DNE before dropdown is selected)
+        $('body').on 'focus','#redactor_modal', ->
+            #remove the event ti stop focus from multi-firing
+            $('body').off 'focus','#redactor_modal'
+
+            #retrieve all available names and put them in an array
+            #better to only do this once in the app???
+            names = Entries.find({}).fetch()
+            listTitles = []
+            for i in names
+                #does the list name need to be context aware 
+                # how do we do entry for context based articles?
+                listTitles.push(i.title)
+
+            $("#redactor_wiki_link").textext(plugins: "autocomplete").bind "getSuggestions", (e, data) ->
+                list = listTitles
+                textext = $(e.target).textext()[0]
+                query = ((if data then data.query else "")) or ""
+                $(this).trigger "setSuggestions",
+                    result: textext.itemManager().filter(list, query)

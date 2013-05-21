@@ -523,12 +523,14 @@ var RLANG = {
 						wiki_link:
 						{
 							title: RLANG.wiki_link,
-							func: 'showWikiLink'
+							func: 'showWikiLink',
+							className : 'linkDropdown'
 						},
 						link:
 						{
 							title: RLANG.link_insert,
-							func: 'showLink'
+							func: 'showLink',
+							className : 'linkDropdown'
 						},
 						unlink:
 						{
