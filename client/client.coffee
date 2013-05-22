@@ -172,6 +172,9 @@ Handlebars.registerHelper( 'entryLink', (entry) ->
 Template.entry.title = ->
     Session.get("title")
 
+Template.entry.entryLoaded = ->
+    Session.get("entryLoaded")
+
 Template.entry.userContext = ->
     Session.get("context")
 
