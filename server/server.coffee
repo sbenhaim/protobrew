@@ -1,8 +1,7 @@
-# Accounts
-DOMAIN = "@wikraft\.mygbiz\.com$"
-
+throw new Meteor.Error( 500, "No `Settings' defined (need server/_settings.coffee)" ) unless Settings?
+    
 Accounts.onCreateUser( (options, user) ->
-    if DOMAIN? && ! user.services.google.email.match( DOMAIN )
+    if Settings.DOMAIN? && ! user.services.google.email.match( Settings.DOMAIN )
         throw new Meteor.Error(403, "Unauthorized")
 
     users = Meteor.users.find({})
