@@ -1,8 +1,7 @@
-# Accounts
-DOMAIN = "@wikraft\.mygbiz\.com$"
+throw new Meteor.Error( 500, "No `Settings' defined (need server/_settings.coffee)" ) unless Settings?
 
 Accounts.onCreateUser( (options, user) ->
-    if DOMAIN? && ! user.services.google.email.match( DOMAIN )
+    if Settings.DOMAIN? && ! user.services.google.email.match( Settings.DOMAIN )
         throw new Meteor.Error(403, "Unauthorized")
 
     users = Meteor.users.find({})
@@ -78,6 +77,12 @@ Meteor.methods
         Revisions.insert( { entryId: id, date: new Date(), text: entry.text, author: user._id } )
 
         return id
+
+    lockEntry: ( entryId ) ->
+        Entries.update( {_id: entryId}, {$set: {"editing": true}}) if entryId
+
+    unlockEntry: ( entryId ) ->
+        Entries.update( {_id: entryId}, {$set: {"editing": false}}) if entryId
 
     updateUser: (value) ->
         throw new Meteor.Error(403, "You must be logged in") unless this.userId

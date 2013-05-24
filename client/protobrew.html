@@ -98,6 +98,7 @@
 <template name="entry">
 
     <div id="entry">
+
             
         {{#if edit_mode}}
             <div id='edit_mode_toolbar'class="action-toolbar edit_mode">
@@ -155,7 +156,7 @@
         </form>
         {{else}}
 
-            {{#if entry}}
+        {{#if entry._id}}
 
                 {{#if viewable}}
 

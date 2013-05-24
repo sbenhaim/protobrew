@@ -3,6 +3,9 @@ root.Entries = new Meteor.Collection("entries")
 root.Tags = new Meteor.Collection("tags")
 root.Revisions = new Meteor.Collection("revisions")
 
+root.escapeRegExp = (str) ->
+  str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")
+
 Entries.allow
   insert: (userId, entry) -> false
 
@@ -13,6 +16,9 @@ Entries.allow
 Tags.allow
     insert: (userId, entry) -> true if userId
 
+
+root.entryLink = ( entry ) ->
+    unless entry.context then "/#{entry.title}" else "/u/#{entry.context}/#{entry.title}"
 
 # Admins can admin anywhere, others can only admin in context
 root.adminable = ( user, context ) ->
