@@ -665,18 +665,30 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
             #remove the event ti stop focus from multi-firing
             $('body').off 'focus','#redactor_modal'
 
-            $("#redactor_wiki_link").on "keyup keypress blur input paste change", (e)->
+            $("#redactor_wiki_link ").on "keyup keypress blur input paste change", (e)->
                 linkText = $("#redactor_wiki_link").val()
                 displayText = $("#redactor_wiki_link_text").val()
                 re = new RegExp('^'+displayText, 'g')
-
 
                 if not displayText
                     $("#redactor_wiki_link_text").val linkText
                 else if displayText is linkText.slice(0,-1) #linkText with the last char stripped off
                     $("#redactor_wiki_link_text").val linkText
                 else if re.test(linkText)
-                    $("#redactor_wiki_link_text").val linkText       
+                    $("#redactor_wiki_link_text").val linkText 
+
+
+            $("#redactor_link_url").on "keyup keypress blur input paste change", (e)->
+                linkText = $("#redactor_link_url").val()
+                displayText = $("#redactor_link_url_text").val()
+                re = new RegExp('^'+displayText, 'g')
+
+                if not displayText
+                    $("#redactor_link_url_text").val linkText
+                else if displayText is linkText.slice(0,-1) #linkText with the last char stripped off
+                    $("#redactor_link_url_text").val linkText
+                else if re.test(linkText)
+                    $("#redactor_link_url_text").val linkText       
             
 
             listTitles = Entries.find({},title: 1, context: 1).map (e) -> 
