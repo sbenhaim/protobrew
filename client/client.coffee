@@ -656,29 +656,45 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
 @RedactorPlugins = {}  if typeof RedactorPlugins is "undefined"
 @RedactorPlugins.autoSuggest = 
     init: ->
+        $('body').on 'click','.insert_link_btns', ->
+            RedactorPlugins.autoSuggest.autoSuggest()
 
+    autoSuggest: ->
         #.on to catch creation of modal (DNE before dropdown is selected)
         $('body').on 'focus','#redactor_modal', ->
             #remove the event ti stop focus from multi-firing
             $('body').off 'focus','#redactor_modal'
 
-            #retrieve all available names and put them in an array
-            #better to only do this once in the app???
-            # names = Entries.find({}).fetch()
-            # listTitles = []
-            # for i in names
-            #     #does the list name need to be context aware 
-            #     # how do we do entry for context based articles?
-            #     listTitles.push(i.title)
+            $("#redactor_wiki_link").on "keyup keypress blur input paste change", (e)->
+                linkText = $("#redactor_wiki_link").val()
+                displayText = $("#redactor_wiki_link_text").val()
+                re = new RegExp('^'+displayText, 'g')
+
+
+                if not displayText
+                    $("#redactor_wiki_link_text").val linkText
+                else if displayText is linkText.slice(0,-1) #linkText with the last char stripped off
+                    $("#redactor_wiki_link_text").val linkText
+                else if re.test(linkText)
+                    $("#redactor_wiki_link_text").val linkText       
             
 
             listTitles = Entries.find({},title: 1, context: 1).map (e) -> 
                 wSlash = entryLink e
                 wSlash.replace(/^\//, "")
 
-            $("#redactor_wiki_link").textext(plugins: "autocomplete").bind "getSuggestions", (e, data) ->
-                list = listTitles
-                textext = $(e.target).textext()[0]
-                query = ((if data then data.query else "")) or ""
-                $(this).trigger "setSuggestions",
-                    result: textext.itemManager().filter(list, query)
+            $("#redactor_wiki_link").textext
+                plugins: "autocomplete suggestions"
+                suggestions: listTitles
+
+            # $("#redactor_wiki_link").textext(plugins: "autocomplete").on "getSuggestions", (e, data) ->
+            #     console.log 'by here'
+            #     console.log e
+            #     list = listTitles
+
+              #   list = listTitles
+              #  textext = $(e.target).textext()[0]
+              #   query = ((if data then data.query else "")) or ""
+              #   $(this).trigger "setSuggestions",
+              #       result: textext.itemManager().filter(list, query)
+
