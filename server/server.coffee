@@ -59,7 +59,10 @@ Meteor.methods
 
     updateTitle: (entry, title, callback) ->
         throw new Meteor.Error(403, "You must be logged in") unless this.userId
-        return Entries.update( {_id: entry._id}, {$set: {'title': title}} )
+        if Entries.findOne( {'title': title })
+            throw new Meteor.Error(403, "page name already exists")
+        else
+            return Entries.update( {_id: entry._id}, {$set: {'title': title}} )
 
     # Todo: lock down fields
     saveEntry: (entry, context, callback) ->
