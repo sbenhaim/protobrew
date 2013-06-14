@@ -3419,7 +3419,7 @@ var RLANG = {
 						text = sel.anchorNode.parentNode.text; // also wiki link? - only for root
 						target = sel.anchorNode.parentNode.target;
 
-						if (sel.toString() !== '') // GK: was === switched to !== 'possible bug?'
+						if (sel.toString() == '') // GK: was === switched to !== 'possible bug?'
 						{
 							this.insert_link_node = sel.anchorNode.parentNode;
 						}
@@ -3457,7 +3457,7 @@ var RLANG = {
 				else if (isWikiLink)
 				{
 					this.setModalTab(1);
-
+					$('#redactor_tab_selected').val(1);
 					// remove baseURL from wiki href and decode to plain text
 					// TODO: does not explcitly handle external links and is likely to break
 					var pathArray = thref.split("/");
@@ -3470,6 +3470,7 @@ var RLANG = {
 				else
 				{
 					this.setModalTab(2);
+					$('#redactor_tab_selected').val(2);
 					$('#redactor_link_url').val(turl);
 				}
 
@@ -3508,8 +3509,8 @@ var RLANG = {
 				}
 
 				// test url
-				var pattern = '/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/';
-				//var pattern = '((xn--)?[a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}';
+				// var pattern = '/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/';
+				var pattern = '((xn--)?[a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}';
 				var re = new RegExp('^(http|ftp|https)://' + pattern,'i');
 				var re2 = new RegExp('^' + pattern,'i');
 				if (link.search(re) == -1 && link.search(re2) == 0 && this.opts.protocol !== false)
@@ -3530,8 +3531,8 @@ var RLANG = {
 				}
 
 				// test url
-				var pattern = '/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/';
-				//var pattern = '((xn--)?[a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}';
+				//var pattern = '/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/';
+				var pattern = '((xn--)?[a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}';
 				var re = new RegExp('^(http|ftp|https)://' + pattern,'i');
 				var re2 = new RegExp('^' + pattern,'i');
 				if (link.search(re) == -1 && link.search(re2) == 0 && this.opts.protocol !== false)
