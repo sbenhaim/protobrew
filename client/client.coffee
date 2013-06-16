@@ -656,14 +656,25 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
 @RedactorPlugins = {}  if typeof RedactorPlugins is "undefined"
 @RedactorPlugins.autoSuggest = 
     init: ->
+        this.selectModalClose = this.modalClose
+        this.modalClose = ->
+            $("#redactor_wiki_link").select2("close")
+            this.selectModalClose()
+
         $('body').on 'click','.insert_link_btns', ->
             RedactorPlugins.autoSuggest.autoSuggest()
+        
+        # $('body').on 'click','#redactor_modal_overlay', ->
+        #     console.log 'testing'
+        #     $('#select2-drop-mask').trigger('click')
+        #                 # select2-drop-mask
 
     autoSuggest: ->
         #.on to catch creation of modal (DNE before dropdown is selected)
         $('body').on 'focus','#redactor_modal', ->
             #remove the event ti stop focus from multi-firing
             $('body').off 'focus','#redactor_modal'
+
 
             $("#redactor_wiki_link ").on "keyup keypress blur input paste change", (e)->
                 linkText = $("#redactor_wiki_link").val()
@@ -695,9 +706,26 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
                 wSlash = entryLink e
                 wSlash.replace(/^\//, "")
 
-            $("#redactor_wiki_link").textext
-                plugins: "autocomplete suggestions"
-                suggestions: listTitles
+            # $("#redactor_wiki_link").textext
+            #     plugins: "autocomplete suggestions"
+            #     suggestions: listTitles
+
+            idarray = []
+            for i in listTitles
+                idarray.push({id: i, text: i})
+            console.log idarray
+
+
+            $("#redactor_wiki_link").select2
+                data: idarray
+                placeholder: "Select or Enter a Wiki Name"
+                createSearchChoice: (term, data) ->
+                    if $(data).filter(->
+                        @text.localeCompare(term) is 0
+                    ).length is 0
+                        id: term
+                        text: term
+
 
             # $("#redactor_wiki_link").textext(plugins: "autocomplete").on "getSuggestions", (e, data) ->
             #     console.log 'by here'

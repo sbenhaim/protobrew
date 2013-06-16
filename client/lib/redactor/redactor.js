@@ -284,7 +284,7 @@ var RLANG = {
 					'</div>' +
 					'<input type="hidden" id="redactor_tab_selected" value="1" />' +
 					'<div class="redactor_tab" id="redactor_tab1">' +
-						'<label>Wiki Link</label>             <input type="text" class="redactor_input"                    id="redactor_wiki_link"  style= "width :402px"  />' +
+						'<label>Wiki Link</label>             <input type="hidden" class="redactor_input"                    id="redactor_wiki_link"  style= "width :402px"  />' +
 						'<p>example: New Page</p>' +
 						'<label>' + 'Display Text' + '</label><input type="text" class="redactor_input redactor_link_text" id="redactor_wiki_link_text" />' +
 						'<label><input type="checkbox" id="redactor_link_blank"> ' + RLANG.link_new_tab + '</label>' +
@@ -3459,7 +3459,7 @@ var RLANG = {
 				else if (isWikiLink)
 				{
 					this.setModalTab(1);
-
+					$('#redactor_tab_selected').val(1);
 					// remove baseURL from wiki href and decode to plain text
 					// TODO: does not explcitly handle external links and is likely to break
 					var pathArray = thref.split("/");
@@ -3472,6 +3472,7 @@ var RLANG = {
 				else
 				{
 					this.setModalTab(2);
+					$('#redactor_tab_selected').val(2);
 					$('#redactor_link_url').val(turl);
 				}
 
@@ -3510,8 +3511,8 @@ var RLANG = {
 				}
 
 				// test url
-				var pattern = '/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/';
-				//var pattern = '((xn--)?[a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}';
+				// var pattern = '/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/';
+				var pattern = '((xn--)?[a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}';
 				var re = new RegExp('^(http|ftp|https)://' + pattern,'i');
 				var re2 = new RegExp('^' + pattern,'i');
 				if (link.search(re) == -1 && link.search(re2) == 0 && this.opts.protocol !== false)
@@ -3532,8 +3533,8 @@ var RLANG = {
 				}
 
 				// test url
-				var pattern = '/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/';
-				//var pattern = '((xn--)?[a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}';
+				//var pattern = '/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/';
+				var pattern = '((xn--)?[a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}';
 				var re = new RegExp('^(http|ftp|https)://' + pattern,'i');
 				var re2 = new RegExp('^' + pattern,'i');
 				if (link.search(re) == -1 && link.search(re2) == 0 && this.opts.protocol !== false)
