@@ -12,4 +12,5 @@ accounts-ui
 accounts-google
 less
 bootstrap
+toastjs
 select2
