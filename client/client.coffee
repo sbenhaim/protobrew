@@ -172,6 +172,9 @@ Handlebars.registerHelper( 'entryLink', (entry) ->
 Template.entry.title = ->
     Session.get("title")
 
+Template.entry.titleHidden = ->
+    Session.get("titleHidden")
+
 Template.entry.entryLoaded = ->
     Session.get("entryLoaded")
 
@@ -262,30 +265,6 @@ Template.main.loginConfigured = () ->
         return true;
     else
         return false;
-
-Template.index.content = ->
-    entry = Entries.findOne({title:"index"})
-    $("#sidebar").html('') #clear sidebar of previous state
-    if entry
-        Session.set('entry', entry )
-        Session.set('entryId', entry._id )
-
-        source = $('<div>').html( entry.text )
-        titles = stackTitles( source.find( 'h1' ) )
-
-        if titles.length > 0
-            for e, i in source.find('h1,h2,h3,h4,h5')
-                e.id = "entry-title-" + (i + 1)
-
-        ul = $('<ul>')
-        buildNav( ul, titles )
-
-        $("#sidebar").html(ul)
-
-        entry
-
-Template.index.events
-    'click a.entry-link': evtNavigate
 
 Template.editEntry.events
     'focus #entry-tags': (evt) ->
@@ -497,13 +476,17 @@ EntryRouter = Backbone.Router.extend({
         "profile": "profile",
         "images": "images",
         "u/:user/:title": "userSpace",
+        "welcome": "redirectHome"
         ":title": "main",
-        "": "index"
+        "": "welcome"
     },
-    index: ->
+    redirectHome: ->
+        this.navigate( "", true )
+    welcome: ->
         unlockEntry()
-        Session.set("mode", 'index')
-        Session.set("title", undefined)
+        Session.set("titleHidden", true)
+        Session.set("mode", 'entry')
+        Session.set("title", 'Welcome')
     profile: (term) ->
         unlockEntry()
         Session.set( 'mode', 'profile' )
@@ -517,11 +500,13 @@ EntryRouter = Backbone.Router.extend({
         Session.set( 'tag', decodeURIComponent( tag ) )
     userSpace: (username, title) ->
         unlockEntry()
+        Session.set("titleHidden", false)
         Session.set("mode", 'entry')
         Session.set("context", username)
         Session.set("title", decodeURIComponent( title ))
     main: (title) ->
         unlockEntry()
+        Session.set("titleHidden", false)
         Session.set("mode", 'entry')
         Session.set("context", null)
         Session.set("title", decodeURIComponent( title ))
