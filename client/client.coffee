@@ -389,7 +389,7 @@ Template.entry.events
         evtNavigate(e) unless Session.get('editMode')
 
 
-    'click #edit': (evt) ->
+    'click .edit': (evt) ->
         Session.set( 'y-offset', window.pageYOffset )
         evt.preventDefault()
         lockEntry()

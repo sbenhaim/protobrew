@@ -116,7 +116,7 @@
                             Star
                         </a>
                         {{#if editable}}
-                        <a class="btn" href="#" value="edit" id="edit">
+                        <a class="btn" href="#" class="edit" value="edit" id="edit_btn">
                             <span aria-hidden="true" data-icon="&#x23;"></span> 
                             Edit
                         </a>
@@ -179,7 +179,7 @@
                 {{#if entryLoaded}}
                     <p>{{title}} doesn't exist yet.</p>
                         {{#if currentUser}}
-                        	<a class="action-btn" href="#" value="edit" id="edit"><span aria-hidden="true" data-icon="&#x22;"></span> Create it!</a>
+                        	<a class="btn btn-success edit" href="#" value="edit" id="create_btn"><span aria-hidden="true" data-icon="&#x22;"></span> Create it!</a>
                         {{/if}}
                 {{else}}    
                     <img src="http://viewvc.svn.mozilla.org/vc/addons/trunk/bandwagon/skin/images/spinner.gif?revision=18591&view=co&pathrev=18591" height="32" width="32">
