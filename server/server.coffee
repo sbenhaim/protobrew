@@ -57,9 +57,11 @@ Meteor.publish('tags', -> return Tags.find({}))
 
 Meteor.methods
 
-    updateTitle: (entry, title, callback) ->
+    updateTitle: (entry, context, title, callback) ->
         throw new Meteor.Error(403, "You must be logged in") unless this.userId
-        if Entries.findOne( {'title': title })
+        titleEscaped = escapeRegExp( title )
+        titleTerm = new RegExp( "^" + titleEscaped + "$", 'i' )
+        if Entries.findOne({title: titleTerm, context: context})
             throw new Meteor.Error(403, "page name already exists")
         else
             return Entries.update( {_id: entry._id}, {$set: {'title': title}} )

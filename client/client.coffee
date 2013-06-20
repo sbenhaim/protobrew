@@ -425,7 +425,7 @@ Template.entry.events
         updateTitle = (e, force = false) ->
             if force || e.target != $el[0] && e.target != $in[0]
                 if $in.val() != $el.text()
-                    Meteor.call 'updateTitle', Session.get('entry'), $in.val(), (error, result) ->
+                    Meteor.call 'updateTitle', Session.get('entry'), Session.get('context'), $in.val(), (error, result) ->
                         if error
                             Toast.error('Page already exists!')
                         else
