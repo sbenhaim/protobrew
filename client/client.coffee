@@ -308,6 +308,11 @@ Template.editEntry.rendered = ->
 
     window.scrollTo(0,Session.get('y-offset'))
 
+    minHeight = $(window).height() - 130 #50 -> top toolbar 60 -> title 20 -> bottom margin
+    console.log minHeight
+    if( $('.redactor_').height() < minHeight ) 
+        $('.redactor_').css('min-height', minHeight)
+
     tags = Tags.find({})
     entry = Session.get('entry')
 
