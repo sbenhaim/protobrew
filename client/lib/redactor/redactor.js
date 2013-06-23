@@ -3153,6 +3153,18 @@ var RLANG = {
 
 			// as link
 			var link = $.trim($('#redactor_file_link').val());
+	
+			// GK: 062313
+			var pattern = '((xn--)?[a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}'; 
+			var re = new RegExp('^(http|ftp|https)://' + pattern,'i');
+			var re2 = new RegExp('^' + pattern,'i');
+			if (link.search(re) == -1 && link.search(re2) == 0 && this.opts.protocol !== false)
+			{
+				// IF no prefix+:// and has www.anything or anything.com
+				link = this.opts.protocol + link;
+			}
+			// end GK: 062313
+
 			if (link !== '')
 			{
 				if ($(parent).get(0).tagName !== 'A')
