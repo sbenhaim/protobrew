@@ -40,6 +40,10 @@ root.editable = ( entry, user, context ) ->
       ( context == null && (entry == null || !entry._id?) ) ||
       ( entry && entry.mode == "public" ) )
 
+root.findSingleEntryByTitle = ( title, context ) ->
+    titleEscaped = escapeRegExp( title )
+    titleTerm = new RegExp( "^" + titleEscaped + "$", 'i' )
+    Entries.findOne({title: titleTerm, context: context})
 
 root.verifySave = ( entry, user, context ) ->
 

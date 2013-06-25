@@ -222,9 +222,7 @@ Template.entry.entry = ->
     context = Session.get('context')
     $("#sidebar").html('') #clear sidebar of previous state
     if title
-        titleEscaped = escapeRegExp( title )
-        titleTerm = new RegExp( "^" + titleEscaped + "$", 'i' )
-        entry = Entries.findOne({title: titleTerm, context: context})
+        entry = findSingleEntryByTitle( title, context )
         if entry
             Session.set('entry', entry )
             Session.set('title', entry.title )
