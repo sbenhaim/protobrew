@@ -191,6 +191,14 @@
         {{/if}}
     </div>
 
+    {{#if currentUser}}
+        <div id="sidebar_col">
+            <div id="sidebar">
+                {{> sidebar}}
+            </div>
+        <!-- end #sidebar --></div>
+    {{/if}}
+
 </template>
 
 
@@ -285,13 +293,6 @@
     </div>
   </div>
 
-  {{#if currentUser}}
-	<div id="sidebar_col">
-        <div id="sidebar">
-            {{> sidebar}}
-        </div>
-	<!-- end #sidebar --></div>
-  {{/if}}
 </template>
 
 <body>
