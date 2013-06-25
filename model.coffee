@@ -59,9 +59,9 @@ root.verifySave = ( entry, user, context ) ->
         entry._id = null unless oldEntry
 
     # No dup titles in same context
-    for other in Entries.find({context: context, _id: {$not: entry._id}})
-        if other.title == entry.title
-            bail( "Title taken" )
+    other = findSingleEntryByTitle( title, context )
+    bail( "Title taken" ) if other && other._id != entry.id
+        
 
     # Admins can do anything
     return entry if user.group == "admin"
