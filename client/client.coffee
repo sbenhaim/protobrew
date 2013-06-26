@@ -347,7 +347,7 @@ saveEntry = (evt) ->
 
     context = Session.get('context')
 
-    Meteor.call('saveEntry', entry, context, reroute)
+    Meteor.call('saveEntry', title, entry, context, reroute)
     Entries.update({_id: entry._id}, entry)
     Session.set("editMode", false)
 

@@ -45,7 +45,7 @@ root.findSingleEntryByTitle = ( title, context ) ->
     titleTerm = new RegExp( "^" + titleEscaped + "$", 'i' )
     Entries.findOne({title: titleTerm, context: context})
 
-root.verifySave = ( entry, user, context ) ->
+root.verifySave = (title, entry, user, context ) ->
 
     bail = (message, status = 403) ->
         throw new Meteor.Error(status, message)
@@ -60,7 +60,7 @@ root.verifySave = ( entry, user, context ) ->
 
     # No dup titles in same context
     other = findSingleEntryByTitle( title, context )
-    bail( "Title taken" ) if other && other._id != entry.id
+    bail( "Title taken" ) if other && other._id != entry._id
         
 
     # Admins can do anything

@@ -65,10 +65,10 @@ Meteor.methods
             return Entries.update( {_id: entry._id}, {$set: {'title': title}} )
 
     # Todo: lock down fields
-    saveEntry: (entry, context, callback) ->
+    saveEntry: (title, entry, context, callback) ->
         # Only members can edit
         user = Meteor.user()
-        entry = verifySave( entry, user, context )
+        entry = verifySave(title, entry, user, context )
         entry.context = context
 
         if entry._id
