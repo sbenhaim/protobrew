@@ -221,6 +221,7 @@ Template.entry.entry = ->
     title = Session.get("title")
     context = Session.get('context')
     $("#sidebar").html('') #clear sidebar of previous state
+
     if title
         entry = findSingleEntryByTitle( title, context )
         if entry
@@ -228,17 +229,13 @@ Template.entry.entry = ->
             Session.set('title', entry.title )
             Session.set('entryId', entry._id )
 
-            source = $('<div>').html( entry.text )
+            source = $('<div>').html( entry.text ) #make a div with entry.text as the innerHTML
             titles = stackTitles( filterHeadlines( source.find( 'h1' ) ) )
             titles.unshift( {id: 0, target: "article-title", title: Session.get('title') } )
 
             if titles.length > 0
                 for e, i in source.find('h1,h2,h3,h4,h5')
                     e.id = "entry-title-" + (i + 1)
-
-            ul = $('<ul>')
-            buildNav( ul, titles)
-            $("#sidebar").html(ul)
 
             entry.text = source.html()
             entry
@@ -520,18 +517,44 @@ EntryRouter = Backbone.Router.extend({
         this.navigate(title, true)
 })
 
+##################################
+## NAV
+Template.sidebar.navItems = ->
+    title = Session.get("title")
+    context = Session.get('context')
+    $("#sidebar").html('') #clear sidebar of previous state
+    if title
+        titleEscaped = escapeRegExp( title )
+        titleTerm = new RegExp( "^" + titleEscaped + "$", 'i' )
+        entry = Entries.findOne({title: titleTerm, context: context})
+        if entry
+            source = $('<div>').html( entry.text ) #make a div with entry.text as the innerHTML
+            titles = stackTitles( filterHeadlines( source.find( 'h1' ) ) )
+            titles.unshift( {id: 0, target: "article-title", title: Session.get('title') } )
+            ul = $('<ul>')
+            buildNav( ul, titles)
+            ul.html()
+
+Template.sidebar.events
+    'click a': (evt) ->
+        evt.preventDefault()
+        #debugger
+        $el = $(evt.currentTarget)
+        #dataTarget = $el.attr('data-target')
+        dataTarget = $el.attr('href')
+        offset = $(dataTarget).offset()
+        #adjust = if Session.get( 'editMode' ) then 70 else 20
+        adjust = 50
+        $( 'html,body' ).animate( { scrollTop: offset.top - adjust }, 350 )
+
 Router = new EntryRouter
 
 Meteor.startup ->
     Backbone.history.start pushState: true
     Session.set('activeTab', 'editedTab')
   
-##################################
-## NAV
 
-Template.sidebar.navItems = ->
-    Session.get('sidebar')
-
+#builds array of all heading titles
 stackTitles = (items, cur, counter) ->
 
     cur = 1 if cur == undefined
@@ -542,17 +565,13 @@ stackTitles = (items, cur, counter) ->
     for elem, index in items
         elem = $(elem)
         children  =  filterHeadlines( elem.nextUntil( 'h' + cur, 'h' + next ) )
-
         d = {};
         d.title = elem.text()
         # d.y  = elem.offset().top
         d.id = counter++
         d.target = "entry-title-#{d.id}"
-
         d.style = "top" if cur == 0
-
         d.children = stackTitles( children, next, counter ) if children.length > 0
-
         d
 
 filterHeadlines = ( $hs ) ->
@@ -560,23 +579,13 @@ filterHeadlines = ( $hs ) ->
 
 buildNav = ( ul, items ) ->
     for child, index in items
-
         li = $( "<li>" )
         $( ul ).append( li )
         $a = $("<a/>")
         $a.attr( "id", "nav-title-" + child.id )
-        $a.data("target", child.target )
         $a.addClass( child.style )
-
-        $a.on( "click", ->
-            id = this.id
-            target_id = $(this).data('target')
-            offset = $('#' + target_id).offset()
-            adjust = if Session.get( 'editMode' ) then 70 else 20
-            $( 'html,body' ).animate( { scrollTop: offset.top - adjust }, 350 )
-        )
-
-        $a.attr( 'href', 'javscript:void(0)' )
+        #$a.attr( 'data-target', child.target )
+        $a.attr( 'href', '#' + child.target ) #for cursor purposes only
         $a.html( child.title )
         
         li.append( $a )
