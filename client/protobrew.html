@@ -111,16 +111,36 @@
                             <span aria-hidden="true" data-icon="&#xe001;"></span> 
                             New
                         </a>
-                        <a class="btn" href="#" value="toggle_star" id="toggle_star">
-                            <span aria-hidden="true" data-icon="&#xe004;"></span> 
-                            Star
-                        </a>
-                        {{#if editable}}
-                        <a class="btn edit" href="#" class="edit" value="edit" id="edit_btn">
-                            <span aria-hidden="true" data-icon="&#x23;"></span> 
-                            Edit
-                        </a>
+
+                        {{#if isStarred}}
+                            <a class="btn" href="#" value="toggle_star" id="toggle_star">
+                                <span aria-hidden="true" data-icon="&#xe003;"></span> 
+                                Unstar
+                            </a>
+                        {{else}}
+                            <a class="btn" href="#" value="toggle_star" id="toggle_star">
+                                <span aria-hidden="true" data-icon="&#xe004;"></span> 
+                                Star
+                            </a>
                         {{/if}}
+
+                        {{#if editable}}
+
+                            {{#if locked}}
+                                <a class="btn edit disabled" href="javascript:void(0)" value="" id="">
+                                    <i class="icon-lock"></i>
+                                    Locked
+                                </a>
+                            {{else}}
+                                <a class="btn edit" href="javascript:void(0);" value="edit" id="edit_btn">
+                                     <span aria-hidden="true" data-icon="&#x23;"></span> 
+                                     Edit
+                                 </a>
+                            {{/if}}
+
+
+                        {{/if}}
+
                     </div>
                 {{/if}}
             {{/if}}
