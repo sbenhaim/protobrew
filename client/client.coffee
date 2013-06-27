@@ -716,7 +716,10 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
             idarray = []
             for i in listTitles
                 idarray.push({id: i, text: i})
-            console.log idarray
+
+            # case where 0 length put some junk in there
+            if idarray.length == 0
+               idarray.push({id: " ", text: " "})
 
 
             $("#redactor_wiki_link").select2
