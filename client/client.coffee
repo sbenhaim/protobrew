@@ -479,17 +479,25 @@ EntryRouter = Backbone.Router.extend({
         "profile": "profile",
         "images": "images",
         "u/:user/:title": "userSpace",
-        "welcome": "redirectHome"
+        "home": "redirectHome"
         ":title": "main",
-        "": "welcome"
+        "": "home"
     },
     redirectHome: ->
         this.navigate( "", true )
-    welcome: ->
+    home: ->
         unlockEntry()
-        Session.set("titleHidden", true)
-        Session.set("mode", 'entry')
-        Session.set("title", 'Welcome')
+        reroute = ( ) ->
+            entry = Entries.findOne({_id: 'home'})
+            Session.set('titleHidden', false)
+            Session.set('mode', 'entry')
+            Session.set('title', entry.title)
+            navigate( entry.title, Session.get( "context" ) ) unless entry.title == "home"
+        entry = Entries.findOne({_id: "home"})
+        if ! entry
+            Meteor.call 'createHome', 'home', reroute
+        else
+            reroute()
     profile: (term) ->
         unlockEntry()
         Session.set( 'mode', 'profile' )
@@ -503,16 +511,16 @@ EntryRouter = Backbone.Router.extend({
         Session.set( 'tag', decodeURIComponent( tag ) )
     userSpace: (username, title) ->
         unlockEntry()
-        Session.set("titleHidden", false)
-        Session.set("mode", 'entry')
-        Session.set("context", username)
-        Session.set("title", decodeURIComponent( title ))
+        Session.set('titleHidden', false)
+        Session.set('mode', 'entry')
+        Session.set('context', username)
+        Session.set('title', decodeURIComponent( title ))
     main: (title) ->
         unlockEntry()
-        Session.set("titleHidden", false)
-        Session.set("mode", 'entry')
-        Session.set("context", null)
-        Session.set("title", decodeURIComponent( title ))
+        Session.set('titleHidden', false)
+        Session.set('mode', 'entry')
+        Session.set('context', null)
+        Session.set('title', decodeURIComponent( title ))
     setTitle: (title) ->
         this.navigate(title, true)
 })
