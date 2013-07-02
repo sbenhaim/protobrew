@@ -3474,12 +3474,12 @@ var RLANG = {
 					$('#redactor_tab_selected').val(1);
 					// remove baseURL from wiki href and decode to plain text
 					// TODO: does not explcitly handle external links and is likely to break
-					var pathArray = thref.split("/");
-					var baseURL = 'http://' + pathArray[2] + '/';
-					var wikiURL = url.replace(baseURL, '');
-					wikiURL = wikiURL.replace('%20', " ");
+					// var pathArray = thref.split("/");
+					// var baseURL = 'http://' + pathArray[2] + '/';
+					// var wikiURL = url.replace(baseURL, '');
+					// wikiURL = wikiURL.replace('%20', " ");
 
-					$('#redactor_wiki_link').val(wikiURL);
+					// $('#redactor_wiki_link').val(wikiURL);
 				}
 				else
 				{

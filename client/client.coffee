@@ -659,6 +659,7 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
 @RedactorPlugins = {}  if typeof RedactorPlugins is "undefined"
 @RedactorPlugins.autoSuggest = 
     init: ->
+        #hijack redactor modalClose
         this.selectModalClose = this.modalClose
         this.modalClose = ->
             $("#redactor_wiki_link").select2("close")
@@ -722,17 +723,28 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
                idarray.push({id: " ", text: " "})
 
 
+            debugger;
+            console.log $("#redactor_wiki_link").val()
+            defaultValue = $("#redactor_wiki_link").val()
             $("#redactor_wiki_link").select2
                 data: idarray
-                placeholder: "Select or Enter a Wiki Name"
+                # placeholder: "Select or Enter a Wiki Name"
+                initSelection : (element, callback) ->
+                    data =
+                        id: element.val()
+                        text: element.val()
+                    callback data
                 createSearchChoice: (term, data) ->
                     if $(data).filter(->
                         @text.localeCompare(term) is 0
                     ).length is 0
                         id: term
                         text: term
+            .select2 "val", defaultValue
+            #alert("Selected value is: "+$("#redactor_wiki_link").select2("val"));
 
-
+            # $('#redactor_wiki_link').select2().select2('val', $("#redactor_wiki_link").val());
+            
             # $("#redactor_wiki_link").textext(plugins: "autocomplete").on "getSuggestions", (e, data) ->
             #     console.log 'by here'
             #     console.log e
