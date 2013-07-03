@@ -81,6 +81,19 @@ Meteor.methods
 
         return id
 
+    createHome: (callback) ->
+        bail = (message, status = 403) ->
+            throw new Meteor.Error(status, message)
+
+        # Only members can edit
+        user = Meteor.user()
+        if ! user
+            bail("You must be logged in")
+        entry = Entries.findOne({_id: "home"})
+        if ! entry
+            id =  Entries.insert({_id: "home", title: "home"})
+
+
     lockEntry: ( entryId ) ->
         Entries.update( {_id: entryId}, {$set: {"editing": true}}) if entryId
 
