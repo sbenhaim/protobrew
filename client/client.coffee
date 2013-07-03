@@ -479,7 +479,6 @@ EntryRouter = Backbone.Router.extend({
         "profile": "profile",
         "images": "images",
         "u/:user/:title": "userSpace",
-        "home": "redirectHome"
         ":title": "main",
         "": "home"
     },
@@ -487,17 +486,12 @@ EntryRouter = Backbone.Router.extend({
         this.navigate( "", true )
     home: ->
         unlockEntry()
-        reroute = ( ) ->
+        reroute = () ->
             entry = Entries.findOne({_id: 'home'})
             Session.set('titleHidden', false)
             Session.set('mode', 'entry')
             Session.set('title', entry.title)
-            navigate( entry.title, Session.get( "context" ) ) unless entry.title == "home"
-        entry = Entries.findOne({_id: "home"})
-        if ! entry
-            Meteor.call 'createHome', 'home', reroute
-        else
-            reroute()
+        Meteor.call 'createHome', reroute
     profile: (term) ->
         unlockEntry()
         Session.set( 'mode', 'profile' )
