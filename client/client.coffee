@@ -723,7 +723,6 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
                idarray.push({id: " ", text: " "})
 
 
-            debugger;
             console.log $("#redactor_wiki_link").val()
             defaultValue = $("#redactor_wiki_link").val()
             $("#redactor_wiki_link").select2

@@ -209,72 +209,72 @@
 			// lang
 			langs: {
 				en: {
-	html: 'HTML',
-	video: 'Insert Video',
-	image: 'Insert Image',
-	table: 'Table',
-	link: 'Link',
-	wiki_insert: 'Add Wiki Link',
-	link_insert: 'Add External link',
-	link_edit: 'Edit link',
-	unlink: 'Unlink',
-	formatting: 'Formatting',
-					paragraph: 'Normal text',
-	quote: 'Quote',
-	code: 'Code',
-	header1: 'Header 1',
-	header2: 'Header 2',
-	header3: 'Header 3',
-	header4: 'Header 4',
-	bold: 'Bold',
-	italic: 'Italic',
-	fontcolor: 'Font Color',
-	backcolor: 'Back Color',
-	unorderedlist: 'Unordered List',
-	orderedlist: 'Ordered List',
-	outdent: 'Outdent',
-	indent: 'Indent',
-	cancel: 'Cancel',
-	insert: 'Insert',
-	save: 'Save',
-	_delete: 'Delete',
-	insert_table: 'Insert Table',
-	insert_row_above: 'Add Row Above',
-	insert_row_below: 'Add Row Below',
-	insert_column_left: 'Add Column Left',
-	insert_column_right: 'Add Column Right',
-	delete_column: 'Delete Column',
-	delete_row: 'Delete Row',
-	delete_table: 'Delete Table',
-	rows: 'Rows',
-	columns: 'Columns',
-	add_head: 'Add Head',
-	delete_head: 'Delete Head',
-	title: 'Title',
-	image_position: 'Position',
-	none: 'None',
-	left: 'Left',
-	right: 'Right',
-	image_web_link: 'Image Web Link',
-	text: 'Text',
-	mailto: 'Email',
-	web: 'URL',
-	video_html_code: 'Video Embed Code',
-	file: 'Insert File',
-	upload: 'Upload',
-	download: 'Download',
-	choose: 'Choose',
-	or_choose: 'Or choose',
-	drop_file_here: 'Drop file here',
-	align_left:	'Align text to the left',
-	align_center: 'Center text',
-	align_right: 'Align text to the right',
-	align_justify: 'Justify text',
-	horizontalrule: 'Insert Horizontal Rule',
-	deleted: 'Deleted',
-	anchor: 'Anchor',
-	link_new_tab: 'Open link in new tab',
-	underline: 'Underline',
+					html: 'HTML',
+					video: 'Insert Video',
+					image: 'Insert Image',
+					table: 'Table',
+					link: 'Link',
+					wiki_insert: 'Add Wiki Link',
+					link_insert: 'Add External link',
+					link_edit: 'Edit link',
+					unlink: 'Unlink',
+					formatting: 'Formatting',
+					aragraph: 'Normal text',
+					quote: 'Quote',
+					code: 'Code',
+					header1: 'Header 1',
+					header2: 'Header 2',
+					header3: 'Header 3',
+					header4: 'Header 4',
+					bold: 'Bold',
+					italic: 'Italic',
+					fontcolor: 'Font Color',
+					backcolor: 'Back Color',
+					unorderedlist: 'Unordered List',
+					orderedlist: 'Ordered List',
+					outdent: 'Outdent',
+					indent: 'Indent',
+					cancel: 'Cancel',
+					insert: 'Insert',
+					save: 'Save',
+					_delete: 'Delete',
+					insert_table: 'Insert Table',
+					insert_row_above: 'Add Row Above',
+					insert_row_below: 'Add Row Below',
+					insert_column_left: 'Add Column Left',
+					insert_column_right: 'Add Column Right',
+					delete_column: 'Delete Column',
+					delete_row: 'Delete Row',
+					delete_table: 'Delete Table',
+					rows: 'Rows',
+					columns: 'Columns',
+					add_head: 'Add Head',
+					delete_head: 'Delete Head',
+					title: 'Title',
+					image_position: 'Position',
+					none: 'None',
+					left: 'Left',
+					right: 'Right',
+					image_web_link: 'Image Web Link',
+					text: 'Text',
+					mailto: 'Email',
+					web: 'URL',
+					video_html_code: 'Video Embed Code',
+					file: 'Insert File',
+					upload: 'Upload',
+					download: 'Download',
+					choose: 'Choose',
+					or_choose: 'Or choose',
+					drop_file_here: 'Drop file here',
+					align_left:	'Align text to the left',
+					align_center: 'Center text',
+					align_right: 'Align text to the right',
+					align_justify: 'Justify text',
+					horizontalrule: 'Insert Horizontal Rule',
+					deleted: 'Deleted',
+					anchor: 'Anchor',
+					link_new_tab: 'Open link in new tab',
+					underline: 'Underline',
 					alignment: 'Alignment',
 					filename: 'Name (optional)'
 				}
@@ -4744,15 +4744,18 @@
 
 				var tabs = $('#redactor_tabs').find('a');
 
-				if (this.opts.linkEmail === false) tabs.eq(1).remove();
-				if (this.opts.linkAnchor === false) tabs.eq(2).remove();
-				if (this.opts.linkEmail === false && this.opts.linkAnchor === false)
+				// GK: commenting out tab optioning (added in redactor 9)
+				// if (this.opts.linkEmail === false) tabs.eq(1).remove();
+				// if (this.opts.linkAnchor === false) tabs.eq(2).remove();
+				// if (this.opts.linkEmail === false && this.opts.linkAnchor === false)
+				// {
+				// 	$('#redactor_tabs').remove();
+				// 	$('#redactor_link_url').val(turl);
+				// }
+				// else
+				if (true)
 				{
-					$('#redactor_tabs').remove();
-					$('#redactor_link_url').val(turl);
-				}
-				else
-				{
+					debugger;
 				    if (url.search('mailto:') === 0)
 				    {
 						    this.modalSetTab.call(this, 3);
@@ -4769,7 +4772,7 @@
 				    }
 				    else if (isWikiLink)
 				    {
-					    this.setModalTab(1);
+					    this.modalSetTab.call(this, 1);
 					    $('#redactor_tab_selected').val(1);
 					    // remove baseURL from wiki href and decode to plain text
 					    // TODO: does not explcitly handle external links and is likely to break
@@ -4782,7 +4785,7 @@
 				    }
 				    else
 				    {
-					    this.setModalTab(2);
+					    this.modalSetTab.call(this, 2);
 					    $('#redactor_tab_selected').val(2);
 					    $('#redactor_link_url').val(turl);
 				    }
@@ -4807,7 +4810,7 @@
 		{
 			var tab_selected = $('#redactor_tab_selected').val();
 			var link = '', text = '', target = '', targetBlank = '';
-
+			debugger;
 
 			if (tab_selected === '1') // wiki link
 			{
@@ -5436,7 +5439,7 @@
 					+ '<form id="redactorInsertLinkForm" method="post" action="">'
 						+ '<div id="redactor_tabs">'
 							+ '<a href="#" class="redactor_tabs_act">Wiki Link</a>'
-							+ '<a href="#" class="redactor_tabs_act">URL</a>'
+							+ '<a href="#">URL</a>'
 							+ '<a href="#">Email</a>'
 							+ '<a href="#">' + this.opts.curLang.anchor + '</a>'
 						+ '</div>'
@@ -5446,26 +5449,26 @@
 							+ '<input type="hidden" class="redactor_input"                    id="redactor_wiki_link"   />'
                             + '<p>example: New Page</p>'
 							+ '<label>' + 'Display Text' + '</label>'
-							+ '<input type="text" class="redactor_input redactor_link_text" id="redactor_link_url_text" />'
+							+ '<input type="text" class="redactor_input redactor_link_text" id="redactor_wiki_link_text" />'
 						+ '</div>'
 						+ '<div class="redactor_tab" id="redactor_tab2" style="display: none;">'
 							+ '<label>URL</label>'
 							+ '<input type="text" id="redactor_link_url" class="redactor_input"  />'
                             + '<p>example: www.example.com</p>'
-							+ '<label>' + 'DisplayText' + '</label>'
+							+ '<label>' + 'Display Text' + '</label>'
 							+ '<input type="text" class="redactor_input redactor_link_text" id="redactor_link_url_text" />'
 							+ '<label><input type="checkbox" id="redactor_link_blank"> ' + this.opts.curLang.link_new_tab + '</label>'
 						+ '</div>'
 						+ '<div class="redactor_tab" id="redactor_tab3" style="display: none;">'
 							+ '<label>Email</label>'
 							+ '<input type="text" id="redactor_link_mailto" class="redactor_input" />'
-							+ '<label>' + this.opts.curLang.text + '</label>'
+							+ '<label>' + 'Display Text' + '</label>'
 							+ '<input type="text" class="redactor_input redactor_link_text" id="redactor_link_mailto_text" />'
 						+ '</div>'
 						+ '<div class="redactor_tab" id="redactor_tab4" style="display: none;">'
 							+ '<label>' + this.opts.curLang.anchor + '</label>'
 							+ '<input type="text" class="redactor_input" id="redactor_link_anchor"  />'
-							+ '<label>' + this.opts.curLang.text + '</label>'
+							+ '<label>' + 'Display Text' + '</label>'
 							+ '<input type="text" class="redactor_input redactor_link_text" id="redactor_link_anchor_text" />'
 						+ '</div>'
 					+ '</form>'
