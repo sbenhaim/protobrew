@@ -59,8 +59,12 @@ Meteor.methods
 
     updateTitle: (entry, context, title, callback) ->
         throw new Meteor.Error(403, "You must be logged in") unless this.userId
-        if findSingleEntryByTitle( title, context )
-            throw new Meteor.Error(403, "page name already exists")
+        existingEntry =  findSingleEntryByTitle( title, context )
+        if existingEntry 
+            if existingEntry.title.toLowerCase() == entry.title.toLowerCase()
+                return Entries.update( {_id: entry._id}, {$set: {'title': title}} )
+            else
+                throw new Meteor.Error(403, "page name already exists")
         else
             return Entries.update( {_id: entry._id}, {$set: {'title': title}} )
 
@@ -86,6 +90,14 @@ Meteor.methods
         Revisions.insert( { entryId: id, date: new Date(), text: entry.text, author: user._id } )
 
         return id
+
+    createHome: () ->
+        bail = (message, status = 403) ->
+            throw new Meteor.Error(status, message)
+
+        entry = Entries.findOne({_id: "home"})
+        if ! entry
+            id =  Entries.insert({_id: "home", title: "home"})
 
     lockEntry: ( entryId ) ->
         Entries.update( {_id: entryId}, {$set: {"editing": true}}) if entryId
