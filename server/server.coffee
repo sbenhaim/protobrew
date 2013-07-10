@@ -59,8 +59,12 @@ Meteor.methods
 
     updateTitle: (entry, context, title, callback) ->
         throw new Meteor.Error(403, "You must be logged in") unless this.userId
-        if findSingleEntryByTitle( title, context )
-            throw new Meteor.Error(403, "page name already exists")
+        existingEntry =  findSingleEntryByTitle( title, context )
+        if existingEntry 
+            if existingEntry.title.toLowerCase() == entry.title.toLowerCase()
+                return Entries.update( {_id: entry._id}, {$set: {'title': title}} )
+            else
+                throw new Meteor.Error(403, "page name already exists")
         else
             return Entries.update( {_id: entry._id}, {$set: {'title': title}} )
 
