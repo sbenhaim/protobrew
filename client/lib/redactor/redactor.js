@@ -6248,8 +6248,19 @@
 
 		var childNodes = (this.$editor ? this.$editor.get(0) : this).childNodes, i = childNodes.length;
 		while (i--)
-            {
-			var n = childNodes[i];
+      {
+			 var n = childNodes[i];
+  	       var linkify_detect = 0;
+			 if (n.innerHTML) {
+				  if ($(n).attr('data-linktype') == 'linkify') {
+						//							console.log('linkify detect'+n.innerHTML);
+						if ($(n).attr('href') !== n.innerText) {
+							 $(n).attr('href', n.innerText);
+						}
+				  } 
+			 }
+
+
 			if (n.nodeType === 3)
                 {
 				var html = n.nodeValue;
@@ -6258,11 +6269,10 @@
 					html = html.replace(/&/g, '&amp;')
 					.replace(/</g, '&lt;')
 					.replace(/>/g, '&gt;')
-					.replace(url1, '$1<a href="' + protocol + '$2">$2</a>$3')
-					.replace(url2, '$1<a href="$2">$2</a>$5');
-
+ 				   .replace(url1, '$1<a href="' + protocol + '$2" data-linktype=linkify>$2</a>$3')
+					.replace(url2, '$1<a href="$2" data-linktype=linkify>$2</a>$5');
 					$(n).after(html).remove();
-                }
+            }
             }
 			else if (n.nodeType === 1 && !/^(a|button|textarea)$/i.test(n.tagName))
 			{
