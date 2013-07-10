@@ -369,7 +369,13 @@ Template.entry.events
         user  = Meteor.user()
         starredPages = user.profile.starredPages
         entryId = Session.get('entryId')
-        if entryId in starredPages
+        context = Session.get('context')
+        title = Session.get("title")
+        entry = findSingleEntryByTitle( title, context )
+
+        if not entry
+            Toast.error('Cannot star a blank page!')
+        else if entryId in starredPages
             console.log('match pulling')
             Meteor.users.update(Meteor.userId(), {
                 $pull: {'profile.starredPages': entryId}
