@@ -320,6 +320,7 @@ Template.editEntry.rendered = ->
 deleteEntry = (evt) ->
     entry = Session.get('entry')
     if entry && confirm( "Are you sure you want to delete #{entry.title}?")
+        Meteor.call('deleteEntry',entry)
         Entries.remove({_id: entry._id})
         Session.set('editMode', false)
 

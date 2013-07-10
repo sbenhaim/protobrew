@@ -64,6 +64,12 @@ Meteor.methods
         else
             return Entries.update( {_id: entry._id}, {$set: {'title': title}} )
 
+
+    deleteEntry:(entry) ->
+        # add permission check        
+        id = Entries.remove(entry)
+        return id
+
     # Todo: lock down fields
     saveEntry: (title, entry, context, callback) ->
         # Only members can edit
