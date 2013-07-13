@@ -217,11 +217,9 @@ Template.entry.entryLoaded = ->
     Session.get('entryLoaded')
 
 Template.entry.entry = ->
-
     title = Session.get("title")
     context = Session.get('context')
     $("#sidebar").html('') #clear sidebar of previous state
-
     if title
         entry = findSingleEntryByTitle( title, context )
         if entry
@@ -230,12 +228,11 @@ Template.entry.entry = ->
             Session.set('entryId', entry._id )
 
             source = $('<div>').html( entry.text ) #make a div with entry.text as the innerHTML
-            titles = stackTitles( filterHeadlines( source.find( 'h1' ) ) )
-            titles.unshift( {id: 0, target: "article-title", title: Session.get('title') } )
-
-            if titles.length > 0
+            headings = stackTitles( filterHeadlines( source.find(":header:first")) )
+            headings.unshift( {id: 0, target: "article-title", title: Session.get('title') } )
+            if headings.length > 0
                 for e, i in source.find('h1,h2,h3,h4,h5')
-                    e.id = "entry-title-" + (i + 1)
+                    e.id = "entry-heading-" + (i + 1)
 
             entry.text = source.html()
             entry
@@ -533,21 +530,28 @@ Template.sidebar.navItems = ->
     context = Session.get('context')
     $("#sidebar").html('') #clear sidebar of previous state
     if title
-        titleEscaped = escapeRegExp( title )
-        titleTerm = new RegExp( "^" + titleEscaped + "$", 'i' )
-        entry = Entries.findOne({title: titleTerm, context: context})
+        entry = findSingleEntryByTitle( title, context )
         if entry
             source = $('<div>').html( entry.text ) #make a div with entry.text as the innerHTML
-            titles = stackTitles( filterHeadlines( source.find( 'h1' ) ) )
-            titles.unshift( {id: 0, target: "article-title", title: Session.get('title') } )
-            ul = $('<ul>')
-            buildNav( ul, titles)
-            ul.html()
+
+            # TODO: replace wtih function and user here and Template.entry.entry
+            headings = stackTitles( filterHeadlines( source.find(":header:first")) )
+            headings.unshift( {id: 0, target: "article-title", title: Session.get('title') } )
+            if headings.length > 0
+                for e, i in source.find('h1,h2,h3,h4,h5')
+                    e.id = "entry-heading-" + (i + 1)
+            entry.text = source.html()
+            # endTODO
+
+            textWithTitle = '<h1 id="article-title" class="article-title">'+title+'</h2>'+entry.text
+            $headingNodes = $(textWithTitle).filter(":header")
+            result = $('<ul>')
+            buildRec($headingNodes,result,1)
+            result.html()
 
 Template.sidebar.events
     'click a': (evt) ->
         evt.preventDefault()
-        #debugger
         $el = $(evt.currentTarget)
         #dataTarget = $el.attr('data-target')
         dataTarget = $el.attr('href')
@@ -578,13 +582,14 @@ stackTitles = (items, cur, counter) ->
         d.title = elem.text()
         # d.y  = elem.offset().top
         d.id = counter++
-        d.target = "entry-title-#{d.id}"
+        d.target = "entry-heading-#{d.id}"
         d.style = "top" if cur == 0
         d.children = stackTitles( children, next, counter ) if children.length > 0
         d
 
 filterHeadlines = ( $hs ) ->
-    _.filter( $hs, ( h ) -> $(h).text().match(/[^\s]/) )
+    _.filter( $hs, ( h ) -> 
+        $(h).text().match(/[^\s]/) ) #matches any non-whitespace char
 
 buildNav = ( ul, items ) ->
     for child, index in items
@@ -603,6 +608,50 @@ buildNav = ( ul, items ) ->
             subUl = document.createElement( 'ul' )
             li.append( subUl )
             buildNav( subUl, child.children )
+
+
+
+buildRec = (headingNodes, $elm, lv) ->
+
+    # each time through recursive function pull a piece of the jQuery object off
+    node = headingNodes.splice(0,1)
+
+    if node && node.length > 0
+        curLv = parseInt(node[0].tagName.substring(1))
+        if curLv is lv # same level append an il
+            cnt = 0
+        else if curLv < lv # walk up then append il
+            cnt = 0
+            loop
+                $elm = $elm.parent().parent()
+                cnt--
+                break unless cnt > (curLv - lv)
+        else if curLv > lv # create children then append li
+            cnt = 0
+            loop
+                li = $elm.children().last() # if there are already li's at this level
+                if ($elm.children().last().length == 0)
+                    li = $("<li>").appendTo($elm);
+                $elm = $("<ul>").appendTo(li);
+                cnt++
+                break unless cnt < (curLv - lv)
+        li = $("<li>").appendTo($elm);
+        # li.text(node[0].innerText)
+        $a = $("<a/>")
+        # $a.attr( "id", "nav-title-" + child.id )
+        # $a.addClass( child.style )
+        #$a.attr( 'data-target', child.target )
+        # $a.html( child.title )
+        $a.attr( 'href', '#' + node[0].id ) #for cursor purposes only
+        $a.text(node[0].innerText)
+        li.append( $a )
+
+        # recursive call
+        buildRec headingNodes, $elm, lv + cnt
+
+
+
+
 
 highlightNav = ->
 
@@ -730,7 +779,6 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
             # case where 0 length put some junk in there
             if idarray.length == 0
                idarray.push({id: " ", text: " "})
-
 
             console.log $("#redactor_wiki_link").val()
             defaultValue = $("#redactor_wiki_link").val()
