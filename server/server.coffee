@@ -97,7 +97,7 @@ Meteor.methods
 
         entry = Entries.findOne({_id: "home"})
         if ! entry
-            id =  Entries.insert({_id: "home", title: "home"})
+            id =  Entries.insert({_id: "home", title: "home", mode: "public"})
 
     lockEntry: ( entryId ) ->
         Entries.update( {_id: entryId}, {$set: {"editing": true}}) if entryId
