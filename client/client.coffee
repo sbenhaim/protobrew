@@ -216,12 +216,14 @@ Template.entry.modeIs = (v) ->
 Template.entry.entryLoaded = ->
     Session.get('entryLoaded')
 
-Template.entry.entry = ->
+# headingDep = new Deps.Dependency;
+# Template.entry.rendered = ->
+#     headingDep.changed()
 
+Template.entry.entry = ->
     title = Session.get("title")
     context = Session.get('context')
     $("#sidebar").html('') #clear sidebar of previous state
-
     if title
         entry = findSingleEntryByTitle( title, context )
         if entry
@@ -230,11 +232,11 @@ Template.entry.entry = ->
             Session.set('entryId', entry._id )
 
             source = $('<div>').html( entry.text ) #make a div with entry.text as the innerHTML
-            titles = stackTitles( filterHeadlines( source.find(":header:first")) )
-            titles.unshift( {id: 0, target: "article-title", title: Session.get('title') } )
-            if titles.length > 0
+            headings = stackTitles( filterHeadlines( source.find(":header:first")) )
+            headings.unshift( {id: 0, target: "article-title", title: Session.get('title') } )
+            if headings.length > 0
                 for e, i in source.find('h1,h2,h3,h4,h5')
-                    e.id = "entry-title-" + (i + 1)
+                    e.id = "entry-heading-" + (i + 1)
 
             entry.text = source.html()
             entry
@@ -519,23 +521,35 @@ EntryRouter = Backbone.Router.extend({
 ##################################
 ## NAV
 Template.sidebar.navItems = ->
+    # headingDep.depend()
+    # forceDependency = Session.get('entryRendered')
     title = Session.get("title")
     context = Session.get('context')
     $("#sidebar").html('') #clear sidebar of previous state
     if title
-        titleEscaped = escapeRegExp( title )
-        titleTerm = new RegExp( "^" + titleEscaped + "$", 'i' )
-        entry = Entries.findOne({title: titleTerm, context: context})
+        entry = findSingleEntryByTitle( title, context )
         if entry
-            headingNodes = $('#entry').children().filter(":header")
+
+            source = $('<div>').html( entry.text ) #make a div with entry.text as the innerHTML
+
+            # TODO: replace wtih function and user here and Template.entry.entry
+            headings = stackTitles( filterHeadlines( source.find(":header:first")) )
+            headings.unshift( {id: 0, target: "article-title", title: Session.get('title') } )
+            if headings.length > 0
+                for e, i in source.find('h1,h2,h3,h4,h5')
+                    e.id = "entry-heading-" + (i + 1)
+            entry.text = source.html()
+            # endTODO
+
+            textWithTitle = '<h1 id="article-title" class="article-title">'+title+'</h2>'+entry.text
+            $headingNodes = $(textWithTitle).filter(":header")
             result = $('<ul>')
-            buildRec(headingNodes,result,1)
+            buildRec($headingNodes,result,1)
             result.html()
 
 Template.sidebar.events
     'click a': (evt) ->
         evt.preventDefault()
-        #debugger
         $el = $(evt.currentTarget)
         #dataTarget = $el.attr('data-target')
         dataTarget = $el.attr('href')
@@ -566,7 +580,7 @@ stackTitles = (items, cur, counter) ->
         d.title = elem.text()
         # d.y  = elem.offset().top
         d.id = counter++
-        d.target = "entry-title-#{d.id}"
+        d.target = "entry-heading-#{d.id}"
         d.style = "top" if cur == 0
         d.children = stackTitles( children, next, counter ) if children.length > 0
         d
@@ -595,10 +609,6 @@ buildNav = ( ul, items ) ->
 
 
 
-
-
-
-
 buildRec = (headingNodes, $elm, lv) ->
 
     # each time through recursive function pull a piece of the jQuery object off
@@ -624,9 +634,16 @@ buildRec = (headingNodes, $elm, lv) ->
                 cnt++
                 break unless cnt < (curLv - lv)
         li = $("<li>").appendTo($elm);
-        li.text(node[0].innerText);
-        
-        
+        # li.text(node[0].innerText)
+        $a = $("<a/>")
+        # $a.attr( "id", "nav-title-" + child.id )
+        # $a.addClass( child.style )
+        #$a.attr( 'data-target', child.target )
+        # $a.html( child.title )
+        $a.attr( 'href', '#' + node[0].id ) #for cursor purposes only
+        $a.text(node[0].innerText)
+        li.append( $a )
+
         # recursive call
         buildRec headingNodes, $elm, lv + cnt
 
