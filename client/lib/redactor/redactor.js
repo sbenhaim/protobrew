@@ -4755,7 +4755,6 @@
 				// else
 				if (true)
 				{
-					debugger;
 				    if (url.search('mailto:') === 0)
 				    {
 						    this.modalSetTab.call(this, 3);
@@ -4810,7 +4809,6 @@
 		{
 			var tab_selected = $('#redactor_tab_selected').val();
 			var link = '', text = '', target = '', targetBlank = '';
-			debugger;
 
 			if (tab_selected === '1') // wiki link
 			{
