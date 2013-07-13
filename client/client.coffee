@@ -16,7 +16,7 @@ lockEntry = ->
     Session.set('entryLocked', true)
 
 unlockEntry = ->
-    if Session.get('entryLocked')
+    # if Session.get('entryLocked')
         Meteor.call( 'unlockEntry', Session.get('entryId') ) if Session.get('entryId')
         Session.set('editMode', false)
         Session.set('entryLocked', false)
