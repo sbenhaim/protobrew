@@ -40,7 +40,12 @@ evtNavigate = (evt) ->
     localhost = document.location.host
     linkhost = $a[0].host
     if localhost == linkhost
-        navigate(href)
+        # support for full local URLs (e.g. http://www.yourwiki.com/page <-- won't refresh)
+        relHref = href.replace(/^(?:\/\/|[^\/]+)*\//, "") #string after first single / in full URL
+        if relHref.charAt(0) is '/'
+            navigate(relHref)
+        else
+            navigate('/'+relHref)
     else
         window.open( href, '_blank')
    
@@ -547,6 +552,7 @@ Template.sidebar.navItems = ->
             $headingNodes = $(textWithTitle).filter(":header")
             result = $('<ul>')
             buildRec($headingNodes,result,1)
+            debugger
             result.html()
 
 Template.sidebar.events
