@@ -41,6 +41,10 @@
       {{> entry}}
       {{/if}}
 
+      {{#if modeIs "pageindex"}}
+      {{> pageindex}}
+      {{/if}}
+
       {{#if modeIs "profile"}}
       {{> profile}}
       {{/if}}
@@ -70,6 +74,12 @@
         <input type="submit" value="save" id="save" />
     </label>
 </template>
+
+<template name="pageindex">
+    <h2>PageIndex</h2>
+    {{test}}
+</template>
+
 
 <template name="search">
     <h3>Search results for "{{term}}"</h3>
@@ -257,6 +267,7 @@
             </li>
 			<li {{#if pageIs "Articles"}}class="selected"{{/if}}><a class="left-nav" href="/Articles"><span aria-hidden="true" data-icon="&#x6e;"></span> Articles</a></li>
 			<li {{#if pageIs "Help"}}class="selected"{{/if}}><a class="left-nav" href="/Help"><span aria-hidden="true" data-icon="&#x6e;"></span> Help</a></li>
+			<li {{#if pageIs "Index"}}class="selected"{{/if}}><a class="left-nav" href="/PageIndex"><span aria-hidden="true" data-icon="&#x6e;"></span> Index</a></li>
             {{/isolate}}
     	</ul>
     </nav>

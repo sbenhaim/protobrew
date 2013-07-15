@@ -33,6 +33,7 @@ navigate = (location, context) ->
     Router.navigate(location, true)
 
 evtNavigate = (evt) ->
+    console.log("evtNavigate");    
     evt.preventDefault()
     window.scrollTo(0,0)
     $a = $(evt.target).closest('a')
@@ -216,6 +217,10 @@ Template.entry.modeIs = (v) ->
 Template.entry.entryLoaded = ->
     Session.get('entryLoaded')
 
+indexRender = ->
+   console.log("index render")
+   "yee boy"
+
 Template.entry.entry = ->
 
     title = Session.get("title")
@@ -224,6 +229,7 @@ Template.entry.entry = ->
 
     if title
         entry = findSingleEntryByTitle( title, context )
+
         if entry
             Session.set('entry', entry )
             Session.set('title', entry.title )
@@ -461,7 +467,6 @@ Template.profile.events
     'click #save': (evt) ->
         result = Meteor.call('updateUser', $("#username").val(), (e) -> console.log( e ) )
 
-
 Template.user.info = ->
     Meteor.user()
 
@@ -484,11 +489,15 @@ EntryRouter = Backbone.Router.extend({
         "search/:term": "search"
         "tag/:tag": "tag",
         "profile": "profile",
+        "PageIndex":"indexroute",
         "images": "images",
         "u/:user/:title": "userSpace",
         ":title": "main",
-        "": "home"
+        "": "home",
     },
+    indexroute: ->
+        Session.set('mode', 'pageindex')
+        console.log("index route")
     redirectHome: ->
         this.navigate( "", true )
     home: ->
