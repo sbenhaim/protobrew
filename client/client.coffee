@@ -558,6 +558,7 @@ Template.sidebar.navItems = ->
             buildRec($headingNodes,result,1)
             result.html()
 
+
 Template.sidebar.events
     'click a': (evt) ->
         evt.preventDefault()
