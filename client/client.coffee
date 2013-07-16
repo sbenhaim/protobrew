@@ -552,7 +552,6 @@ Template.sidebar.navItems = ->
             $headingNodes = $(textWithTitle).filter(":header")
             result = $('<ul>')
             buildRec($headingNodes,result,1)
-            debugger
             result.html()
 
 Template.sidebar.events
