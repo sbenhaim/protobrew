@@ -219,7 +219,7 @@
 					link_edit: 'Edit link',
 					unlink: 'Unlink',
 					formatting: 'Formatting',
-					aragraph: 'Normal text',
+					paragraph: 'Normal text',
 					quote: 'Quote',
 					code: 'Code',
 					header1: 'Header 1',
