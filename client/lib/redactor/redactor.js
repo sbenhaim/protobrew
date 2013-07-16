@@ -1,6 +1,6 @@
 /*
-	Redactor v9.0.3
-	Updated: Jul 1, 2013
+	Redactor v9.0.4
+	Updated: Jul 11, 2013
 
 	http://imperavi.com/redactor/
 
@@ -72,7 +72,7 @@
 	}
 
 	$.Redactor = Redactor;
-	$.Redactor.VERSION = '9.0.3';
+	$.Redactor.VERSION = '9.0.4';
 	$.Redactor.opts = {
 
 			// callbacks
@@ -128,7 +128,7 @@
 			imageGetJson: false, // url (ex. /folder/images.json ) or false
 
 			imageUpload: false, // url
-            filepicker: false,
+            filepicker: false,  // GK : filepicker
 			fileUpload: false, // url
 
 			s3: false,
@@ -214,8 +214,8 @@
 					image: 'Insert Image',
 					table: 'Table',
 					link: 'Link',
-					wiki_insert: 'Add Wiki Link',
-					link_insert: 'Add External link',
+					wiki_insert: 'Add Wiki Link',       // GK
+					link_insert: 'Add External link',   // GK
 					link_edit: 'Edit link',
 					unlink: 'Unlink',
 					formatting: 'Formatting',
@@ -266,7 +266,7 @@
 					choose: 'Choose',
 					or_choose: 'Or choose',
 					drop_file_here: 'Drop file here',
-					align_left:	'Align text to the left',
+					align_left: 'Align text to the left',
 					align_center: 'Center text',
 					align_right: 'Align text to the right',
 					align_justify: 'Justify text',
@@ -553,7 +553,7 @@
 					func: 'show',
 					dropdown:
 					{
-						wiki_link:
+						wiki_link: // GK
 						{
 							title: lang.wiki_insert,
 							func: 'showWikiLink',
@@ -562,8 +562,8 @@
 						link:
 						{
 							title: lang.link_insert,
-							func: 'linkShow',
-							className : 'linkDropdown insert_link_btns'
+							func: 'linkShow',                           // GK
+							className : 'linkDropdown insert_link_btns' // GK
 						},
 						unlink:
 						{
@@ -835,13 +835,11 @@
 
 
 			// Remove verified attr
-			html = html.replace(/<span(.*?)data-redactor="verified"(.*?)>([\w\W]*?)<\/span>/gi, '<font$1data-redactor="verified"$2>$3</font>');
-			html = html.replace(/<span(.*?)>([\w\W]*?)<\/span>/gi, '$2');
-			html = html.replace(/<font(.*?)data-redactor="verified"(.*?)>([\w\W]*?)<\/font>/gi, '<span$1$2>$3</span>');
 			html = html.replace(/ data-tagblock=""/gi, '');
-
 			html = html.replace(/<br\s?\/?>\n?<\/(P|H[1-6]|LI|ADDRESS|SECTION|HEADER|FOOTER|ASIDE|ARTICLE)>/gi, '</$1>');
 
+			html = html.replace(/<span\s*?>([\w\W]*?)<\/span>/gi, '$1');
+			html = html.replace(/<span(.*?)data-redactor="verified"(.*?)>([\w\W]*?)<\/span>/gi, '<span$1$2>$3</span>');
 			html = html.replace(/<span(.*?)data-redactor-inlineMethods=""(.*?)>([\w\W]*?)<\/span>/gi, '<span$1$2>$3</span>' );
 			html = html.replace(/<span\s*?>([\w\W]*?)<\/span>/gi, '$1');
 			html = html.replace(/<span\s*?id="selection-marker(.*?)"(.*?)>([\w\W]*?)<\/span>/gi, '');
@@ -1027,15 +1025,14 @@
 				// paste except opera
 				if (this.browser('opera')) return true;
 
-				if (this.isMobile()) return false;
-				if (!this.opts.cleanup) return false;
-
+				if (this.opts.cleanup)
+				{
 				rtePaste = true;
 
 				this.selectionSave();
 
 				if (!this.selectall)
-						{
+				{
 					if (this.opts.autoresize === true )
 					{
 						this.$editor.height(this.$editor.height());
@@ -1054,16 +1051,17 @@
 							var pastedFrag = this.extractContent();
 							this.$editor.append(frag);
 
-					this.selectionRestore();
+					        this.selectionRestore();
 
 							var html = this.getFragmentHtml(pastedFrag);
-					this.pasteClean(html);
+					        this.pasteClean(html);
 
-					if (this.opts.autoresize === true) this.$editor.css('height', 'auto');
+					        if (this.opts.autoresize === true) this.$editor.css('height', 'auto');
 
-						}, this), 1);
+					}, this), 1);
+				}
 
-					}, this));
+			}, this));
 
 			this.$editor.on('keydown.redactor', $.proxy(function(e)
 			{
@@ -1267,6 +1265,16 @@
 				// delete zero-width space before the removing
 				if (key === this.keyCode.BACKSPACE)
 				{
+					if (typeof current.tagName !== 'undefined' && /^(H[1-6])$/i.test(current.tagName))
+					{
+						var node;
+						if (this.opts.linebreaks === false) node = $('<p>' + this.opts.invisibleSpace + '</p>');
+						else node = $('<br>' + this.opts.invisibleSpace);
+
+						$(current).replaceWith(node);
+						this.selectionStart(node);
+					}
+
 					if (typeof current.nodeValue !== 'undefined' && current.nodeValue !== null)
 					{
 						var value = $.trim(current.nodeValue.replace(/[^\u0000-~]/g, ''));
@@ -2058,10 +2066,14 @@
 
 				if ($button.hasClass('redactor_button_disabled')) return false;
 
-				if (this.isFocused() === false) this.$editor.focus();
+				if (this.isFocused() === false && !btnObject.exec)
+				{
+					this.$editor.focus();
+				}
 
 				if (btnObject.exec)
 				{
+					this.$editor.focus();
 					this.execCommand(btnObject.exec, btnName);
 					this.airBindMousemoveHide();
 
@@ -2120,9 +2132,9 @@
 		},
 		buttonInactiveAll: function(btnName)
 		{
-			$.each(this.opts.activeButtons, $.proxy(function(i, s)
+			$.each(this.opts.toolbar, $.proxy(function(k)
 			{
-				if (s != btnName) this.buttonInactive(s);
+				if (k != btnName) this.buttonInactive(k);
 
 			}, this));
 		},
@@ -2210,7 +2222,7 @@
 			var parent = this.getParent();
 			this.buttonInactiveAll(btnName);
 
-			if (e === false)
+			if (e === false && btnName !== 'html')
 			{
 				this.buttonActiveToggle(btnName);
 				return;
@@ -2296,7 +2308,10 @@
 			}
 
 			// stop formatting pre
-			if (this.currentOrParentIs('PRE') && !this.opts.formattingPre) return false;
+			if (this.currentOrParentIs('PRE') && !this.opts.formattingPre)
+			{
+				return false;
+			}
 
 			if (cmd === 'insertunorderedlist' || cmd === 'insertorderedlist')
 		{
@@ -2725,10 +2740,11 @@
 
 			var safes = [];
 			var z = 0;
+			var matches = html.match(/<(table|div|pre|object)(.*?)>([\w\W]*?)<\/(table|div|pre|object)>/gi);
 
-			if (html.search(/<(table|div|pre|object)/gi) !== -1)
+			if (matches)
 		{
-				$.each(html.match(/<(table|div|pre|object)(.*?)>([\w\W]*?)<\/(table|div|pre|object)>/gi), function(i,s)
+				$.each(matches, function(i,s)
 			{
 					z++;
 					safes[z] = s;
@@ -2738,9 +2754,10 @@
 
 			if (this.opts.phpTags)
 			{
-				if (html.search(/<section(.*?)rel="redactor-php-tag">/gi) !== -1)
+				var phpMatches = html.match(/<section(.*?)rel="redactor-php-tag">([\w\W]*?)<\/section>/gi);
+				if (phpMatches)
 				{
-					$.each(html.match(/<section(.*?)rel="redactor-php-tag">([\w\W]*?)<\/section>/gi), function(i,s)
+					$.each(phpMatches, function(i,s)
 					{
 						z++;
 						safes[z] = s;
@@ -2812,6 +2829,7 @@
 			html = R('</dt><p>', 'gi', '</dt>');
 			html = R('</dd><p>', 'gi', '</dd>');
 			html = R('<br></p></blockquote>', 'gi', '</blockquote>');
+			html = R('<p>    </p>', 'gi', '');
 
 			$.each(safes, function(i,s)
 			{
@@ -3445,9 +3463,11 @@
 		},
 		inlineMethods: function(type, attr, value)
 		{
+			this.bufferSet();
 			this.selectionSave();
 
-			var range = this.getRange(), el = this.getElement();
+			var range = this.getRange()
+			var el = this.getElement();
 
 			if (range.collapsed || range.startContainer === range.endContainer && el)
 			{
@@ -3458,11 +3478,11 @@
 				this.document.execCommand('fontSize', false, 4 );
 
 				var fonts = this.$editor.find('font');
-				$.each( fonts, $.proxy(function(i, s)
+				$.each(fonts, $.proxy(function(i, s)
 			{
 					this.inlineSetMethods(type, s, attr, value);
 
-				}, this ) );
+				}, this));
 			}
 
 			this.selectionRestore();
@@ -3473,11 +3493,10 @@
 			{
 			var parent = $(s).parent(), el;
 
-			if (parent && parent[0].tagName === 'SPAN')
+			if (parent && parent[0].tagName === 'SPAN' && parent[0].attributes.length != 0)
 				{
 				el = parent;
 				$(s).replaceWith($(s).html());
-
 				}
 				else
 				{
@@ -3747,6 +3766,10 @@
 				return true;
 			}
 
+			// ms word list
+			html = html.replace(/<p(.*?)class="MsoListParagraphCxSpFirst"([\w\W]*?)<\/p>/gi, '<ul><p$2</p>');
+			html = html.replace(/<p(.*?)class="MsoListParagraphCxSpLast"([\w\W]*?)<\/p>/gi, '<p$2</p></ul>');
+
 			// remove comments and php tags
 			html = html.replace(/<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi, '');
 
@@ -3803,6 +3826,7 @@
 				html = html.replace(/<\/p><\/div>/gi, '</p>');
 			}
 
+
 			html = this.cleanParagraphy(html);
 
 			// remove span
@@ -3837,6 +3861,9 @@
 					html = html.replace(/<br>$/gi, '');
 				}
 			}
+
+			// bullets
+			html = html.replace(/<p>•([\w\W]*?)<\/p>/gi, '<li>$1</li>');
 
 			// ie inserts a blank font tags when pasting
 			while (/<font>([\w\W]*?)<\/font>/gi.test(html))
@@ -3885,7 +3912,7 @@
 			{
 				this.selectionSave();
 				this.opts.buffer.push(this.$editor.html());
-				this.selectionRemoveMarkers(true);
+				this.selectionRemoveMarkers('buffer');
 			}
 		},
 		bufferUndo: function()
@@ -4135,8 +4162,8 @@
 		{
 			if (!range) return;
 
-			var node1 = $('<span id="selection-marker-1">' + this.opts.invisibleSpace + '</span>', this.document)[0];
-			var node2 = $('<span id="selection-marker-2">' + this.opts.invisibleSpace + '</span>', this.document)[0];
+			var node1 = $('<span id="selection-marker-1" class="redactor-selection-marker">' + this.opts.invisibleSpace + '</span>', this.document)[0];
+			var node2 = $('<span id="selection-marker-2" class="redactor-selection-marker">' + this.opts.invisibleSpace + '</span>', this.document)[0];
 
 			if (range.collapsed === true)
 			{
@@ -4199,12 +4226,22 @@
 				rangy.restoreSelection(this.savedSel);
 			}
 		},
-		selectionRemoveMarkers: function()
+		selectionRemoveMarkers: function(type)
 		{
 			if (!this.opts.rangy)
 			{
-				this.$editor.find('span#selection-marker-1').removeAttr('id').data('redactor-inlineMethods', '');
-				this.$editor.find('span#selection-marker-2').removeAttr('id').data('redactor-inlineMethods', '');
+				$.each(this.$editor.find('span.redactor-selection-marker'), function()
+				{
+					var html = $.trim($(this).html().replace(/[^\u0000-~]/g, ''));
+					if (html == '')
+					{
+						$(this).remove();
+					}
+					else
+					{
+						$(this).removeAttr('class').removeAttr('id');
+					}
+				});
 			}
 			// rangy
 			else
@@ -4701,7 +4738,7 @@
 		},
 
 		// LINK
-		linkShow: function(insert_type)
+		linkShow: function()
 		{
 			this.selectionSave();
 
@@ -6208,7 +6245,7 @@
         {
 			var el, sel = this.getSelection();
 
-			if (sel.rangeCount && sel.rangeCount > 0) el = sel.getRangeAt(0).startContainer;
+			if (sel && sel.rangeCount && sel.rangeCount > 0) el = sel.getRangeAt(0).startContainer;
 			if (!el) return false;
 			if (this.opts.iframe)
 			{
