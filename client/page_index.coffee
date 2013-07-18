@@ -45,6 +45,7 @@ buildLinks = (context, tree, rootNode) ->
    console.log("building #{rootNode.name}")
    if ! entry
       return
+
    for el in $("<div>"+entry.text+"</div>").find('a')
       href = $(el).attr('href')
       if ! href.match(/^\w+:\/\//) #detect internal link
