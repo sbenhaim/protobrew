@@ -7,7 +7,14 @@ class Tree
    constructor: (@root) ->
       @ulElem = null
       @textOut = ""
+      @nameArray = []
 
+   # simple linear search. improve to binary for performance
+   findNameArray: (name) ->
+      for n in @nameArray
+         if n == name
+            return true
+      return false
    insertNode : (newChild) ->
       parent = newChild.parent
       for child in parent.children
@@ -21,10 +28,12 @@ class Tree
             return false
          parent = parent.parent
       newChild.parent.children.push newChild
+      @nameArray.push newChild.name
       return true
 
-   createul: ->
-      @ulElem = $('<ul>')
+   displayNames: () ->
+      for n in @nameArray
+         console.log("name: #{n}")
 
    traverseTree: (ulElem, node) ->
 #      console.log("url: #{node.url} name: #{node.name}")
@@ -69,5 +78,20 @@ Template.pageindex.test = ->
     ul = $('<ul>')
     tree.traverseTree(ul, tree.root)
     console.log(ul.html())
-    ul.html()
+    tree.displayNames()      
+
+    ul2 = $('<ul>')      
+
+    for entry in findAll().fetch()
+      console.log(entry)
+      if ! tree.findNameArray(entry.title)
+         li = $("<li>")
+         $(ul2).append(li)
+         $a = $("<a/>")
+         $a.attr('href', "/"+entry.title ) 
+         $a.html(entry.title)
+         li.append($a)
+
+    html_out = ul.html() + "<h2>Orphan Pages</h2>" + ul2.html()
+    html_out
    
