@@ -84,7 +84,8 @@ Template.newUserModal.events =
         if ! $(e.target).hasClass('disabled')
             console.log( "click" );
             Meteor.call('updateUser', $("#initial-username-input").val(), (e) -> $("#new-user-modal").modal("hide") )
-
+            Meteor.call 'createHome'
+            navigate( "home", Session.get( "context" ) ) 
 Template.leftNav.events =
     'click a.left-nav': evtNavigate
 
