@@ -4738,7 +4738,7 @@
 		},
 
 		// LINK
-		linkShow: function()
+		linkShow: function(insert_type)
 		{
 			this.selectionSave();
 
