@@ -70,8 +70,12 @@ Meteor.methods
 
 
     deleteEntry:(entry) ->
-        # add permission check        
-        id = Entries.remove(entry)
+        # add permission check
+        if entry._id is null
+            return
+        if typeof entry._id is 'undefined'
+            return
+        id = Entries.remove({_id: entry._id})
         return id
 
     # Todo: lock down fields
