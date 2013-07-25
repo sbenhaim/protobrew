@@ -33,7 +33,6 @@ navigate = (location, context) ->
     Router.navigate(location, true)
 
 evtNavigate = (evt) ->
-    console.log("evtNavigate");    
     evt.preventDefault()
     window.scrollTo(0,0)
     $a = $(evt.target).closest('a')
@@ -223,9 +222,6 @@ Template.entry.modeIs = (v) ->
 Template.entry.entryLoaded = ->
     Session.get('entryLoaded')
 
-indexRender = ->
-   console.log("index render")
-   "yee boy"
 
 Template.entry.entry = ->
     title = Session.get("title")
