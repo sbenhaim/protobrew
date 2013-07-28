@@ -503,9 +503,12 @@ EntryRouter = Backbone.Router.extend({
         unlockEntry()
         reroute = () ->
             entry = Entries.findOne({_id: 'home'})
-            Session.set('titleHidden', false)
-            Session.set('mode', 'entry')
-            Session.set('title', entry.title)
+            if ! entry # bang on it a bit
+               Meteor.call 'createHome', reroute
+            else
+               Session.set('titleHidden', false)
+               Session.set('mode', 'entry')
+               Session.set('title', entry.title)
         Meteor.call 'createHome', reroute
     profile: (term) ->
         unlockEntry()
