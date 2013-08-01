@@ -5155,10 +5155,10 @@
 
 			}, this);
 
-            // SB: Filepicker override
-            if ( this.opts.filepicker ) {
-                return this.opts.filepicker( $.proxy( this.imageUploadCallback, this ) );
-            }
+			// SB: Filepicker override
+			if ( this.opts.filepicker ) {
+				return this.opts.filepicker($.proxy(this.imageCallback, this));
+			}
 
 			this.modalInit(this.opts.curLang.image, this.opts.modal_image, 610, callback);
 
@@ -5887,16 +5887,17 @@
 			{
 				$(this.uploadOptions.input).change($.proxy(function(e)
 				{
-	                // SB: Hack
-	                var that = this;
-	                 $.each(this.el[0].redactor_file.files, function(i, file) {
-	                     Meteor.saveFile(file, file.name, null, null, $.proxy(function( json ) {
-	                         console.log( "json: ", json );
-	                         that.uploadOptions.success(json);
-	                     },this));
-	                 });
-	                 return
-	                 // End hack
+					// SB: Hack
+					var that = this;
+					$.each(this.el[0].redactor_file.files, function(i, file) {
+						Meteor.saveFile(file, file.name, null, null, $.proxy(function( json ) {
+							console.log( "json: ", json );
+							that.uploadOptions.success(json);
+						},this));
+					});
+					return
+					// End hack
+
 					this.el.submit(function(e)
 					{
 						return false;
