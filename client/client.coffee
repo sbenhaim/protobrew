@@ -492,7 +492,7 @@ EntryRouter = Backbone.Router.extend({
         "images": "images",
         "u/:user/:title": "userSpace",
         ":title": "main",
-        "": "home",
+        "": "home"
     },
     indexroute: ->
         Session.set('mode', 'pageindex')

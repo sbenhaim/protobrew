@@ -19,12 +19,12 @@ class Tree
       parent = newChild.parent
       for child in parent.children
          if child.url == newChild.url
-            console.log("multi child detected")
+            #console.log("multi child detected")
             return false
 
       while (parent) # check for loops
          if parent.url == newChild.url
-            console.log("loop detected "+newChild.url)
+            #console.log("loop detected "+newChild.url)
             return false
          parent = parent.parent
       newChild.parent.children.push newChild
@@ -50,8 +50,11 @@ class Tree
       @traverseTree(newUlElem, child) for child in child_stack
 
 buildLinks = (context, tree, rootNode) ->
-   entry = findSingleEntryByTitle(rootNode.name, context)
-   console.log("building #{rootNode.name}")
+   #entry = findSingleEntryByTitle(rootNode.name, context)
+
+   entry = Entries.findOne({_id: 'home'})
+
+   #console.log("building #{rootNode.name}")
    if ! entry
       return
 
@@ -64,20 +67,21 @@ buildLinks = (context, tree, rootNode) ->
             name = href
          tree.insertNode(new Node href, name, rootNode)
       else   
-         console.log("what kind of #{href}")
+         #console.log("what kind of #{href}")
    for child in rootNode.children
       buildLinks(context, tree, child)
 
 Template.pageindex.test = ->
     tree = new Tree
-    tree.root = new Node "/Articles","Articles", null
+    entry = Entries.findOne({_id: 'home'})
+    tree.root = new Node "/"+entry.title,entry.title, null
 
     context = Session.get('context')
     buildLinks context, tree, tree.root
             
     ul = $('<ul>')
     tree.traverseTree(ul, tree.root)
-    console.log(ul.html())
+    #console.log(ul.html())
     tree.displayNames()      
 
     ul2 = $('<ul>')      

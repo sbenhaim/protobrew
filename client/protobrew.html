@@ -76,8 +76,10 @@
 </template>
 
 <template name="pageindex">
-    <h2>PageIndex</h2>
-    {{{test}}}
+    <div id='pageindex'>
+        <h2>PageIndex</h2>
+        {{{test}}}
+    </div>
 </template>
 
 
@@ -265,7 +267,6 @@
                     <span aria-hidden="true" data-icon="&#x68;"></span> Home
                 </a>
             </li>
-			<li {{#if pageIs "Articles"}}class="selected"{{/if}}><a class="left-nav" href="/Articles"><span aria-hidden="true" data-icon="&#x6e;"></span> Articles</a></li>
 			<li {{#if pageIs "Help"}}class="selected"{{/if}}><a class="left-nav" href="/Help"><span aria-hidden="true" data-icon="&#x6e;"></span> Help</a></li>
 			<li {{#if pageIs "Index"}}class="selected"{{/if}}><a class="left-nav" href="/PageIndex"><span aria-hidden="true" data-icon="&#x6e;"></span> Index</a></li>
             {{/isolate}}
