@@ -83,7 +83,8 @@ Template.newUserModal.events =
         if ! $(e.target).hasClass('disabled')
             console.log( "click" );
             Meteor.call('updateUser', $("#initial-username-input").val(), (e) -> $("#new-user-modal").modal("hide") )
-
+            Meteor.call 'createHome'
+            navigate( "home", Session.get( "context" ) ) 
 Template.leftNav.events =
     'click a.left-nav': evtNavigate
 
@@ -221,12 +222,14 @@ Template.entry.modeIs = (v) ->
 Template.entry.entryLoaded = ->
     Session.get('entryLoaded')
 
+
 Template.entry.entry = ->
     title = Session.get("title")
     context = Session.get('context')
     $("#sidebar").html('') #clear sidebar of previous state
     if title
         entry = findSingleEntryByTitle( title, context )
+
         if entry
             Session.set('entry', entry )
             Session.set('title', entry.title )
@@ -463,7 +466,6 @@ Template.profile.events
     'click #save': (evt) ->
         result = Meteor.call('updateUser', $("#username").val(), (e) -> console.log( e ) )
 
-
 Template.user.info = ->
     Meteor.user()
 
@@ -486,20 +488,27 @@ EntryRouter = Backbone.Router.extend({
         "search/:term": "search"
         "tag/:tag": "tag",
         "profile": "profile",
+        "PageIndex":"indexroute",
         "images": "images",
         "u/:user/:title": "userSpace",
         ":title": "main",
-        "": "home"
+        "": "home",
     },
+    indexroute: ->
+        Session.set('mode', 'pageindex')
+        console.log("index route")
     redirectHome: ->
         this.navigate( "", true )
     home: ->
         unlockEntry()
         reroute = () ->
             entry = Entries.findOne({_id: 'home'})
-            Session.set('titleHidden', false)
-            Session.set('mode', 'entry')
-            Session.set('title', entry.title)
+            if ! entry # bang on it a bit
+               Meteor.call 'createHome', reroute
+            else
+               Session.set('titleHidden', false)
+               Session.set('mode', 'entry')
+               Session.set('title', entry.title)
         Meteor.call 'createHome', reroute
     profile: (term) ->
         unlockEntry()
@@ -553,6 +562,7 @@ Template.sidebar.navItems = ->
             result = $('<ul>')
             buildRec($headingNodes,result,1)
             result.html()
+
 
 Template.sidebar.events
     'click a': (evt) ->

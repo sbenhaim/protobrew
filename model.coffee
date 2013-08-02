@@ -40,6 +40,9 @@ root.editable = ( entry, user, context ) ->
       ( context == null && (entry == null || !entry._id?) ) ||
       ( entry && entry.mode == "public" ) )
 
+root.findAll = (context) ->
+   Entries.find({context: context})
+
 root.findSingleEntryByTitle = ( title, context ) ->
     titleEscaped = escapeRegExp( title )
     titleTerm = new RegExp( "^" + titleEscaped + "$", 'i' )
