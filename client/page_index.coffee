@@ -50,9 +50,10 @@ class Tree
       @traverseTree(newUlElem, child) for child in child_stack
 
 buildLinks = (context, tree, rootNode) ->
-   #entry = findSingleEntryByTitle(rootNode.name, context)
-
-   entry = Entries.findOne({_id: 'home'})
+   if ! parent
+      entry = Entries.findOne({_id: 'home'})
+   else
+      entry = findSingleEntryByTitle(rootNode.name, context)
 
    #console.log("building #{rootNode.name}")
    if ! entry
@@ -75,6 +76,7 @@ Template.pageindex.test = ->
     tree = new Tree
     entry = Entries.findOne({_id: 'home'})
     tree.root = new Node "/"+entry.title,entry.title, null
+    tree.nameArray.push entry.title
 
     context = Session.get('context')
     buildLinks context, tree, tree.root
@@ -86,9 +88,11 @@ Template.pageindex.test = ->
 
     ul2 = $('<ul>')      
 
+    entry_cnt = 0
     for entry in findAll().fetch()
       console.log(entry)
       if ! tree.findNameArray(entry.title)
+         entry_cnt += 1
          li = $("<li>")
          $(ul2).append(li)
          $a = $("<a/>")
@@ -96,6 +100,9 @@ Template.pageindex.test = ->
          $a.html(entry.title)
          li.append($a)
 
-    html_out = ul.html() + "<h2>Orphan Pages</h2>" + ul2.html()
+    if ! entry_cnt
+       html_out = ul.html()
+    else
+       html_out = ul.html() + "<h2>Orphan Pages</h2>" + ul2.html()
     html_out
    
