@@ -85,6 +85,19 @@ Template.newUserModal.events =
             Meteor.call('updateUser', $("#initial-username-input").val(), (e) -> $("#new-user-modal").modal("hide") )
             Meteor.call 'createHome'
             navigate( "home", Session.get( "context" ) ) 
+
+Template.deleteConfirmModal.events =
+    'click #delete-confirm-button': (e) ->
+        deleteInput = $('#delete-confirm-input').val()
+        if deleteInput == "DELETE"
+            deleteEntry()
+            $('#delete-confirm-modal').modal('hide')
+        else
+            Toast.error('Must type in "DELETE" in all caps to delete')
+
+    'click #delete-cancel-button': (e) ->
+        $('#delete-confirm-modal').modal('hide')
+
 Template.leftNav.events =
     'click a.left-nav': evtNavigate
 
@@ -324,10 +337,12 @@ Template.editEntry.rendered = ->
 
 deleteEntry = (evt) ->
     entry = Session.get('entry')
-    if entry && confirm( "Are you sure you want to delete #{entry.title}?")
+    if entry
         Meteor.call('deleteEntry',entry)
         Entries.remove({_id: entry._id})
         Session.set('editMode', false)
+    else
+        Toast.error('Cannot DELETE a page that has not been created!')
 
 saveEntry = (evt) ->
     reroute = ( e ) ->
@@ -419,7 +434,9 @@ Template.entry.events
 
     'click #delete': (evt) ->
         evt.preventDefault()
-        deleteEntry(evt)
+        $('#delete-confirm-input').val('')
+        $('#delete-confirm-modal').modal('show')
+        # deleteEntry(evt)
 
     'click #article-title': (evt) ->
 
