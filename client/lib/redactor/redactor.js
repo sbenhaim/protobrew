@@ -6286,19 +6286,26 @@
 		while (i--)
       {
 			 var n = childNodes[i];
-  	       var linkify_detect = 0;
+			 console.log('node Type: '+n.nodeType + "->" + n.nodeValue + "->" + n.innerText + "->" + n.innerHTML);
 			 if (n.innerHTML) {
+				  console.log("inner html detect")
 				  if ($(n).attr('data-linktype') == 'linkify') {
-						//							console.log('linkify detect'+n.innerHTML);
+						console.log("linkify detect"+ n.innerHTML + " !" );
 						if ($(n).attr('href') !== n.innerText) {
 							 $(n).attr('href', n.innerText);
 						}
-				  } 
+				  }  else {
+						if (n.innerHTML.indexOf('data-linktype="linkify"') !== -1) {
+							 if (n.innerHTML.indexOf('</a>') !== -1 && n.innerHTML.indexOf('</a> ') !== -1) {
+								  console.log("found a no space")
+							 }
+						}
+				  }
 			 }
 
-
 			if (n.nodeType === 3)
-                {
+         {
+//  			   console.log("n3:"+n.nodeValue);
 				var html = n.nodeValue;
 				if (html && (html.match(url1) || html.match(url2)))
 				{
