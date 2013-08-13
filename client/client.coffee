@@ -41,11 +41,8 @@ evtNavigate = (evt) ->
     linkhost = $a[0].host
     if localhost == linkhost
         # support for full local URLs (e.g. http://www.yourwiki.com/page <-- won't refresh)
-        relHref = href.replace(/^(?:\/\/|[^\/]+)*\//, "") #string after first single / in full URL
-        if relHref.charAt(0) is '/'
-            navigate(relHref)
-        else
-            navigate('/'+relHref)
+        relHref = $('<a/>').attr( 'href', href )[0].pathname
+        navigate(relHref)
     else
         window.open( href, '_blank')
    
