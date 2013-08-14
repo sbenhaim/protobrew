@@ -100,6 +100,7 @@ Template.leftNav.events =
 
     'change #search-input': (evt) ->
         term = $(evt.target).val()
+        window.scrollTo(0,0) # fix for position being screwed up (also in tags click, and new page)
         navigate( '/search/' + term ) if term
 
     'click #usernav a': evtNavigate
@@ -107,6 +108,9 @@ Template.leftNav.events =
     'click #userTabs > li' : (evt) ->
         $el = $(evt.currentTarget)
         Session.set( 'activeTab' , $el.attr('id'))
+
+Template.pageindex.events =
+  'click #pageindex a': evtNavigate
 
 getSummaries = (entries) ->
     entries.map (e) ->
@@ -379,6 +383,7 @@ Template.entry.events
            (error, pageName) ->
                 console.log(error, pageName);
                 #TODO: fix non-editable navigate
+                window.scrollTo(0,0) # fix for positio being screwed up
                 navigate(pageName)
         )
 
@@ -407,6 +412,7 @@ Template.entry.events
     'click li.article-tag a': (evt) ->
         evt.preventDefault()
         tag = $(evt.target).text()
+        window.scrollTo(0,0) # fix for position 
         navigate( '/tag/' + tag ) if tag
 
     'click a.entry-link': (e) ->
