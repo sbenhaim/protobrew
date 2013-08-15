@@ -41,6 +41,14 @@
       {{> entry}}
       {{/if}}
 
+      {{#if modeIs "history"}}
+      {{> history}}
+      {{/if}}
+
+      {{#if modeIs "compare"}}
+      {{> compare}}
+      {{/if}}
+
       {{#if modeIs "pageindex"}}
       {{> pageindex}}
       {{/if}}
@@ -150,6 +158,10 @@
                                  </a>
                             {{/if}}
 
+                        <!-- if revisions condition -->
+                        <a class="btn history" href="{{historyLink entry}}" id="history_btn">
+                            <span aria-hidden="true" data-icon="&#x68;"></span>History
+                         </a>
 
                         {{/if}}
 
@@ -242,6 +254,61 @@
         <textarea id="entry-tags"></textarea>
         <small><em>press &#x23ce; between tags</em></small>
     </p>
+</template>
+
+<template name="history">
+    <form class="historyForm">
+    <table class="revisionsTable">
+        <thead>
+            <tr>
+                <th>
+                    <button id="compareSelected">Compare Selected</button>
+                </th>
+                <th>
+                    Date
+                </th>
+                <th>
+                    Author
+                </th>
+                <!--
+                <th>
+                    Comment
+                </th>
+                -->
+            </tr>
+        </thead>
+        <tbody>
+        <!-- for revs -->
+            {{#each revisions}}
+            <tr>
+                <td class="compareRadio">
+                    <div>
+                    <input type="radio" name="rev1" value="{{_id}}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="rev2" value="{{_id}}">
+                    </div>
+                </td>
+                <td>
+                    {{date}}
+                </td>
+                <td>
+                    {{author}}
+                </td>
+                <!--
+                <td>
+                     comment
+                </td>
+                -->
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+    </form>
+</div>
+</template>
+
+<template name="compare">
+<div id="diffView">
+{{result}}
+</div>
 </template>
 
 <template name="user">

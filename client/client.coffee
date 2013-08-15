@@ -172,6 +172,9 @@ Template.leftNav.starred = () ->
 Handlebars.registerHelper( 'entryLink', (entry) ->
     entryLink( entry )
 )
+Handlebars.registerHelper( 'historyLink', (entry) ->
+    historyLink( entry )
+)
 
 ## Entry
 
@@ -253,6 +256,67 @@ Template.entry.entry = ->
 Template.entry.edit_mode = ->
     Session.get('editMode')
 
+Template.history.revisions = ->
+    title = Session.get("title")
+    console.log "History for #{title}"
+    if title
+        revs = findRevisionsByTitle( title )
+        console.log revs
+        revs
+    else
+        console.log "No revs found."
+        []
+
+Template.history.events
+    'click #compareSelected': (evt) ->
+        evt.preventDefault()
+        rev1 = $('.historyForm input[name=rev1]:checked').val()
+        rev2 = $('.historyForm input[name=rev2]:checked').val()
+        if typeof rev1 != 'undefined' and typeof rev2 != 'undefined'
+            Router.navigate('/compare/'+Session.get('title')+'/'+rev1+'/'+rev2,{trigger:true})
+        else
+            $('.compareRadio').queue (next) ->
+                $(this).addClass 'compareRadioRed'
+                next()
+            $('.compareRadio').delay 1000
+            $('.compareRadio').queue (next) ->
+                $(this).removeClass 'compareRadioRed'
+                next()
+
+tagRe = /<([A-Z][A-Z0-9]*)[^>]*>\s*(.*?)<\/\1>/gi
+paraRe = /<p>(.*?)<\/p>/gi
+listRe = /<([ou]l)>(.*?)<\/\1>/gi
+liRe = /<li>\s*(.*?)\s*<\/li>/gi
+fixWikiText = (str) ->
+    str = String(str).replace(/\n\s+/g,' ').replace(/\n/g,'')
+    str = str.replace(paraRe, '$1\n')
+    str = str.replace(listRe, '<$1>$2</$1>\n')
+    str = str.replace(liRe, '<li>$1</li>')
+    str = str.replace(tagRe, '<$1>$2</$1>')
+    str
+
+Template.compare.rendered = ->
+    revId1 = Session.get 'rev1'
+    revId2 = Session.get 'rev2'
+    console.log revId1, revId2
+    rev1 = findRevisionById revId1
+    rev2 = findRevisionById revId2
+    revText1 = difflib.stringAsLines(fixWikiText rev1.text)
+    revText2 = difflib.stringAsLines(fixWikiText rev2.text)
+    
+    
+    # create a SequenceMatcher instance that diffs the two sets of lines
+    sm = new difflib.SequenceMatcher(revText1, revText2)
+    opcodes = sm.get_opcodes()
+
+    $("#diffView").append(diffview.buildView({
+        baseTextLines: revText1
+        newTextLines: revText2
+        opcodes: opcodes
+        baseTextName: rev1.date
+        newTextName: rev2.date
+        viewType: 1
+    }))    
 
 Template.main.events
     'click #sidenav_btn': (evt) ->
@@ -407,6 +471,9 @@ Template.entry.events
         lockEntry()
         Session.set('editMode', true)
 
+    'click .history': (evt) ->
+        Router.navigate('/history/'+Session.get('title'))
+
     'click #save': (evt) ->
         evt.preventDefault()
         unlockEntry()
@@ -485,6 +552,8 @@ rewriteLinks = ( text ) ->
 
 EntryRouter = Backbone.Router.extend({
     routes: {
+        "history/:historyTitle": "entryHistory",
+        "compare/:title/:rev1/:rev2": "entryCompare",
         "search/:term": "search"
         "tag/:tag": "tag",
         "profile": "profile",
@@ -495,7 +564,6 @@ EntryRouter = Backbone.Router.extend({
         "": "home"
     },
     indexroute: ->
-        Session.set('mode', 'pageindex')
         console.log("index route")
     redirectHome: ->
         this.navigate( "", true )
@@ -533,7 +601,22 @@ EntryRouter = Backbone.Router.extend({
         Session.set('mode', 'entry')
         Session.set('context', null)
         Session.set('title', decodeURIComponent( title ))
+    entryHistory: (historyTitle) ->
+        unlockEntry()
+        Session.set('titleHidden', false)
+        Session.set('mode', 'history')
+        Session.set('context', null)
+        Session.set('title', decodeURIComponent( historyTitle ))
+    entryCompare: (title, rev1, rev2) ->
+        unlockEntry()
+        Session.set('titleHidden', false)
+        Session.set('rev1', rev1)
+        Session.set('rev2', rev2)
+        Session.set('mode', 'compare')
+        # Placeholder title
+        Session.set('title', title )
     setTitle: (title) ->
+        console.log "set title"
         this.navigate(title, true)
 })
 
@@ -575,7 +658,7 @@ Template.sidebar.events
         adjust = 50
         $( 'html,body' ).animate( { scrollTop: offset.top - adjust }, 350 )
 
-Router = new EntryRouter
+Router = new EntryRouter()
 
 Meteor.startup ->
     Backbone.history.start pushState: true
