@@ -6282,6 +6282,7 @@
 		var url1 = /(^|&lt;|\s)(www\..+?\..+?)(\s|&gt;|$)/g,
 			url2 = /(^|&lt;|\s)(((https?|ftp):\/\/|mailto:).+?)(\s|&gt;|$)/g;
 
+
 		var childNodes = (this.$editor ? this.$editor.get(0) : this).childNodes, i = childNodes.length;
 		while (i--)
       {
@@ -6296,9 +6297,17 @@
 						}
 				  }  else {
 						if (n.innerHTML.indexOf('data-linktype="linkify"') !== -1) {
-							 if (n.innerHTML.indexOf('</a>') !== -1 && n.innerHTML.indexOf('</a> ') !== -1) {
-								  console.log("found a no space")
-							 }
+  							 var no_space_matcher = /<a\s+href="(.*)"(.*data-linktype="linkify".+?)>(.*)<\/a>(\w+)(.*)/;
+							 var match = no_space_matcher.exec(n.innerHTML)
+							 if (match) {
+								  console.log('no space matcher:'+match[1]+" "+match[2]+" "+match[3]+" "+match[4]);
+								  new_html = "<a href="+match[1]+match[4]+match[2]+">"+match[3]+match[4]+"</a>"+match[5]
+								  console.log(new_html)
+								  $(n).after(new_html).remove()
+							 } 
+//							 if (n.innerHTML.indexOf('</a>') !== -1 && n.innerHTML.indexOf('</a> ') !== -1) {
+//								  console.log("found a no space")
+//							 }
 						}
 				  }
 			 }
