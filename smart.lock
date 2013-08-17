@@ -1,0 +1,27 @@
+{
+  "meteor": {},
+  "dependencies": {
+    "basePackages": {
+      "require": {},
+      "toastjs": {},
+      "select2": {}
+    },
+    "packages": {
+      "require": {
+        "git": "https://github.com/tomconnors/meteor-require.git",
+        "tag": "v0.0.1",
+        "commit": "1662154598db51d1291fbfcefcd7152e7255bcf6"
+      },
+      "toastjs": {
+        "git": "https://github.com/srackham/toast.js.git",
+        "tag": "v2.0.5",
+        "commit": "55f5af84be856ab819bdda4135f4203c499cf2d6"
+      },
+      "select2": {
+        "git": "https://github.com/nate-strauser/meteor-select2.git",
+        "tag": "v3.4.0",
+        "commit": "a731bdb357cadd840aa5d9a3e893ab3df097a09c"
+      }
+    }
+  }
+}
