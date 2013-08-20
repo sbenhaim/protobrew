@@ -5267,10 +5267,11 @@
 				}
 			}
 
+
 			this.modalClose();
 			this.observeImages();
-			this.sync();
 
+			this.sync();
 		},
 		imageResize: function(image)
 		{
@@ -6276,64 +6277,66 @@
 	// constructor
 	Redactor.prototype.init.prototype = Redactor.prototype;
 
-	// LINKIFY
+
+ // LINKIFY
+   var new_href_text = new Array();				// I bet this is against the rules...
+   var new_text_text = new Array();          // and this to..
+
 	$.Redactor.fn.formatLinkify = function(protocol)
         {
 		var url1 = /(^|&lt;|\s)(www\..+?\..+?)(\s|&gt;|$)/g,
 			url2 = /(^|&lt;|\s)(((https?|ftp):\/\/|mailto:).+?)(\s|&gt;|$)/g;
 
-
 		var childNodes = (this.$editor ? this.$editor.get(0) : this).childNodes, i = childNodes.length;
-  	   var new_href_text = new Array();				
 
+  				console.log("LINKIFY");
 		while (i--)
       {
 			 var n = childNodes[i];
-			 console.log('node Type: '+n.nodeType + "->" + n.nodeValue + "->" + n.innerText + "->" + n.innerHTML);
 			 if (n.innerHTML) {
-				  console.log("inner html detect")
 				  if ($(n).attr('data-linktype') == 'linkify') {
-						console.log("linkify detect"+ n.innerHTML + " !" );
-//						if ($(n).atter('href') 
-
+						for (var jj in new_href_text) {
+							 if (new_href_text[jj][0] == $(n).attr('href')) {
+//								  $(n).attr("innerText", new_href_text[jj][0]+new_href_text[jj][1]);
+								  n.innerText = new_href_text[jj][0]+new_href_text[jj][1];
+								  new_href_text.splice(jj, 1);
+							 }
+						}
 						if ($(n).attr('href') !== n.innerText) {
+//							 console.log("the inner text: "+n.innerText + " " + $(n).attr('href'));
 							 $(n).attr('href', n.innerText);
 						}
-				  }  else {
+				  } else {
 						if (n.innerHTML.indexOf('data-linktype="linkify"') !== -1) {
   							 var no_space_matcher = /<a\s+href="(.*)"(.*data-linktype="linkify".+?)>(.*)<\/a>(\w+)(.*)<?/;
 							 var match = no_space_matcher.exec(n.innerHTML)
 							 if (match) {
-// 1 = link 2=rest of link 3=text 4=new word 5=rest of word
+                         // 1 = link 2=rest of link 3=text 4=new word 5=rest of word
 								  outside_text = match[4]+match[5]
-								  new_href_text.push(match[1], match[4])
-								  console.log('no space matcher:'+match[1]+" "+match[2]+" "+match[3]+" "+match[4]);
-								  new_html = "<a href="+match[1]+match[4]+match[2]+">"+match[3]+match[4]+"</a>"+match[5]
-								  console.log(new_html);
-//								  $(n).after(new_html).remove()
-//								  kids = $(n).childNodes
-//								  console.log("KKK+ " + kids)
-//								  for (k in kids) {
-//										console.log("KKK " + k.nodeType)
-//								  }
+								  new_href_text.push([match[1], match[4]]);
+								  new_text_text.push([match[4], match[5]]);
+//								  console.log('no space matcher:'+match[1]+" "+match[2]+" "+match[3]+" "+match[4]);
+//								  new_html = "<a href="+match[1]+match[4]+match[2]+">"+match[3]+match[4]+"</a>"+match[5]
 							 } 
-//							 if (n.innerHTML.indexOf('</a>') !== -1 && n.innerHTML.indexOf('</a> ') !== -1) {
-//								  console.log("found a no space")
-//							 }
 						}
 				  }
 			 }
 
 			if (n.nodeType === 3)
          {
-//  			   console.log("n3:"+n.nodeValue);
+				 for (var jj in new_text_text) {
+					  if (new_text_text[jj][0]+new_text_text[jj][1] == n.nodeValue) {
+							n.nodeValue = new_text_text[jj][1];
+							new_text_text.splice(jj, 1);
+					  }
+				 }
 				var html = n.nodeValue;
 				if (html && (html.match(url1) || html.match(url2)))
 				{
 					html = html.replace(/&/g, '&amp;')
 					.replace(/</g, '&lt;')
 					.replace(/>/g, '&gt;')
- 				   .replace(url1, '$1<a href="' + protocol + '$2" data-linktype=linkify>$2</a>$3')
+ 				   .replace(url1, '$1<a href="' + protocol + '$2" data-linktype=linkify>'+protocol+'$2</a>$3')
 					.replace(url2, '$1<a href="$2" data-linktype=linkify>$2</a>$5');
 					$(n).after(html).remove();
             }
