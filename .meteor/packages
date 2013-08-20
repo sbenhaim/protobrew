@@ -14,3 +14,5 @@ less
 bootstrap
 toastjs
 select2
+standard-app-packages
+require

@@ -41,11 +41,8 @@ evtNavigate = (evt) ->
     linkhost = $a[0].host
     if localhost == linkhost
         # support for full local URLs (e.g. http://www.yourwiki.com/page <-- won't refresh)
-        relHref = href.replace(/^(?:\/\/|[^\/]+)*\//, "") #string after first single / in full URL
-        if relHref.charAt(0) is '/'
-            navigate(relHref)
-        else
-            navigate('/'+relHref)
+        relHref = $('<a/>').attr( 'href', href )[0].pathname
+        navigate(relHref)
     else
         window.open( href, '_blank')
    
@@ -85,11 +82,25 @@ Template.newUserModal.events =
             Meteor.call('updateUser', $("#initial-username-input").val(), (e) -> $("#new-user-modal").modal("hide") )
             Meteor.call 'createHome'
             navigate( "home", Session.get( "context" ) ) 
+
+Template.deleteConfirmModal.events =
+    'click #delete-confirm-button': (e) ->
+        deleteInput = $('#delete-confirm-input').val()
+        if deleteInput == "DELETE"
+            deleteEntry()
+            $('#delete-confirm-modal').modal('hide')
+        else
+            Toast.error('Must type in "DELETE" in all caps to delete')
+
+    'click #delete-cancel-button': (e) ->
+        $('#delete-confirm-modal').modal('hide')
+
 Template.leftNav.events =
     'click a.left-nav': evtNavigate
 
     'change #search-input': (evt) ->
         term = $(evt.target).val()
+        window.scrollTo(0,0) # fix for position being screwed up (also in tags click, and new page)
         navigate( '/search/' + term ) if term
 
     'click #usernav a': evtNavigate
@@ -97,6 +108,9 @@ Template.leftNav.events =
     'click #userTabs > li' : (evt) ->
         $el = $(evt.currentTarget)
         Session.set( 'activeTab' , $el.attr('id'))
+
+Template.pageindex.events =
+  'click #pageindex a': evtNavigate
 
 getSummaries = (entries) ->
     entries.map (e) ->
@@ -324,10 +338,12 @@ Template.editEntry.rendered = ->
 
 deleteEntry = (evt) ->
     entry = Session.get('entry')
-    if entry && confirm( "Are you sure you want to delete #{entry.title}?")
+    if entry
         Meteor.call('deleteEntry',entry)
         Entries.remove({_id: entry._id})
         Session.set('editMode', false)
+    else
+        Toast.error('Cannot DELETE a page that has not been created!')
 
 saveEntry = (evt) ->
     reroute = ( e ) ->
@@ -367,6 +383,7 @@ Template.entry.events
            (error, pageName) ->
                 console.log(error, pageName);
                 #TODO: fix non-editable navigate
+                window.scrollTo(0,0) # fix for positio being screwed up
                 navigate(pageName)
         )
 
@@ -395,6 +412,7 @@ Template.entry.events
     'click li.article-tag a': (evt) ->
         evt.preventDefault()
         tag = $(evt.target).text()
+        window.scrollTo(0,0) # fix for position 
         navigate( '/tag/' + tag ) if tag
 
     'click a.entry-link': (e) ->
@@ -419,7 +437,9 @@ Template.entry.events
 
     'click #delete': (evt) ->
         evt.preventDefault()
-        deleteEntry(evt)
+        $('#delete-confirm-input').val('')
+        $('#delete-confirm-modal').modal('show')
+        # deleteEntry(evt)
 
     'click #article-title': (evt) ->
 
