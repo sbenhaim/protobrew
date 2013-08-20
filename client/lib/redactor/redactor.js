@@ -6284,6 +6284,8 @@
 
 
 		var childNodes = (this.$editor ? this.$editor.get(0) : this).childNodes, i = childNodes.length;
+  	   var new_href_text = new Array();				
+
 		while (i--)
       {
 			 var n = childNodes[i];
@@ -6292,18 +6294,28 @@
 				  console.log("inner html detect")
 				  if ($(n).attr('data-linktype') == 'linkify') {
 						console.log("linkify detect"+ n.innerHTML + " !" );
+//						if ($(n).atter('href') 
+
 						if ($(n).attr('href') !== n.innerText) {
 							 $(n).attr('href', n.innerText);
 						}
 				  }  else {
 						if (n.innerHTML.indexOf('data-linktype="linkify"') !== -1) {
-  							 var no_space_matcher = /<a\s+href="(.*)"(.*data-linktype="linkify".+?)>(.*)<\/a>(\w+)(.*)/;
+  							 var no_space_matcher = /<a\s+href="(.*)"(.*data-linktype="linkify".+?)>(.*)<\/a>(\w+)(.*)<?/;
 							 var match = no_space_matcher.exec(n.innerHTML)
 							 if (match) {
+// 1 = link 2=rest of link 3=text 4=new word 5=rest of word
+								  outside_text = match[4]+match[5]
+								  new_href_text.push(match[1], match[4])
 								  console.log('no space matcher:'+match[1]+" "+match[2]+" "+match[3]+" "+match[4]);
 								  new_html = "<a href="+match[1]+match[4]+match[2]+">"+match[3]+match[4]+"</a>"+match[5]
-								  console.log(new_html)
-								  $(n).after(new_html).remove()
+								  console.log(new_html);
+//								  $(n).after(new_html).remove()
+//								  kids = $(n).childNodes
+//								  console.log("KKK+ " + kids)
+//								  for (k in kids) {
+//										console.log("KKK " + k.nodeType)
+//								  }
 							 } 
 //							 if (n.innerHTML.indexOf('</a>') !== -1 && n.innerHTML.indexOf('</a> ') !== -1) {
 //								  console.log("found a no space")
