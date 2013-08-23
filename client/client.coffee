@@ -472,7 +472,7 @@ Template.entry.events
                 $in.replaceWith($el)
                 $(document).off('click')
 
-        $(document).on('click', cancel)
+        $(document).on('click', updateTitle)
 
         $in.on("keyup", (e) ->
             updateTitle(e, true) if e.keyCode == 13
