@@ -769,7 +769,8 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
     autoSuggest: ->
         #.on to catch creation of modal (DNE before dropdown is selected)
         $('body').on 'focus','#redactor_modal', ->
-            #remove the event ti stop focus from multi-firing
+            # evt.preventDefault()
+            #remove the event to stop focus from multi-firing
             $('body').off 'focus','#redactor_modal'
 
 
@@ -809,41 +810,24 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
 
             idarray = []
             for i in listTitles
-                idarray.push({id: i, text: i})
+                idarray.push(i)
 
             # case where 0 length put some junk in there
             if idarray.length == 0
-               idarray.push({id: " ", text: " "})
+               idarray.push("")
 
-            console.log $("#redactor_wiki_link").val()
+            console.log 'hit'
             defaultValue = $("#redactor_wiki_link").val()
-            $("#redactor_wiki_link").select2
-                data: idarray
-                # placeholder: "Select or Enter a Wiki Name"
-                initSelection : (element, callback) ->
-                    data =
-                        id: element.val()
-                        text: element.val()
-                    callback data
-                createSearchChoice: (term, data) ->
-                    if $(data).filter(->
-                        @text.localeCompare(term) is 0
-                    ).length is 0
-                        id: term
-                        text: term
-            .select2 "val", defaultValue
-            #alert("Selected value is: "+$("#redactor_wiki_link").select2("val"));
 
-            # $('#redactor_wiki_link').select2().select2('val', $("#redactor_wiki_link").val());
-            
-            # $("#redactor_wiki_link").textext(plugins: "autocomplete").on "getSuggestions", (e, data) ->
-            #     console.log 'by here'
-            #     console.log e
-            #     list = listTitles
+            #BUG 
+            # this whole method is fired twice so destory is called below
+            # to remove any prior instances
+            # $("#redactor_wiki_link").typeahead('destroy')
+            # $("#redactor_wiki_link").typeahead
+            #     name: 'wiki links'
+            #     local: ['timtrueman', 'JakeHarding', 'vskarich']
+            $("#redactor_wiki_link").typeahead
+                source: idarray
 
-              #   list = listTitles
-              #  textext = $(e.target).textext()[0]
-              #   query = ((if data then data.query else "")) or ""
-              #   $(this).trigger "setSuggestions",
-              #       result: textext.itemManager().filter(list, query)
+
 

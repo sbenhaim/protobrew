@@ -1,3 +1,4 @@
 require
 toastjs
 select2
+typeahead-js

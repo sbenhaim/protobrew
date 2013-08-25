@@ -2,6 +2,7 @@
   "packages": {
     "require": {},
     "toastjs": {},
-    "select2": {}
+    "select2": {},
+    "typeahead-js": {}
   }
 }

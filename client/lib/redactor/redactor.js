@@ -5905,7 +5905,7 @@
 						+ '<input type="hidden" id="redactor_tab_selected" value="1" />'
 						+ '<div class="redactor_tab" id="redactor_tab1">'
 							+ '<label>Wiki Link</label>'
-							+ '<input type="hidden" class="redactor_input"                    id="redactor_wiki_link"   />'
+							+ '<input type="text" class="redactor_input"                    id="redactor_wiki_link"   />'
                             + '<p>example: New Page</p>'
 							+ '<label>' + 'Display Text' + '</label>'
 							+ '<input type="text" class="redactor_input redactor_link_text" id="redactor_wiki_link_text" />'

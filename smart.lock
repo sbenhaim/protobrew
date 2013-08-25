@@ -4,7 +4,8 @@
     "basePackages": {
       "require": {},
       "toastjs": {},
-      "select2": {}
+      "select2": {},
+      "typeahead-js": {}
     },
     "packages": {
       "require": {
@@ -21,6 +22,11 @@
         "git": "https://github.com/nate-strauser/meteor-select2.git",
         "tag": "v3.4.0",
         "commit": "a731bdb357cadd840aa5d9a3e893ab3df097a09c"
+      },
+      "typeahead-js": {
+        "git": "https://github.com/olragon/meteor-typeahead-js.git",
+        "tag": "v0.9.3",
+        "commit": "9241c6c68f39cf37699b5de7b03d60a5434a5d21"
       }
     }
   }
