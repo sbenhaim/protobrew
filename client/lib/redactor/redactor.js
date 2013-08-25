@@ -1443,7 +1443,7 @@
 					// convert links
 			if ((this.opts.convertLinks || this.opts.convertImageLinks || this.opts.convertVideoLinks) && key === this.keyCode.ENTER)
 					{
-				this.formatLinkify(this.opts.linkProtocol, this.opts.convertLinks, this.opts.convertImageLinks, this.opts.convertVideoLinks);
+						 this.formatLinkify(this.opts.linkProtocol, this.opts.convertLinks, this.opts.convertImageLinks, this.opts.convertVideoLinks, null, null);
 
 				if (this.opts.convertImageLinks)
 				{
@@ -6712,11 +6712,11 @@
 
 
  // LINKIFY
-   var new_href_text = new Array();				// I bet this is against the rules...
-   var new_text_text = new Array();          // and this to..
+//   var new_href_text = new Array();				// I bet this is against the rules...
+//   var new_text_text = new Array();          // and this to..
 
 	// LINKIFY
-	$.Redactor.fn.formatLinkify = function(protocol, convertLinks, convertImageLinks, convertVideoLinks)
+	 $.Redactor.fn.formatLinkify = function(protocol, convertLinks, convertImageLinks, convertVideoLinks, newHrefText, newTextText)
         {
 		var url1 = /(^|&lt;|\s)(www\..+?\..+?)(\s|&gt;|$)/g,
 			url2 = /(^|&lt;|\s)(((https?|ftp):\/\/|mailto:).+?)(\s|&gt;|$)/g,
@@ -6725,21 +6725,21 @@
 
 		var childNodes = (this.$editor ? this.$editor.get(0) : this).childNodes, i = childNodes.length;
 
-  				console.log("LINKIFY");
 		while (i--)
       {
 			 var n = childNodes[i];
 			 if (n.innerHTML) {
 				  if ($(n).attr('data-linktype') == 'linkify') {
-						for (var jj in new_href_text) {
-							 if (new_href_text[jj][0] == $(n).attr('href')) {
+						for (var jj in newHrefText) {
+							 if (newHrefText[jj][0] == $(n).attr('href')) {
 //								  $(n).attr("innerText", new_href_text[jj][0]+new_href_text[jj][1]);
-								  n.innerText = new_href_text[jj][0]+new_href_text[jj][1];
-								  new_href_text.splice(jj, 1);
+								  n.innerText = newHrefText[jj][0]+newHrefText[jj][1];
+								  console.log("new herf text"+newHrefText[jj][0]+"|"+newHrefText[jj][1]);
+								  newHrefText.splice(jj, 1);
 							 }
 						}
 						if ($(n).attr('href') !== n.innerText) {
-//							 console.log("the inner text: "+n.innerText + " " + $(n).attr('href'));
+							 console.log("the inner text: "+n.innerText + " " + $(n).attr('href'));
 							 $(n).attr('href', n.innerText);
 						}
 				  } else {
@@ -6749,9 +6749,16 @@
 							 if (match) {
                          // 1 = link 2=rest of link 3=text 4=new word 5=rest of word
 								  outside_text = match[4]+match[5]
-								  new_href_text.push([match[1], match[4]]);
-								  new_text_text.push([match[4], match[5]]);
-//								  console.log('no space matcher:'+match[1]+" "+match[2]+" "+match[3]+" "+match[4]);
+								  if (newHrefText === null) {
+										newHrefText = new Array();
+								  }
+								  if (newTextText === null) {
+										newTextText = new Array();
+								  }
+
+								  newHrefText.push([match[1], match[4]]);
+								  newTextText.push([match[4], match[5]]);
+								  console.log('no space matcher:'+match[1]+" "+match[2]+" "+match[3]+" "+match[4]);
 //								  new_html = "<a href="+match[1]+match[4]+match[2]+">"+match[3]+match[4]+"</a>"+match[5]
 							 } 
 						}
@@ -6760,10 +6767,10 @@
 
 			if (n.nodeType === 3)
          {
-				 for (var jj in new_text_text) {
-					  if (new_text_text[jj][0]+new_text_text[jj][1] == n.nodeValue) {
-							n.nodeValue = new_text_text[jj][1];
-							new_text_text.splice(jj, 1);
+				 for (var jj in newTextText) {
+					  if (newTextText[jj][0]+newTextText[jj][1] == n.nodeValue) {
+							n.nodeValue = newTextText[jj][1];
+							newTextText.splice(jj, 1);
 					  }
 				 }
 
@@ -6796,8 +6803,8 @@
             }
 			else if (n.nodeType === 1 && !/^(a|button|textarea)$/i.test(n.tagName))
 			{
-				$.Redactor.fn.formatLinkify.call(n, protocol, convertLinks, convertImageLinks, convertVideoLinks);
-            }
+				 $.Redactor.fn.formatLinkify.call(n, protocol, convertLinks, convertImageLinks, convertVideoLinks, newHrefText, newTextText);
+         }
         }
 	};
 
