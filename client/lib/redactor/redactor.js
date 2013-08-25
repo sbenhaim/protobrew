@@ -6709,12 +6709,6 @@
 	// constructor
 	Redactor.prototype.init.prototype = Redactor.prototype;
 
-
-
- // LINKIFY
-//   var new_href_text = new Array();				// I bet this is against the rules...
-//   var new_text_text = new Array();          // and this to..
-
 	// LINKIFY
 	 $.Redactor.fn.formatLinkify = function(protocol, convertLinks, convertImageLinks, convertVideoLinks, newHrefText, newTextText)
         {
@@ -6732,14 +6726,11 @@
 				  if ($(n).attr('data-linktype') == 'linkify') {
 						for (var jj in newHrefText) {
 							 if (newHrefText[jj][0] == $(n).attr('href')) {
-//								  $(n).attr("innerText", new_href_text[jj][0]+new_href_text[jj][1]);
 								  n.innerText = newHrefText[jj][0]+newHrefText[jj][1];
-								  console.log("new herf text"+newHrefText[jj][0]+"|"+newHrefText[jj][1]);
 								  newHrefText.splice(jj, 1);
 							 }
 						}
 						if ($(n).attr('href') !== n.innerText) {
-							 console.log("the inner text: "+n.innerText + " " + $(n).attr('href'));
 							 $(n).attr('href', n.innerText);
 						}
 				  } else {
@@ -6758,8 +6749,7 @@
 
 								  newHrefText.push([match[1], match[4]]);
 								  newTextText.push([match[4], match[5]]);
-								  console.log('no space matcher:'+match[1]+" "+match[2]+" "+match[3]+" "+match[4]);
-//								  new_html = "<a href="+match[1]+match[4]+match[2]+">"+match[3]+match[4]+"</a>"+match[5]
+//								  console.log('no space matcher:'+match[1]+" "+match[2]+" "+match[3]+" "+match[4]);
 							 } 
 						}
 				  }
