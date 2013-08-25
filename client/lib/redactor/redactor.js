@@ -1443,7 +1443,7 @@
 					// convert links
 			if ((this.opts.convertLinks || this.opts.convertImageLinks || this.opts.convertVideoLinks) && key === this.keyCode.ENTER)
 					{
-				this.formatLinkify(this.opts.linkProtocol, this.opts.convertLinks, this.opts.convertImageLinks, this.opts.convertVideoLinks);
+						 this.formatLinkify(this.opts.linkProtocol, this.opts.convertLinks, this.opts.convertImageLinks, this.opts.convertVideoLinks, null, null);
 
 				if (this.opts.convertImageLinks)
 				{
@@ -5542,10 +5542,11 @@
 				}
 			}
 
+
 			this.modalClose();
 			this.observeImages();
-			this.sync();
 
+			this.sync();
 		},
 		imageResizeHide: function(e)
 		{
@@ -6709,7 +6710,7 @@
 	Redactor.prototype.init.prototype = Redactor.prototype;
 
 	// LINKIFY
-	$.Redactor.fn.formatLinkify = function(protocol, convertLinks, convertImageLinks, convertVideoLinks)
+	 $.Redactor.fn.formatLinkify = function(protocol, convertLinks, convertImageLinks, convertVideoLinks, newHrefText, newTextText)
         {
 		var url1 = /(^|&lt;|\s)(www\..+?\..+?)(\s|&gt;|$)/g,
 			url2 = /(^|&lt;|\s)(((https?|ftp):\/\/|mailto:).+?)(\s|&gt;|$)/g,
@@ -6717,22 +6718,52 @@
 			urlYoutube = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
 
 		var childNodes = (this.$editor ? this.$editor.get(0) : this).childNodes, i = childNodes.length;
-		while (i--)
-        {
-	        var n = childNodes[i];
-            var linkify_detect = 0;
-			if (n.innerHTML) {
-			    if ($(n).attr('data-linktype') == 'linkify') {
-				    //	console.log('linkify detect'+n.innerHTML);
-				    if ($(n).attr('href') !== n.innerText) {
-				        $(n).attr('href', n.innerText);
-				    }
-			    } 
-		    }
 
+		while (i--)
+      {
+			 var n = childNodes[i];
+			 if (n.innerHTML) {
+				  if ($(n).attr('data-linktype') == 'linkify') {
+						for (var jj in newHrefText) {
+							 if (newHrefText[jj][0] == $(n).attr('href')) {
+								  n.innerText = newHrefText[jj][0]+newHrefText[jj][1];
+								  newHrefText.splice(jj, 1);
+							 }
+						}
+						if ($(n).attr('href') !== n.innerText) {
+							 $(n).attr('href', n.innerText);
+						}
+				  } else {
+						if (n.innerHTML.indexOf('data-linktype="linkify"') !== -1) {
+  							 var no_space_matcher = /<a\s+href="(.*)"(.*data-linktype="linkify".+?)>(.*)<\/a>(\w+)(.*)<?/;
+							 var match = no_space_matcher.exec(n.innerHTML)
+							 if (match) {
+                         // 1 = link 2=rest of link 3=text 4=new word 5=rest of word
+								  outside_text = match[4]+match[5]
+								  if (newHrefText === null) {
+										newHrefText = new Array();
+								  }
+								  if (newTextText === null) {
+										newTextText = new Array();
+								  }
+
+								  newHrefText.push([match[1], match[4]]);
+								  newTextText.push([match[4], match[5]]);
+//								  console.log('no space matcher:'+match[1]+" "+match[2]+" "+match[3]+" "+match[4]);
+							 } 
+						}
+				  }
+			 }
 
 			if (n.nodeType === 3)
-			{
+         {
+				 for (var jj in newTextText) {
+					  if (newTextText[jj][0]+newTextText[jj][1] == n.nodeValue) {
+							n.nodeValue = newTextText[jj][1];
+							newTextText.splice(jj, 1);
+					  }
+				 }
+
 				var html = n.nodeValue;
 
 				// youtube
@@ -6755,15 +6786,15 @@
 					html = html.replace(/&/g, '&amp;')
 					.replace(/</g, '&lt;')
 					.replace(/>/g, '&gt;')
- 				   .replace(url1, '$1<a href="' + protocol + '$2" data-linktype=linkify>$2</a>$3')
+ 				   .replace(url1, '$1<a href="' + protocol + '$2" data-linktype=linkify>'+protocol+'$2</a>$3')
 					.replace(url2, '$1<a href="$2" data-linktype=linkify>$2</a>$5');
 					$(n).after(html).remove();
                 }
             }
 			else if (n.nodeType === 1 && !/^(a|button|textarea)$/i.test(n.tagName))
 			{
-				$.Redactor.fn.formatLinkify.call(n, protocol, convertLinks, convertImageLinks, convertVideoLinks);
-            }
+				 $.Redactor.fn.formatLinkify.call(n, protocol, convertLinks, convertImageLinks, convertVideoLinks, newHrefText, newTextText);
+         }
         }
 	};
 
