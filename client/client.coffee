@@ -1,6 +1,17 @@
 Meteor.subscribe 'entries', onComplete = ->
   Session.set('entryLoaded', true)
 
+
+# Meteor.autosubscribe(function() {
+#   var query = { $or : [ { post : Session.get('selectedPostId') } , { _id : Session.get('selectedCommentId') } ] };
+#   Meteor.subscribe('comments', query, function() {
+#     Session.set('singleCommentReady', true);
+#   });
+# });
+
+Meteor.subscribe('comments')
+
+
 Meteor.subscribe('tags')
 
 Meteor.subscribe('revisions')
@@ -8,7 +19,7 @@ Meteor.subscribe('revisions')
 Meteor.subscribe('allUserData')
 
 Meteor.autosubscribe( ->
-    Meteor.subscribe("userData");
+    Meteor.subscribe("userData")
 );
 
 lockEntry = ->

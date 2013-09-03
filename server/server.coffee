@@ -172,3 +172,10 @@ Meteor.methods
         );
 
         return {filelink: path + name}
+
+
+
+Meteor.publish('comments', ->
+    # Comments.find(query)
+    Comments.find({})
+)
