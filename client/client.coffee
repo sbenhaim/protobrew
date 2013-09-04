@@ -66,6 +66,11 @@ Deps.autorun ->
     if Meteor.user() && ! Meteor.user().username
         $('#new-user-modal').modal({'backdrop':'static', 'keyboard': false})
 
+Meteor.Spinner.options = {
+    top : '50'
+    left : '50'
+}
+
 
 Template.newUserModal.rendered = () ->
     Session.set('selectedUsername', $('#initial-username-input').val() )

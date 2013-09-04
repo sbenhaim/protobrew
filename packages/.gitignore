@@ -2,3 +2,5 @@ require
 toastjs
 select2
 typeahead-js
+momentjs
+spin

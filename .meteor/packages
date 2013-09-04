@@ -16,3 +16,5 @@ toastjs
 select2
 standard-app-packages
 require
+momentjs
+spin

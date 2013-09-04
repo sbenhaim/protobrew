@@ -69,8 +69,8 @@
 
   Template.comment_item.helpers({
     full_date: function(){
-      // var submitted = new Date(this.submitted);
-      // return submitted.toString();
+      var submitted = new Date(this.submitted);
+      return submitted.toString();
     }
     ,child_comments: function(){
       var entryId = Session.get('entryId');
@@ -107,7 +107,7 @@
       return Session.get('showChildComments');
     }
     ,ago: function(){
-      // return moment(this.submitted).fromNow();
+      return moment(this.submitted).fromNow();
     }
     ,upvoted: function(){
       // return Meteor.user() && _.include(this.upvoters, Meteor.user()._id);
@@ -118,7 +118,7 @@
   });
 
 Template.comment_item.created=function(){
-  // this.firstRender=true;
+  this.firstRender=true;
 }
 
 Template.comment_item.rendered=function(){
@@ -160,59 +160,59 @@ Template.comment_item.rendered=function(){
     }
   }
 
-  // Template.comment_item.events = {
-  //   'click .queue-comment': function(e){
-  //     e.preventDefault();
-  //     var current_comment_id=$(event.target).closest(".comment").attr("id");
-  //     var now = new Date();
-  //     var comment_id = Comments.update(current_comment_id,
-  //         {
-  //           $set: {
-  //             submitted:  new Date().getTime()
-  //           }
-  //         }
-  //       );
-  //     },
-  //   'click .not-upvoted .upvote': function(e, instance){
-  //     e.preventDefault();
-  //     if(!Meteor.user()){
-  //       Meteor.Router.to('/signin');
-  //       throwError("Please log in first");
-  //     }
-  //     Meteor.call('upvoteComment', this._id, function(error, result){
-  //       trackEvent("post upvoted", {'commentId':instance.data._id, 'postId': instance.data.post, 'authorId':instance.data.userId});
-  //     });
-  //   },
-  //   'click .upvoted .upvote': function(e, instance){
-  //     e.preventDefault();
-  //     if(!Meteor.user()){
-  //       Meteor.Router.to('/signin');
-  //       throwError("Please log in first");
-  //     }
-  //     Meteor.call('cancelUpvoteComment', this._id, function(error, result){
-  //       trackEvent("post upvote cancelled", {'commentId':instance.data._id, 'postId': instance.data.post, 'authorId':instance.data.userId});
-  //     });
-  //   },
-  //   'click .not-downvoted .downvote': function(e, instance){
-  //     e.preventDefault();
-  //     if(!Meteor.user()){
-  //       Meteor.Router.to('/signin');
-  //       throwError("Please log in first");
-  //     }
-  //     Meteor.call('downvoteComment', this._id, function(error, result){
-  //       trackEvent("post downvoted", {'commentId':instance.data._id, 'postId': instance.data.post, 'authorId':instance.data.userId});
-  //     });
-  //   },
-  //   'click .downvoted .downvote': function(e, instance){
-  //     e.preventDefault();
-  //     if(!Meteor.user()){
-  //       Meteor.Router.to('/signin');
-  //       throwError("Please log in first");
-  //     }
-  //     Meteor.call('cancelDownvoteComment', this._id, function(error, result){
-  //       trackEvent("post downvote cancelled", {'commentId':instance.data._id, 'postId': instance.data.post, 'authorId':instance.data.userId});
-  //     });
-  //   }
-  // };
+  Template.comment_item.events = {
+    'click .queue-comment': function(e){
+      e.preventDefault();
+      var current_comment_id=$(event.target).closest(".comment").attr("id");
+      var now = new Date();
+      var comment_id = Comments.update(current_comment_id,
+          {
+            $set: {
+              submitted:  new Date().getTime()
+            }
+          }
+        );
+      },
+    'click .not-upvoted .upvote': function(e, instance){
+      e.preventDefault();
+      if(!Meteor.user()){
+        Meteor.Router.to('/signin');
+        throwError("Please log in first");
+      }
+      Meteor.call('upvoteComment', this._id, function(error, result){
+        trackEvent("post upvoted", {'commentId':instance.data._id, 'postId': instance.data.post, 'authorId':instance.data.userId});
+      });
+    },
+    'click .upvoted .upvote': function(e, instance){
+      e.preventDefault();
+      if(!Meteor.user()){
+        Meteor.Router.to('/signin');
+        throwError("Please log in first");
+      }
+      Meteor.call('cancelUpvoteComment', this._id, function(error, result){
+        trackEvent("post upvote cancelled", {'commentId':instance.data._id, 'postId': instance.data.post, 'authorId':instance.data.userId});
+      });
+    },
+    'click .not-downvoted .downvote': function(e, instance){
+      e.preventDefault();
+      if(!Meteor.user()){
+        Meteor.Router.to('/signin');
+        throwError("Please log in first");
+      }
+      Meteor.call('downvoteComment', this._id, function(error, result){
+        trackEvent("post downvoted", {'commentId':instance.data._id, 'postId': instance.data.post, 'authorId':instance.data.userId});
+      });
+    },
+    'click .downvoted .downvote': function(e, instance){
+      e.preventDefault();
+      if(!Meteor.user()){
+        Meteor.Router.to('/signin');
+        throwError("Please log in first");
+      }
+      Meteor.call('cancelDownvoteComment', this._id, function(error, result){
+        trackEvent("post downvote cancelled", {'commentId':instance.data._id, 'postId': instance.data.post, 'authorId':instance.data.userId});
+      });
+    }
+  };
 
 })();
