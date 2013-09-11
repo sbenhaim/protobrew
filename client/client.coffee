@@ -1,3 +1,5 @@
+root = exports ? this
+
 Meteor.subscribe 'entries', onComplete = ->
   Session.set('entryLoaded', true)
 
@@ -10,6 +12,12 @@ Meteor.subscribe 'entries', onComplete = ->
 # });
 
 Meteor.subscribe('comments')
+
+Meteor.subscribe('settings', ->
+  #runs once on site load
+  # analyticsInit()
+  Session.set('settingsLoaded',true)
+)
 
 
 Meteor.subscribe('tags')
@@ -66,6 +74,8 @@ Deps.autorun ->
     if Meteor.user() && ! Meteor.user().username
         $('#new-user-modal').modal({'backdrop':'static', 'keyboard': false})
 
+# currently the spinner atmosphere package has a bug in it where it does not work
+# spinner is clone directly into the project directory
 Meteor.Spinner.options = {
     top : '50'
     left : '50'
@@ -339,7 +349,6 @@ Template.editEntry.rendered = ->
     window.scrollTo(0,Session.get('y-offset'))
 
     minHeight = $(window).height() - 250 #50 -> top toolbar 60 -> title 20 -> bottom margin (120 for tags and admin)
-    console.log minHeight
     if( $('.redactor_').height() < minHeight ) 
         $('.redactor_').css('min-height', minHeight)
 
@@ -505,7 +514,7 @@ Template.profile.events
 Template.user.info = ->
     Meteor.user()
 
-rewriteLinks = ( text ) ->
+root.rewriteLinks = ( text ) ->
     $html = $('<div>')
     $html.html( text )
 
@@ -616,6 +625,10 @@ Router = new EntryRouter
 Meteor.startup ->
     Backbone.history.start pushState: true
     Session.set('activeTab', 'editedTab')
+    Session.set('selectedCommentId', null)
+    # on small screens make sure the login screen is displayed first
+    $('#leftNavContainer').toggle(true)
+    $("#main").toggleClass('wLeftNav')
   
 
 #builds array of all heading titles
@@ -699,9 +712,6 @@ buildRec = (headingNodes, $elm, lv) ->
 
         # recursive call
         buildRec headingNodes, $elm, lv + cnt
-
-
-
 
 
 highlightNav = ->

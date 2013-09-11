@@ -7,81 +7,81 @@
     return commentIsNew;
   };
 
-  findQueueContainer=function($comment){
-    // go up and down the DOM until we find either A) a queue container or B) an unqueued comment
-    $up=$comment.prevAll(".queue-container, .comment-displayed").first();
-    $down=$comment.nextAll(".queue-container, .comment-displayed").first();
-    $prev=$comment.prev();
-    $next=$comment.next();
-    $queuedAncestors=$comment.parents(".comment-queued");
-    if($queuedAncestors.exists()){
-      // console.log("----------- case 1: Queued Ancestor -----------");
-      // 1.
-      // our comment has one or more queued ancestor, so we look for the root-most
-      // ancestor's queue container
-      $container=$queuedAncestors.last().data("queue");
-    }else if($prev.hasClass("queue-container")){
-      // console.log("----------- case 2: Queued Brother -----------");
-      // 2.
-      // the comment just above is queued, so we use the same queue container as him
-      $container=$prev.data("queue");
-    }else if($prev.find(".comment").last().hasClass("comment-queued")){
-      // console.log("----------- case 3: Queued Cousin -----------");
-      // 3.
-      // there are no queued comments going up on the same level,
-      // but the bottom-most child of the comment directly above is queued
-      $container=$prev.find(".comment").last().data("queue");
-    }else if($down.hasClass("queue-container")){
-      // console.log("----------- case 4: Queued Sister -----------");
-      // 3.
-      // the comment just below is queued, so we use the same queue container as him
-      $container=$next.data("queue");
-    }else if($up.hasClass('comment-displayed') || !$up.exists()){
-      // console.log("----------- case 5: No Queue -----------");
-      // 4.
-      // we've found containers neither above or below, but
-      // A) we've hit a displayed comment or
-      // B) we've haven't found any comments (i.e. we're at the beginning of the list)
-      // so we put our queue container just before the comment
-      $container=$('<div class="queue-container"><ul></ul></div>').insertBefore($comment);
-      $container.click(function(e){
-        e.preventDefault();
-        var links=$(this).find("a");
-        links.each(function(){
-          var target=$(this).attr("href");
-          $(target).removeClass("comment-queued").addClass("comment-displayed");
-          var openedComments=Session.get('openedComments') || [];
-          openedComments.push(target.substr(1));
-          Session.set('openedComments', openedComments);
-          // console.log(Session.get('openedComments'));
-        });
-        // scrollPageTo(links.first().attr("href"));
-        $(this).hide("slow").remove();
-      });
-    }
-    // console.log("comment", $comment);
-    // console.log("up", $up);
-    // console.log("down", $down);
-    // console.log("queuedAncestors", $queuedAncestors);
-    // console.log("container", $container);
-    return $container;
-  };
+  // findQueueContainer=function($comment){
+  //   // go up and down the DOM until we find either A) a queue container or B) an unqueued comment
+  //   $up=$comment.prevAll(".queue-container, .comment-displayed").first();
+  //   $down=$comment.nextAll(".queue-container, .comment-displayed").first();
+  //   $prev=$comment.prev();
+  //   $next=$comment.next();
+  //   $queuedAncestors=$comment.parents(".comment-queued");
+  //   if($queuedAncestors.exists()){
+  //     // console.log("----------- case 1: Queued Ancestor -----------");
+  //     // 1.
+  //     // our comment has one or more queued ancestor, so we look for the root-most
+  //     // ancestor's queue container
+  //     $container=$queuedAncestors.last().data("queue");
+  //   }else if($prev.hasClass("queue-container")){
+  //     // console.log("----------- case 2: Queued Brother -----------");
+  //     // 2.
+  //     // the comment just above is queued, so we use the same queue container as him
+  //     $container=$prev.data("queue");
+  //   }else if($prev.find(".comment").last().hasClass("comment-queued")){
+  //     // console.log("----------- case 3: Queued Cousin -----------");
+  //     // 3.
+  //     // there are no queued comments going up on the same level,
+  //     // but the bottom-most child of the comment directly above is queued
+  //     $container=$prev.find(".comment").last().data("queue");
+  //   }else if($down.hasClass("queue-container")){
+  //     // console.log("----------- case 4: Queued Sister -----------");
+  //     // 3.
+  //     // the comment just below is queued, so we use the same queue container as him
+  //     $container=$next.data("queue");
+  //   }else if($up.hasClass('comment-displayed') || !$up.exists()){
+  //     // console.log("----------- case 5: No Queue -----------");
+  //     // 4.
+  //     // we've found containers neither above or below, but
+  //     // A) we've hit a displayed comment or
+  //     // B) we've haven't found any comments (i.e. we're at the beginning of the list)
+  //     // so we put our queue container just before the comment
+  //     $container=$('<div class="queue-container"><ul></ul></div>').insertBefore($comment);
+  //     $container.click(function(e){
+  //       e.preventDefault();
+  //       var links=$(this).find("a");
+  //       links.each(function(){
+  //         var target=$(this).attr("href");
+  //         $(target).removeClass("comment-queued").addClass("comment-displayed");
+  //         var openedComments=Session.get('openedComments') || [];
+  //         openedComments.push(target.substr(1));
+  //         Session.set('openedComments', openedComments);
+  //         // console.log(Session.get('openedComments'));
+  //       });
+  //       // scrollPageTo(links.first().attr("href"));
+  //       $(this).hide("slow").remove();
+  //     });
+  //   }
+  //   // console.log("comment", $comment);
+  //   // console.log("up", $up);
+  //   // console.log("down", $down);
+  //   // console.log("queuedAncestors", $queuedAncestors);
+  //   // console.log("container", $container);
+  //   return $container;
+  // };
 
   Template.comment_item.helpers({
     full_date: function(){
       var submitted = new Date(this.submitted);
       return submitted.toString();
     }
-    ,child_comments: function(){
-      var entryId = Session.get('entryId');
-      var comments = Comments.find({ entry: entryId, parent: this._id });
-      return comments;
-    }
+    // ,child_comments: function(){
+    //   var entryId = Session.get('entryId');
+    //   var comments = Comments.find({ entry: entryId, parent: this._id });
+    //   return comments;
+    // }
     ,author: function(){
       return Meteor.users.findOne(this.userId);
     }
     ,authorName: function(){
-      // return getAuthorName(this);
+      return getAuthorName(this);
     },
     user_avatar: function(){
       // if(author=Meteor.users.findOne(this.userId))
@@ -93,14 +93,16 @@
       else
         return false;
     }
-    ,body_formatted: function(){
-      if(this.body){
+    ,comment_text: function(){
+      // console.log('this.text');
+      // console.log(this.text);
+      if(this.text){
         // var converter = new Markdown.Converter();
         // var html_body=converter.makeHtml(this.body);
         // return html_body.autoLink();
-        
+        source = $('<div>').html( this.text );
 
-        return this.body
+        return source.html();
       }
     }
     ,showChildComments: function(){
@@ -115,7 +117,49 @@
     ,downvoted: function(){
       // return Meteor.user() && _.include(this.downvoters, Meteor.user()._id);
     }
+
+    //GK edits
+    ,editing: function() {
+      return Session.equals('selectedCommentId', this._id);
+    }
+
+
+
   });
+
+Template.editComment.rendered=function(){
+  // debugger;
+  if(this.data){
+    var comment=this.data;
+    var $comment=$("#"+comment._id);
+    var comment_editor=$(".comment-text-editor");
+  }
+  if(Meteor.user() && !this.editor){
+    comment_editor.redactor({
+      plugins: ['autoSuggest'],
+      imageUpload: '/images',
+      buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'image', 'table', 'link', '|', 'fontcolor', 'backcolor', '|', 'alignment', '|', 'horizontalrule'],
+      focus: true,
+      autoresize: true,
+      filepicker: function(callback) {
+        filepicker.setKey('AjmU2eDdtRDyMpagSeV7rz');
+        return filepicker.pick({
+          mimetype: "image/*"
+        }, function(file) {
+          return filepicker.store(file, {
+            location: "S3",
+            path: Meteor.userId() + "/" + file.filename
+          }, function(file) {
+            return callback({
+              filelink: file.url
+            });
+          });
+        });
+      }
+    });
+  }
+
+}
 
 Template.comment_item.created=function(){
   this.firstRender=true;
@@ -173,46 +217,80 @@ Template.comment_item.rendered=function(){
           }
         );
       },
-    'click .not-upvoted .upvote': function(e, instance){
+    // 'click .not-upvoted .upvote': function(e, instance){
+    //   e.preventDefault();
+    //   if(!Meteor.user()){
+    //     Meteor.Router.to('/signin');
+    //     throwError("Please log in first");
+    //   }
+    //   Meteor.call('upvoteComment', this._id, function(error, result){
+    //     trackEvent("post upvoted", {'commentId':instance.data._id, 'postId': instance.data.post, 'authorId':instance.data.userId});
+    //   });
+    // },
+    // 'click .upvoted .upvote': function(e, instance){
+    //   e.preventDefault();
+    //   if(!Meteor.user()){
+    //     Meteor.Router.to('/signin');
+    //     throwError("Please log in first");
+    //   }
+    //   Meteor.call('cancelUpvoteComment', this._id, function(error, result){
+    //     trackEvent("post upvote cancelled", {'commentId':instance.data._id, 'postId': instance.data.post, 'authorId':instance.data.userId});
+    //   });
+    // },
+    // 'click .not-downvoted .downvote': function(e, instance){
+    //   e.preventDefault();
+    //   if(!Meteor.user()){
+    //     Meteor.Router.to('/signin');
+    //     throwError("Please log in first");
+    //   }
+    //   Meteor.call('downvoteComment', this._id, function(error, result){
+    //     trackEvent("post downvoted", {'commentId':instance.data._id, 'postId': instance.data.post, 'authorId':instance.data.userId});
+    //   });
+    // },
+    // 'click .downvoted .downvote': function(e, instance){
+    //   e.preventDefault();
+    //   if(!Meteor.user()){
+    //     Meteor.Router.to('/signin');
+    //     throwError("Please log in first");
+    //   }
+    //   Meteor.call('cancelDownvoteComment', this._id, function(error, result){
+    //     trackEvent("post downvote cancelled", {'commentId':instance.data._id, 'postId': instance.data.post, 'authorId':instance.data.userId});
+    //   });
+    // },
+
+
+
+    'click .edit-comment': function(e){
       e.preventDefault();
-      if(!Meteor.user()){
-        Meteor.Router.to('/signin');
-        throwError("Please log in first");
-      }
-      Meteor.call('upvoteComment', this._id, function(error, result){
-        trackEvent("post upvoted", {'commentId':instance.data._id, 'postId': instance.data.post, 'authorId':instance.data.userId});
-      });
+      Session.set('selectedCommentId', this._id);
     },
-    'click .upvoted .upvote': function(e, instance){
+    'click .save-comment': function(e){
       e.preventDefault();
-      if(!Meteor.user()){
-        Meteor.Router.to('/signin');
-        throwError("Please log in first");
-      }
-      Meteor.call('cancelUpvoteComment', this._id, function(error, result){
-        trackEvent("post upvote cancelled", {'commentId':instance.data._id, 'postId': instance.data.post, 'authorId':instance.data.userId});
-      });
+      if(!Meteor.user()) throw 'You must be logged in.';
+      var selectedCommentId=Session.get('selectedCommentId');
+      // var selectedPostId=Comments.findOne(selectedCommentId).entry;
+      // var content = cleanUp(instance.editor.exportFile());
+      // var text  = $('#comment-text').val();
+      var commentId = Comments.update(selectedCommentId,
+      {
+          $set: {
+            'text': rewriteLinks( $('.comment-text-editor').val() )
+          }
+        }
+      );
+
+      // trackEvent("edit comment", {'entryId': selectedPostId, 'commentId': selectedCommentId});
+      Session.set('selectedCommentId', null);
     },
-    'click .not-downvoted .downvote': function(e, instance){
+    'click .cancel-comment': function(e){
       e.preventDefault();
-      if(!Meteor.user()){
-        Meteor.Router.to('/signin');
-        throwError("Please log in first");
-      }
-      Meteor.call('downvoteComment', this._id, function(error, result){
-        trackEvent("post downvoted", {'commentId':instance.data._id, 'postId': instance.data.post, 'authorId':instance.data.userId});
-      });
-    },
-    'click .downvoted .downvote': function(e, instance){
-      e.preventDefault();
-      if(!Meteor.user()){
-        Meteor.Router.to('/signin');
-        throwError("Please log in first");
-      }
-      Meteor.call('cancelDownvoteComment', this._id, function(error, result){
-        trackEvent("post downvote cancelled", {'commentId':instance.data._id, 'postId': instance.data.post, 'authorId':instance.data.userId});
-      });
+      Session.set('selectedCommentId', null);
     }
+
+
+
+
   };
 
 })();
+

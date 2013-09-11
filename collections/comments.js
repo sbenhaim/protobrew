@@ -30,14 +30,14 @@ Meteor.methods({
         entry=Entries.findOne(entryId),
         // postUser=Meteor.users.findOne(post.userId),
         timeSinceLastComment=timeSinceLast(user, Comments),
-        cleanText= cleanUp(text),
+
+        //TODO: cleanup text
+        cleanText= text,
         commentInterval = Math.abs(parseInt(getSetting('commentInterval',15))),
         properties={
           'commentAuthorId': user._id,
           'commentAuthorName': getDisplayName(user),
-          //'commentExcerpt': trimWords(stripMarkdown(cleanText),20),
           'entryId': entryId
-          // 'postHeadline' : post.headline
         };
     // check that user can comment
     if (!user || !canComment(user))
@@ -52,10 +52,8 @@ Meteor.methods({
       throw new Meteor.Error(704,'Your comment is empty.');
           
     var comment = {
-        // post: postId,
         entry: entryId,
-
-        body: cleanText,
+        text: cleanText,
         userId: user._id,
         submitted: new Date().getTime(),
         author: getDisplayName(user)

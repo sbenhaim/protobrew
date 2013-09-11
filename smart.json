@@ -5,6 +5,8 @@
     "select2": {},
     "typeahead-js": {},
     "momentjs": {},
-    "spin": {}
+    "spin": {},
+    "scss": {},
+    "bootstrap3-less": {}
   }
 }

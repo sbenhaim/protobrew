@@ -7,7 +7,9 @@
       "select2": {},
       "typeahead-js": {},
       "momentjs": {},
-      "spin": {}
+      "spin": {},
+      "scss": {},
+      "bootstrap3-less": {}
     },
     "packages": {
       "require": {
@@ -17,8 +19,8 @@
       },
       "toastjs": {
         "git": "https://github.com/srackham/toast.js.git",
-        "tag": "v2.0.5",
-        "commit": "55f5af84be856ab819bdda4135f4203c499cf2d6"
+        "tag": "v2.0.6",
+        "commit": "a81915d9df2f432486ac6ce8d6981419119e7007"
       },
       "select2": {
         "git": "https://github.com/nate-strauser/meteor-select2.git",
@@ -39,6 +41,11 @@
         "git": "https://github.com/SachaG/meteor-spin.git",
         "tag": "v0.2.0",
         "commit": "fd3a2871a69442848b4b4e74f5e1ae28fa4a95a4"
+      },
+      "bootstrap3-less": {
+        "git": "https://github.com/eprochasson/bootstrap3-less",
+        "tag": "v0.1.1",
+        "commit": "82d3e32b6a44bad7bd439b9e02ce33161e58996d"
       }
     }
   }

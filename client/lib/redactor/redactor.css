@@ -71,6 +71,8 @@ body .redactor_box_fullscreen {
 	font-family: Menlo, Monaco, monospace, sans-serif !important;
 }
 
+/*
+GK: styling for text comes from bootstrap
 .redactor_editor,
 .redactor_editor:focus,
 .redactor_editor div,
@@ -83,7 +85,7 @@ body .redactor_box_fullscreen {
 .redactor_editor pre {
 	font-size: 15px !important;
 	line-height: 1.5em;
-}
+}*/
 
 .redactor_editor,
 .redactor_editor:focus {

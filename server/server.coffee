@@ -1,7 +1,24 @@
-throw new Meteor.Error( 500, "No `Settings' defined (need server/_settings.coffee)" ) unless Settings?
+throw new Meteor.Error( 500, "No `Settings' defined (need server/_domainer.coffee)" ) unless Domainer?
+
+######################################################
+## telescope integration
+##
+Meteor.publish('comments', ->
+    # Comments.find(query)
+    Comments.find({})
+)
+
+Meteor.publish('settings', ->
+  Settings.find({})
+)
+
+##
+##
+######################################################
 
 Accounts.onCreateUser( (options, user) ->
-    if Settings.DOMAIN? && ! user.services.google.email.match( Settings.DOMAIN )
+    #if Settings.DOMAIN? && ! user.services.google.email.match( Settings.DOMAIN )
+    if Domainer.DOMAIN? && ! user.services.google.email.match( Domainer.DOMAIN )
         throw new Meteor.Error(403, "Unauthorized")
 
     users = Meteor.users.find({})
@@ -175,7 +192,3 @@ Meteor.methods
 
 
 
-Meteor.publish('comments', ->
-    # Comments.find(query)
-    Comments.find({})
-)

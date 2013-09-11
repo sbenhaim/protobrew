@@ -42,11 +42,11 @@
       {{/if}}
 
       {{#if modeIs "pageindex"}}
-      {{> pageindex}}
+         {{> pageindex}}
       {{/if}}
 
       {{#if modeIs "profile"}}
-      {{> profile}}
+        {{> profile}}
       {{/if}}
     {{else}}
         {{#if loginConfigured}}
@@ -119,18 +119,18 @@
                 {{#if viewable}}
 
                     <div id= "user_toolbar" class="action-toolbar">
-                        <a class="btn" href="#" value="new_page" id="new_page">
+                        <a class="btn btn-default" href="#" value="new_page" id="new_page">
                             <span aria-hidden="true" data-icon="&#xe001;"></span> 
                             New
                         </a>
 
                         {{#if isStarred}}
-                            <a class="btn" href="#" value="toggle_star" id="toggle_star">
+                            <a class="btn btn-default" href="#" value="toggle_star" id="toggle_star">
                                 <span aria-hidden="true" data-icon="&#xe003;"></span> 
                                 Unstar
                             </a>
                         {{else}}
-                            <a class="btn" href="#" value="toggle_star" id="toggle_star">
+                            <a class="btn btn-default" href="#" value="toggle_star" id="toggle_star">
                                 <span aria-hidden="true" data-icon="&#xe004;"></span> 
                                 Star
                             </a>
@@ -139,12 +139,12 @@
                         {{#if editable}}
 
                             {{#if locked}}
-                                <a class="btn disabled" href="javascript:void(0)" value="" id="">
+                                <a class="btn btn-default disabled" href="javascript:void(0)" value="" id="">
                                     <i class="icon-lock"></i>
                                     Locked
                                 </a>
                             {{else}}
-                                <a class="btn edit" href="javascript:void(0);" value="edit" id="edit_btn">
+                                <a class="btn btn-default edit" href="javascript:void(0);" value="edit" id="edit_btn">
                                      <span aria-hidden="true" data-icon="&#x23;"></span> 
                                      Edit
                                  </a>
@@ -195,7 +195,7 @@
                     <h2>Tags</h2>
                     <ul>
                         {{#each entry.tags}}
-                        <li class="article-tag"><a href="javascript:void(0);">{{this}}</a></li>
+                            <li class="article-tag"><a href="javascript:void(0);">{{this}}</a></li>
                         {{/each}}
                     </ul>
                     {{/if}}
@@ -260,9 +260,9 @@
         </a></div>
     {{#if currentUser}}
     <div id="search" class="navbar-search pull-left" >
-            <input class="txtOptionInput searchField search-query" type="search" results="5" size="15" placeholder="Search" accesskey="F" autocomplete="off" lastsearchtext="aasdfasdfsd" placeholder="" id="search-input" value="{{term}}"></div>
+            <input class="form-control" type="search" results="5" size="15" placeholder="Search" accesskey="F" autocomplete="off" lastsearchtext="aasdfasdfsd" placeholder="" id="search-input" value="{{term}}"></div>
 
-    <nav>
+    <nav id='pinned_nav'>
     	<ul class="nav nav-list">
             {{#isolate}}
     		<li {{#if pageIs "/"}}class="selected"{{/if}}>
