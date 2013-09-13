@@ -1,4 +1,5 @@
 root = exports ? this
 
-root.Domainer =
-    DOMAIN: "@humon\.mygbiz\.com$"
+root.Domainer = {}
+# root.Domainer =
+#     DOMAIN: "@humon\.mygbiz\.com$"

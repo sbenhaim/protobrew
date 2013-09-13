@@ -1,8 +1,7 @@
 root = exports ? this
 root.Settings = new Meteor.Collection("settings")
 
-Settings.allow({
-  insert: isAdminById
-, update: isAdminById
-, remove: isAdminById
-});
+Settings.allow
+  insert: root.isAdminById
+  update: root.isAdminById
+  remove: root.isAdminById

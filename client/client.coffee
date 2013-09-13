@@ -81,34 +81,6 @@ Meteor.Spinner.options = {
     left : '50'
 }
 
-
-Template.newUserModal.rendered = () ->
-    Session.set('selectedUsername', $('#initial-username-input').val() )
-
-usernameTaken = (username) ->
-    Meteor.users.find({username: username}).count() > 0
-
-Template.newUserModal.continueDisabled = () ->
-    Session.get('selectedUsername')
-    username = $('#initial-username-input').val()
-    username == '' || usernameTaken( username )
-
-Template.newUserModal.usernameTaken = () ->
-    Session.get('selectedUsername')
-    username = $('#initial-username-input').val()
-    usernameTaken( username )
-
-Template.newUserModal.events =
-    'keyup #initial-username-input': () ->
-        Session.set('selectedUsername', $('#initial-username-input').val() )
-
-    'click #new-username-button': (e) ->
-        if ! $(e.target).hasClass('disabled')
-            console.log( "click" );
-            Meteor.call('updateUser', $("#initial-username-input").val(), (e) -> $("#new-user-modal").modal("hide") )
-            Meteor.call 'createHome'
-            navigate( "home", Session.get( "context" ) ) 
-
 Template.deleteConfirmModal.events =
     'click #delete-confirm-button': (e) ->
         deleteInput = $('#delete-confirm-input').val()
@@ -536,6 +508,7 @@ EntryRouter = Backbone.Router.extend({
         "PageIndex":"indexroute",
         "images": "images",
         "u/:user/:title": "userSpace",
+        "users": "users",
         ":title": "main",
         "": "home"
     },
@@ -572,6 +545,9 @@ EntryRouter = Backbone.Router.extend({
         Session.set('mode', 'entry')
         Session.set('context', username)
         Session.set('title', decodeURIComponent( title ))
+    users: (term) ->
+        Session.set('titleHidden', true)
+        Session.set('mode', 'users')
     main: (title) ->
         unlockEntry()
         Session.set('titleHidden', false)

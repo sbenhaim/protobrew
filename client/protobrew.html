@@ -45,6 +45,10 @@
          {{> pageindex}}
       {{/if}}
 
+      {{#if modeIs "users"}}
+         {{> users}}
+      {{/if}}
+
       {{#if modeIs "profile"}}
         {{> profile}}
       {{/if}}
@@ -342,29 +346,6 @@
     <ul>
          {{{ navItems }}}
     </ul>
-</template>
-
-<template name="newUserModal">
-
-    <div id="new-user-modal" class="modal hide fade">
-        <div class="modal-header">
-            <h3>Welcome</h3>
-        </div>
-        
-        {{#isolate}}
-        <div class="modal-body">
-            <p>Please pick a username</p>
-            <input type="text" id="initial-username-input"/>
-            {{#if usernameTaken }}
-            <span class="red">Taken</span>
-            {{/if}}
-        </div>
-        
-        <div class="modal-footer">
-            <a id="new-username-button" href="javascript:void(0);" class="btn btn-primary{{#if continueDisabled}} disabled{{/if}}">Continue</a>
-        </div>
-        {{/isolate}}
-    </div>
 </template>
 
 

@@ -1,28 +1,29 @@
-<template name="user_signup">
-  <div class="grid-small grid-block dialog signup">
-    <h2>Sign Up</h2>
-    <div class="twitter-signup twitter-auth">
-      <a class="twitter-button button" href="#">Sign In/Sign Up with Twitter</a>
-    </div>
-    <div class="regular-signup regular-auth">
-      <form>
-        <div class="control-group">
-          <label>Username</label>
-          <div class="controls"><input id="username" name="username" type="text" value="" /></div>
+<template name="newUserModal">
+
+  <div id="new-user-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        
+        <div class="modal-header">
+            <h3>Welcome</h3>
         </div>
-        <div class="control-group">
-          <label>Email</label>
-          <div class="controls"><input id="email" name="email" type="text" value="" /></div>
+        
+        {{#isolate}}
+        <div class="modal-body">
+            <p>Please pick a username</p>
+            <input type="text" id="initial-username-input"/>
+            {{#if usernameTaken }}
+            <span class="red">Taken</span>
+            {{/if}}
         </div>
-        <div class="control-group">
-          <label>Password</label>
-          <div class="controls"><input id="password" name="password" type="password" value="" /></div>
+        
+        <div class="modal-footer">
+            <a id="new-username-button" href="javascript:void(0);" class="btn btn-primary{{#if continueDisabled}} disabled{{/if}}">Continue</a>
         </div>
-        <div class="form-actions">
-          <input type="submit" class="button" value="Sign Up" />
-        </div>  
-      </form>
+        {{/isolate}}
+
+      </div>
     </div>
   </div>
-  <p class="grid-small footer-notice">Already have an account? <a href="signin" id="signin">Sign in!</a></p>  
 </template>

@@ -20,25 +20,7 @@ Tags.allow
 root.entryLink = ( entry ) ->
     unless entry.context then "/#{entry.title}" else "/u/#{entry.context}/#{entry.title}"
 
-# Admins can admin anywhere, others can only admin in context
-root.adminable = ( user, context ) ->
-    user &&
-    ( user.group == "admin" ||
-      user.group == context ||
-      user.username == context )
 
-# View all in context, view public and read-only otherwise
-root.viewable = ( entry, user, context ) ->
-    adminable( user, context ) ||
-    ( context == null && (entry == null || !entry._id?) ) ||
-    ( entry && entry.mode != "private" )
-
-# Edit in context or public entries
-root.editable = ( entry, user, context ) ->
-    user && 
-    ( adminable( user, context ) ||
-      ( context == null && (entry == null || !entry._id?) ) ||
-      ( entry && entry.mode == "public" ) )
 
 root.findAll = (context) ->
    Entries.find({context: context})
