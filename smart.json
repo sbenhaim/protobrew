@@ -6,7 +6,7 @@
     "typeahead-js": {},
     "momentjs": {},
     "spin": {},
-    "scss": {},
+    "iron-router": {},
     "bootstrap3-less": {}
   }
 }

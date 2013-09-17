@@ -41,14 +41,6 @@ Meteor.methods
 
         return id
 
-    createHome: () ->
-        bail = (message, status = 403) ->
-            throw new Meteor.Error(status, message)
-
-        entry = Entries.findOne({_id: "home"})
-        if ! entry
-            id =  Entries.insert({_id: "home", title: "home", mode: "public"})
-
     lockEntry: ( entryId ) ->
         Entries.update( {_id: entryId}, {$set: {"editing": true}}) if entryId
 

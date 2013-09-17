@@ -46,10 +46,6 @@ Template.comment_form.events =
         console.log error
         Toast.error error.reason
       else
-        
-        # trackEvent("newComment", commentProperties);
+      # trackEvent("newComment", commentProperties);
         Session.set "scrollToCommentId", commentProperties.commentId
-
-    
-    # instance.editor.importFile('editor', '');
     Session.set "addingComment", false

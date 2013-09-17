@@ -3,14 +3,6 @@ root = exports ? this
 Meteor.subscribe 'entries', onComplete = ->
   Session.set('entryLoaded', true)
 
-
-# Meteor.autosubscribe(function() {
-#   var query = { $or : [ { post : Session.get('selectedPostId') } , { _id : Session.get('selectedCommentId') } ] };
-#   Meteor.subscribe('comments', query, function() {
-#     Session.set('singleCommentReady', true);
-#   });
-# });
-
 Meteor.subscribe('comments')
 
 Meteor.subscribe('settings', ->
@@ -26,9 +18,16 @@ Meteor.subscribe('revisions')
 
 Meteor.subscribe('allUserData')
 
-Meteor.autosubscribe( ->
+Deps.autorun( ->
     Meteor.subscribe("userData")
 );
+
+# Deps.autorun(function() {
+#   var query = { $or : [ { post : Session.get('selectedPostId') } , { _id : Session.get('selectedCommentId') } ] };
+#   Meteor.subscribe('comments', query, function() {
+#     Session.set('singleCommentReady', true);
+#   });
+# });
 
 lockEntry = ->
     Meteor.call( 'lockEntry', Session.get('entryId') ) if Session.get('entryId')
@@ -49,7 +48,7 @@ Session.set('editMode', false)
 # Todo: reloadEntry = true
 navigate = (location, context) ->
     location = "/u/#{context}/#{location}" if context
-    Router.navigate(location, true)
+    Router.go(location)
 
 evtNavigate = (evt) ->
     evt.preventDefault()
@@ -344,7 +343,7 @@ deleteEntry = (evt) ->
 
 saveEntry = (evt) ->
     reroute = ( e ) ->
-        navigate( entry.title, Session.get( "context" ) ) unless entry.title == "home"
+        navigate( '/'+entry.title, Session.get( "context" ) ) unless entry.title == "home"
 
     title = Session.get('title')
 
@@ -381,7 +380,7 @@ Template.entry.events
                 console.log(error, pageName);
                 #TODO: fix non-editable navigate
                 window.scrollTo(0,0) # fix for positio being screwed up
-                navigate(pageName)
+                navigate('/'+pageName)
         )
 
     'click #toggle_star': (evt) ->
@@ -500,63 +499,6 @@ root.rewriteLinks = ( text ) ->
     $html.html()
 
 
-EntryRouter = Backbone.Router.extend({
-    routes: {
-        "search/:term": "search"
-        "tag/:tag": "tag",
-        "profile": "profile",
-        "PageIndex":"indexroute",
-        "images": "images",
-        "u/:user/:title": "userSpace",
-        "users": "users",
-        ":title": "main",
-        "": "home"
-    },
-    indexroute: ->
-        Session.set('mode', 'pageindex')
-        console.log("index route")
-    redirectHome: ->
-        this.navigate( "", true )
-    home: ->
-        unlockEntry()
-        reroute = () ->
-            entry = Entries.findOne({_id: 'home'})
-            if ! entry # bang on it a bit
-               Meteor.call 'createHome', reroute
-            else
-               Session.set('titleHidden', false)
-               Session.set('mode', 'entry')
-               Session.set('title', entry.title)
-        Meteor.call 'createHome', reroute
-    profile: (term) ->
-        unlockEntry()
-        Session.set( 'mode', 'profile' )
-    search: (term) ->
-        unlockEntry()
-        Session.set( 'mode', 'search' )
-        Session.set( 'search-term', decodeURIComponent( term ) )
-    tag: (tag) ->
-        unlockEntry()
-        Session.set( 'mode', 'tag' )
-        Session.set( 'tag', decodeURIComponent( tag ) )
-    userSpace: (username, title) ->
-        unlockEntry()
-        Session.set('titleHidden', false)
-        Session.set('mode', 'entry')
-        Session.set('context', username)
-        Session.set('title', decodeURIComponent( title ))
-    users: (term) ->
-        Session.set('titleHidden', true)
-        Session.set('mode', 'users')
-    main: (title) ->
-        unlockEntry()
-        Session.set('titleHidden', false)
-        Session.set('mode', 'entry')
-        Session.set('context', null)
-        Session.set('title', decodeURIComponent( title ))
-    setTitle: (title) ->
-        this.navigate(title, true)
-})
 
 ##################################
 ## NAV
@@ -596,10 +538,12 @@ Template.sidebar.events
         adjust = 50
         $( 'html,body' ).animate( { scrollTop: offset.top - adjust }, 350 )
 
-Router = new EntryRouter
-
 Meteor.startup ->
-    Backbone.history.start pushState: true
+    # Backbone.history.start pushState: true
+
+
+
+
     Session.set('activeTab', 'editedTab')
     Session.set('selectedCommentId', null)
     # on small screens make sure the login screen is displayed first

@@ -1,7 +1,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Welcome to the Taoglas Wiki</title>
+<title>Humon Brain</title>
 
 <!--[if IE 5]>
 <style type="text/css">
@@ -20,49 +20,54 @@
 <script type="text/javascript" src="//api.filepicker.io/v1/filepicker.js"></script>
 </head>
 
+<body>
+    <!-- empty body -->
+</body>
+
+
+
+<template name="layout">
+
+  <div id="container">
+        <div id="header"></div>
+        <div id = "leftNavContainer">
+            {{> leftNav}}
+        </div>
+        <div id="main">
+            <div class="content">
+                <a class="btn btn-inverse" href="#" value="sidenav_btn" id="sidenav_btn">
+                    <span aria-hidden="true" data-icon="&#xe002;"></span> 
+                </a> 
+            {{yield}}
+            </div>
+            <div id="footer"></div>
+        </div>
+  </div>
+
+
+  {{> newUserModal }}
+  {{> deleteConfirmModal }}
+
+
+</template>
+
+
+
+
+
+<template name="sidebar">
+    <ul>
+         {{{ navItems }}}
+    </ul>
+</template>
+
+<template name="loading">
+    {{> spinner}}
+</template>
+
 <template name="main">
 
-    <div class="content">
-        <a class="btn btn-inverse" href="#" value="sidenav_btn" id="sidenav_btn">
-            <span aria-hidden="true" data-icon="&#xe002;"></span> 
-        </a> 
 
-    {{#if currentUser}}
-
-      {{#if modeIs "search"}}
-      {{> search}}
-      {{/if}}
-
-      {{#if modeIs "tag"}}
-      {{> tag}}
-      {{/if}}
-
-      {{#if modeIs "entry"}}
-      {{> entry}}
-      {{/if}}
-
-      {{#if modeIs "pageindex"}}
-         {{> pageindex}}
-      {{/if}}
-
-      {{#if modeIs "users"}}
-         {{> users}}
-      {{/if}}
-
-      {{#if modeIs "profile"}}
-        {{> profile}}
-      {{/if}}
-    {{else}}
-        {{#if loginConfigured}}
-            <div class="notAuth">
-                Not Authorized
-            </div>
-        {{else}}
-            <div class="notAuth">
-                 {{> spinner}}
-            </div>
-        {{/if}}
-    {{/if}}
 
     </div>
 </template>
@@ -106,6 +111,7 @@
     {{/each}}
 
 </template>
+
 
 <template name="entry">
 
@@ -235,7 +241,7 @@
             <div id="sidebar">
                 {{> sidebar}}
             </div>
-        <!-- end #sidebar --></div>
+        </div>
     {{/if}}
 
 </template>
@@ -319,35 +325,6 @@
 
 
 </template>
-
-<template name="null">
-
-  <div id="header"></div>
-    <div id = "leftNavContainer">
-        {{> leftNav}}
-    </div>
-  <div id="main">
-    {{> main}}
-    <div id="footer">
-    </div>
-  </div>
-
-</template>
-
-<body>
-  <div id="container">
-      {{> null}}
-  </div>
-  {{> newUserModal }}
-  {{> deleteConfirmModal }}
-</body>
-
-<template name="sidebar">
-    <ul>
-         {{{ navItems }}}
-    </ul>
-</template>
-
 
 <template name="deleteConfirmModal">
 

@@ -17,4 +17,5 @@ standard-app-packages
 require
 momentjs
 spin
+iron-router
 bootstrap3-less
