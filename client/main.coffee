@@ -48,6 +48,7 @@ Session.set('editMode', false)
 # Todo: reloadEntry = true
 navigate = (location, context) ->
     location = "/u/#{context}/#{location}" if context
+    location = '/'+location if location.indexOf('/') != 0 #prevents calling route directly
     Router.go(location)
 
 evtNavigate = (evt) ->
@@ -265,16 +266,16 @@ Template.entry.edit_mode = ->
     Session.get('editMode')
 
 
-Template.main.events
+Template.layout.events
     'click #sidenav_btn': (evt) ->
         evt.preventDefault()
         $('#leftNavContainer').toggle(0)
         $("#main").toggleClass('wLeftNav')
 
-Template.main.modeIs = (mode) ->
+Template.layout.modeIs = (mode) ->
     Session.get('mode') == mode;
 
-Template.main.loginConfigured = () ->
+Template.layout.loginConfigured = () ->
     if Accounts.loginServicesConfigured()
         return true;
     else
@@ -773,7 +774,7 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
             #     name: 'wiki links'
             #     local: ['timtrueman', 'JakeHarding', 'vskarich']
             $("#redactor_wiki_link").typeahead
-                source: idarray
+                local: idarray
 
 
 

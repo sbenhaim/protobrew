@@ -3,7 +3,8 @@ Template.user_item.rendered = ->
 Template.user_item.helpers
   
   createdAtFormatted: ->
-    (if @createdAt then moment(@createdAt).fromNow() else "–")
+    createdAt this
+    # (if @createdAt then moment(@createdAt).fromNow() else "–")
 
   displayName: ->
     getDisplayName this

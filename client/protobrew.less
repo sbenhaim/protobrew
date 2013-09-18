@@ -876,18 +876,69 @@ table thead td {
      color: #CC0000;
 }
 
-#redactor_modal input[type="text"].select2-focusser {
-  position: absolute;
-}
+// #redactor_modal input[type="text"].select2-focusser {
+//   position: absolute;
+// }
 
-#select2-drop {
-  z-index: 100001;
-}
+// #select2-drop {
+//   z-index: 100001;
+// }
 
-.select2-drop-mask {
-  z-index: 100000;
-}
+// .select2-drop-mask {
+//   z-index: 100000;
+// }
 
 .entry-title-input {
   width: auto;
+}
+
+
+
+.twitter-typeahead {
+  width: 100%;
+}
+
+.tt-hint {
+  width: 100%;
+}
+
+.tt-dropdown-menu {
+  min-width: 160px;
+  margin-top: 2px;
+  padding: 5px 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  border: 1px solid grey;
+  *border-right-width: 2px;
+  *border-bottom-width: 2px;
+  // .border-radius(6px);
+  .border-top-radius(2px);
+  .border-right-radius(2px);
+  .border-bottom-radius(2px);
+  .border-left-radius(2px);
+
+
+
+  .box-shadow(0 5px 10px rgba(0,0,0,.2));
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
+}
+
+.tt-suggestion {
+  display: block;
+  padding: 3px 20px;
+}
+
+.tt-suggestion.tt-is-under-cursor {
+  // color: @dropdownLinkColorHover;
+  // #gradient > .vertical(@dropdownLinkBackgroundHover, darken(@dropdownLinkBackgroundHover, 5%));
+}
+
+.tt-suggestion.tt-is-under-cursor a {
+  color: white;
+}
+
+.tt-suggestion p {
+  margin: 0;
 }

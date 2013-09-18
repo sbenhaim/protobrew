@@ -13,6 +13,7 @@ accounts-google
 less
 toastjs
 select2
+typeahead-js
 standard-app-packages
 require
 momentjs

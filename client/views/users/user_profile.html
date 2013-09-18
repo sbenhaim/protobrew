@@ -1,28 +1,28 @@
-<!-- <template name="user_profile">
-	<div class="grid">
+<template name="user_profile">
 		{{#with user}}
-		<div class="user-profile grid-block">
-			<table>
-				<tr>
-					<td colspan="2"><span class="user-avatar" style="background-image:url({{avatarUrl}});"></span></td>
-				</tr>
-				<tr>
-					<td>Name: </td>
-					<td>{{username}}</td>
-				</tr>
-				<tr>
-					<td>Member since: </td>
-					<td>{{createdAtFormatted}}</td>
-				</tr>
-				<tr>
-					<td>Bio: </td>
-					<td>{{profile.bio}}</td>
-				</tr>
-			</table>
-			{{#if isCurrentUser}}
-			<a href="/users/{{_id}}/edit">Edit profile</a>
-			{{/if}}
-		</div>
+			<div class="user-profile container">
+				<div class = "col-xs-6">
+					<table class="table table-striped">
+		<!-- 				<tr>
+							<td colspan="2"><span class="user-avatar" style="background-image:url({{avatarUrl}});"></span></td>
+						</tr> -->
+						<tr>
+							<td>Name: </td>
+							<td>{{username}}</td>
+						</tr>
+						<tr>
+							<td>Member since: </td>
+							<td>{{createdAtFormatted}}</td>
+						</tr>
+						<tr>
+							<td>Bio: </td>
+							<td>{{profile.bio}}</td>
+						</tr>
+					</table>
+					{{#if isCurrentUser}}
+					<a href="/users/{{username}}/edit">Edit profile</a>
+					{{/if}}
+				</div>
+			</div>
 		{{/with}}
-	</div>
-</template> -->
+</template>

@@ -13,15 +13,17 @@ Router.map ->
     @route "tag",
         path: "/tag/:tag"
     @route "profile",
-        path: "profile"
+        path: "/profile"
     @route "pageindex",
         path: "/PageIndex"
     @route "images",
         path: "images"
-    @route "userSpace",
-        path: "/users/:user"
+    @route "user_profile",
+        path: "/users/:username"
+        action: "sessionSetup"
+        controller: "User_profileController"
     @route "users",
-        path: "users"
+        path: "/users"
     @route "entry",
         path: "/:title"
         action: "sessionSetup"
@@ -42,13 +44,20 @@ class @HomeController extends RouteController
         render_home = () ->
             @render()
             
-
 class @EntryController extends RouteController
     template: "entry"
     waitOn: Meteor.subscribe 'userData'
     sessionSetup: ->
         Session.set('context', null)
         Session.set('title', @params.title)
+        @render()
+
+class @User_profileController extends RouteController
+    template: "user_profile"
+    waitOn: Meteor.subscribe 'userData'
+    sessionSetup: ->
+        Session.set('context', null)
+        Session.set('selectedUserName', @params.username);
         @render()
 
 
