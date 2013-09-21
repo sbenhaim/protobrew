@@ -36,13 +36,6 @@ root.createdAt = (user) ->
 #   else
 #     ""
 
-# getAvatarUrl = (user) ->
-#   if getSignupMethod(user) is "twitter"
-#     "http://twitter.com/api/users/profile_image/" + user.services.twitter.screenName
-#   else
-#     Gravatar.getGravatar user,
-#       d: "http://demo.telesc.pe/img/default_avatar.png"
-#       s: 30
 
 
 # getCurrentUserEmail = ->
@@ -51,25 +44,34 @@ root.createdAt = (user) ->
 # userProfileComplete = (user) ->
 #   !!getEmail(user)
 
-# findLast = (user, collection) ->
-#   collection.findOne
-#     userId: user._id
-#   ,
-#     sort:
-#       createdAt: -1
+findLast = (user, collection) ->
+	collection.findOne( userId: user._id, sort: createdAt: -1 )
 
+root.timeSinceLast = (user, collection) ->
+	now = new Date().getTime()
+	last = findLast(user, collection)
+	return 999  unless last # if this is the user's first post or comment ever, stop here
+	Math.abs Math.floor((now - last.createdAt) / 1000)
 
-# timeSinceLast = (user, collection) ->
-#   now = new Date().getTime()
-#   last = findLast(user, collection)
-#   return 999  unless last # if this is the user's first post or comment ever, stop here
-#   Math.abs Math.floor((now - last.createdAt) / 1000)
+root.lastEditedBy = (entry) ->
+	if entry._id
+		lastRev = Revisions.findOne({entryId: entry._id},{sort:{ date : -1}})
+	else
+		return
+	if lastRev == undefined
+		return
+	else
+		authorId = lastRev.author
+	author = Meteor.users.findOne(authorId)
+	author.username
 
-# numberOfItemsInPast24Hours = (user, collection) ->
-#   mDate = moment(new Date())
-#   items = collection.find(
-#     userId: user._id
-#     createdAt:
-#       $gte: mDate.subtract("hours", 24).valueOf()
-#   )
-#   items.count()
+root.sinceLastEdit = (entry) ->
+	if entry._id
+		lastRev = Revisions.findOne({entryId: entry._id},{sort:{ date : -1}})
+	else
+		return
+	if lastRev == undefined
+		return
+	else
+		moment(lastRev.date).fromNow()
+	

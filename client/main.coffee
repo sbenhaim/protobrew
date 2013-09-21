@@ -11,7 +11,6 @@ Meteor.subscribe('settings', ->
   Session.set('settingsLoaded',true)
 )
 
-
 Meteor.subscribe('tags')
 
 Meteor.subscribe('revisions')
@@ -29,11 +28,11 @@ Deps.autorun( ->
 #   });
 # });
 
-lockEntry = ->
+root.lockEntry = ->
     Meteor.call( 'lockEntry', Session.get('entryId') ) if Session.get('entryId')
     Session.set('entryLocked', true)
 
-unlockEntry = ->
+root.unlockEntry = ->
     # if Session.get('entryLocked')
         Meteor.call( 'unlockEntry', Session.get('entryId') ) if Session.get('entryId')
         Session.set('editMode', false)
@@ -45,26 +44,6 @@ window.onbeforeunload = ->
 
 Session.set('editMode', false)
 
-# Todo: reloadEntry = true
-navigate = (location, context) ->
-    location = "/u/#{context}/#{location}" if context
-    location = '/'+location if location.indexOf('/') != 0 #prevents calling route directly
-    Router.go(location)
-
-evtNavigate = (evt) ->
-    evt.preventDefault()
-    window.scrollTo(0,0)
-    $a = $(evt.target).closest('a')
-    href = $a.attr('href')
-    localhost = document.location.host
-    linkhost = $a[0].host
-    if localhost == linkhost
-        # support for full local URLs (e.g. http://www.yourwiki.com/page <-- won't refresh)
-        relHref = $('<a/>').attr( 'href', href )[0].pathname
-        navigate(relHref)
-    else
-        window.open( href, '_blank')
-   
 
 ## Nav
 
@@ -93,22 +72,6 @@ Template.deleteConfirmModal.events =
     'click #delete-cancel-button': (e) ->
         $('#delete-confirm-modal').modal('hide')
 
-Template.leftNav.events =
-    'click a.left-nav': evtNavigate
-
-    'change #search-input': (evt) ->
-        term = $(evt.target).val()
-        window.scrollTo(0,0) # fix for position being screwed up (also in tags click, and new page)
-        navigate( '/search/' + term ) if term
-
-    'click #usernav a': evtNavigate
-
-    'click #userTabs > li' : (evt) ->
-        $el = $(evt.currentTarget)
-        Session.set( 'activeTab' , $el.attr('id'))
-
-Template.pageindex.events =
-  'click #pageindex a': evtNavigate
 
 getSummaries = (entries) ->
     entries.map (e) ->
@@ -147,43 +110,52 @@ Template.tag.results = ->
     getSummaries( entries )
 
 
-Template.leftNav.isActiveTab = (tab, options)->
-    Session.equals "activeTab", tab 
-
-Template.leftNav.isActivePanel = (panel, options)->
-    Session.equals "activePanel", panel
-
-Template.leftNav.term = -> 
-    Session.get( 'search-term' )
-
-Template.leftNav.pageIs = (u) ->
-    page = Session.get('title')
-    return u == "/" if page == undefined
-    return u == page
-
-Template.leftNav.edited = () ->
-    revisions = Revisions.find({author: Meteor.userId()}, {entryId: true}).fetch()
-    ids = _.map( revisions, (r) -> r.entryId )
-    entries = Entries.find({_id: {$in: ids}}).fetch()
-    _.sortBy( entries, (e) -> e.date ).reverse()
-
-
-Template.leftNav.starred = () ->
-    user = Meteor.user()
-    if ! user 
-        return
-    else
-        starredPages = user.profile.starredPages
-        if ! starredPages
-            return
-        starred =  Entries.find({ _id :{$in: starredPages}}).fetch()
-        if ! starred or starred.length == 0
-          return # starred = {starred:["nothing"]} #would need to make this not a link
-        return starred
+## Global Helpers
 
 Handlebars.registerHelper( 'entryLink', (entry) ->
     entryLink( entry )
 )
+
+Handlebars.registerHelper( 'modeIs', (v) ->
+    return v == Session.get('entry').mode
+)
+
+Handlebars.registerHelper 'locked', ->
+    entry = Session.get('entry')
+    entry && entry.editing
+
+Handlebars.registerHelper 'editable', ->
+    entry = Session.get('entry')
+    context = Session.get("context")
+    user  = Meteor.user()
+    editable( entry, user, context )
+
+Handlebars.registerHelper 'isStarred', ->
+    user  = Meteor.user()
+    starredPages = user.profile.starredPages
+    entryId = Session.get('entryId')
+    if entryId in starredPages
+        return  true
+
+Handlebars.registerHelper 'adminable', ->
+    context = Session.get("context")
+    user  = Meteor.user()
+    adminable( user, context )
+
+Handlebars.registerHelper 'viewable', ->
+    entry = Session.get('entry')
+    context = Session.get("context")
+    user  = Meteor.user()
+    viewable( entry, user, context )
+
+Handlebars.registerHelper 'entryLoaded', ->
+    Session.get('entryLoaded')
+
+Handlebars.registerHelper 'editMode', ->
+    Session.get('editMode')
+
+
+
 
 ## Entry
 
@@ -199,41 +171,17 @@ Template.entry.entryLoaded = ->
 Template.entry.userContext = ->
     Session.get("context")
 
-Template.entry.editable = ->
-    entry = Session.get('entry')
-    context = Session.get("context")
-    user  = Meteor.user()
-    editable( entry, user, context )
+Template.entry.lastEditedBy = ->
+    title = Session.get("title")
+    context = Session.get('context')
+    entry = findSingleEntryByTitle( title, context )
+    lastEditedBy(entry)
 
-Template.entry.locked = ->
-    entry = Session.get('entry')
-    return entry && entry.editing
-
-Template.entry.isStarred = ->
-    user  = Meteor.user()
-    starredPages = user.profile.starredPages
-    entryId = Session.get('entryId')
-    if entryId in starredPages
-        return  true
-
-
-Template.entry.adminable = ->
-    context = Session.get("context")
-    user  = Meteor.user()
-    adminable( user, context )
-
-Template.entry.viewable = ->
-    entry = Session.get('entry')
-    context = Session.get("context")
-    user  = Meteor.user()
-    viewable( entry, user, context )
-
-Template.entry.modeIs = (v) ->
-    return v == Session.get('entry').mode
-
-Template.entry.entryLoaded = ->
-    Session.get('entryLoaded')
-
+Template.entry.sinceLastEdit = ->
+    title = Session.get("title")
+    context = Session.get('context')
+    entry = findSingleEntryByTitle( title, context )
+    sinceLastEdit(entry)
 
 Template.entry.entry = ->
     title = Session.get("title")
@@ -260,11 +208,6 @@ Template.entry.entry = ->
             Session.set( 'entry', {} )
             Session.set( 'entryId', null )
             Session.get('entryLoaded')
-
-
-Template.entry.edit_mode = ->
-    Session.get('editMode')
-
 
 Template.layout.events
     'click #sidenav_btn': (evt) ->
@@ -339,10 +282,11 @@ deleteEntry = (evt) ->
         Meteor.call('deleteEntry',entry)
         Entries.remove({_id: entry._id})
         Session.set('editMode', false)
+        Session.set('editEntry', false)
     else
         Toast.error('Cannot DELETE a page that has not been created!')
 
-saveEntry = (evt) ->
+root.saveEntry = (evt) ->
     reroute = ( e ) ->
         navigate( '/'+entry.title, Session.get( "context" ) ) unless entry.title == "home"
 
@@ -366,45 +310,13 @@ saveEntry = (evt) ->
 
     context = Session.get('context')
 
-    Meteor.call('saveEntry', title, entry, context, reroute)
+    # Meteor.call('saveEntry', title, entry, context, reroute)
+    Meteor.call('saveEntry', title, entry, context)
     Entries.update({_id: entry._id}, entry)
     Session.set("editMode", false)
 
 
 Template.entry.events
-
-    'click #new_page': (evt) ->
-        evt.preventDefault()
-        console.log('event')
-        Meteor.call('createNewPage', 
-           (error, pageName) ->
-                console.log(error, pageName);
-                #TODO: fix non-editable navigate
-                window.scrollTo(0,0) # fix for positio being screwed up
-                navigate('/'+pageName)
-        )
-
-    'click #toggle_star': (evt) ->
-        evt.preventDefault()
-        user  = Meteor.user()
-        starredPages = user.profile.starredPages
-        entryId = Session.get('entryId')
-        context = Session.get('context')
-        title = Session.get("title")
-        entry = findSingleEntryByTitle( title, context )
-
-        if not entry
-            Toast.error('Cannot star a blank page!')
-        else if entryId in starredPages
-            console.log('match pulling')
-            Meteor.users.update(Meteor.userId(), {
-                $pull: {'profile.starredPages': entryId}
-            })
-        else
-            console.log('no match pushing')
-            Meteor.users.update(Meteor.userId(), {
-                $push: {'profile.starredPages': entryId}
-            })
 
     'click li.article-tag a': (evt) ->
         evt.preventDefault()
@@ -414,29 +326,6 @@ Template.entry.events
 
     'click a.entry-link': (e) ->
         evtNavigate(e) unless Session.get('editMode')
-
-
-    'click .edit': (evt) ->
-        Session.set( 'y-offset', window.pageYOffset )
-        evt.preventDefault()
-        lockEntry()
-        Session.set('editMode', true)
-
-    'click #save': (evt) ->
-        evt.preventDefault()
-        unlockEntry()
-        saveEntry( evt )
-
-    'click #cancel': (evt) ->
-        evt.preventDefault()
-        unlockEntry()
-        Session.set("editMode", false)
-
-    'click #delete': (evt) ->
-        evt.preventDefault()
-        $('#delete-confirm-input').val('')
-        $('#delete-confirm-modal').modal('show')
-        # deleteEntry(evt)
 
     'click #article-title': (evt) ->
 
@@ -541,12 +430,9 @@ Template.sidebar.events
 
 Meteor.startup ->
     # Backbone.history.start pushState: true
-
-
-
-
     Session.set('activeTab', 'editedTab')
     Session.set('selectedCommentId', null)
+    Session.set('editMode', false)
     # on small screens make sure the login screen is displayed first
     $('#leftNavContainer').toggle(true)
     $("#main").toggleClass('wLeftNav')
@@ -767,14 +653,12 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
             defaultValue = $("#redactor_wiki_link").val()
 
             #BUG 
-            # this whole method is fired twice so destory is called below
-            # to remove any prior instances
-            # $("#redactor_wiki_link").typeahead('destroy')
-            # $("#redactor_wiki_link").typeahead
-            #     name: 'wiki links'
-            #     local: ['timtrueman', 'JakeHarding', 'vskarich']
-            $("#redactor_wiki_link").typeahead
-                local: idarray
+            # this whole method is fired twice so check if already applied before applying typeahead
+            if $("#redactor_wiki_link").hasClass('tt-query')
+                return
+            else
+                $("#redactor_wiki_link").typeahead
+                    local: idarray
 
 
 

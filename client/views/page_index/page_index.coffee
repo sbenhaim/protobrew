@@ -1,3 +1,6 @@
+Template.pageindex.events =
+  'click #pageindex a': evtNavigate
+
 class Node
    constructor: (@url, @name, @parent) ->
       @children = []

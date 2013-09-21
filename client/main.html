@@ -29,9 +29,11 @@
 <template name="layout">
 
   <div id="container">
-        <div id="header"></div>
+        <div id="header">
+            {{yield 'toolbar'}}
+        </div>
         <div id = "leftNavContainer">
-            {{> leftNav}}
+            {{> left_nav}}
         </div>
         <div id="main">
             <div class="content">
@@ -65,13 +67,6 @@
     {{> spinner}}
 </template>
 
-<template name="main">
-
-
-
-    </div>
-</template>
-
 <template name="index">
     {{{content.text}}}
 </template>
@@ -83,14 +78,6 @@
         <input type="submit" value="save" id="save" />
     </label>
 </template>
-
-<template name="pageindex">
-    <div id='pageindex'>
-        <h2>PageIndex</h2>
-        {{{test}}}
-    </div>
-</template>
-
 
 <template name="search">
     <h3>Search results for "{{term}}"</h3>
@@ -116,64 +103,14 @@
 <template name="entry">
 
     <div id="entry">
-
-            
-        {{#if edit_mode}}
-            <div id='edit_mode_toolbar'class="action-toolbar edit_mode">
-                <a class="btn btn-danger" href="#" value="delete" id="delete"><span aria-hidden="true" data-icon="&#x64;"></span></a>
-                <a class="btn btn-warning" href="#" value="cancel" id="cancel"><span aria-hidden="true" data-icon="&#x62;"></span></a>
-                <a class="btn btn-success" href="#" value="save" id="save"><span aria-hidden="true" data-icon="&#x22;"></span> Save</a>
-            </div>
-        {{else}}
-            {{#if entry}}
-                {{#if viewable}}
-
-                    <div id= "user_toolbar" class="action-toolbar">
-                        <a class="btn btn-default" href="#" value="new_page" id="new_page">
-                            <span aria-hidden="true" data-icon="&#xe001;"></span> 
-                            New
-                        </a>
-
-                        {{#if isStarred}}
-                            <a class="btn btn-default" href="#" value="toggle_star" id="toggle_star">
-                                <span aria-hidden="true" data-icon="&#xe003;"></span> 
-                                Unstar
-                            </a>
-                        {{else}}
-                            <a class="btn btn-default" href="#" value="toggle_star" id="toggle_star">
-                                <span aria-hidden="true" data-icon="&#xe004;"></span> 
-                                Star
-                            </a>
-                        {{/if}}
-
-                        {{#if editable}}
-
-                            {{#if locked}}
-                                <a class="btn btn-default disabled" href="javascript:void(0)" value="" id="">
-                                    <i class="icon-lock"></i>
-                                    Locked
-                                </a>
-                            {{else}}
-                                <a class="btn btn-default edit" href="javascript:void(0);" value="edit" id="edit_btn">
-                                     <span aria-hidden="true" data-icon="&#x23;"></span> 
-                                     Edit
-                                 </a>
-                            {{/if}}
-
-
-                        {{/if}}
-
-                    </div>
-                {{/if}}
-            {{/if}}
-        {{/if}}
-
-
         <h1 id="article-title" class="article-title">
             {{#if userContext}}{{userContext}} / {{/if}}{{title}}
         </h1>
+        <span class='text-muted'> last edited by </span>
+        <a href="/users/{{lastEditedBy}} ">{{lastEditedBy}}</a> 
+        <span class='text-muted'> {{sinceLastEdit}} </span>
 
-        {{#if edit_mode}}
+        {{#if editMode}}
         <form>
 
             {{#with entry}}
@@ -249,7 +186,6 @@
 
 <template name="editEntry">
     <textarea id="entry-text" placeholder="Just some friendly placeholder text.">{{text}}</textarea>
-
     <p>
         <h2>Tags</h2>
         <textarea id="entry-tags"></textarea>
@@ -262,69 +198,7 @@
 </template>
 
 
-<template name="leftNav">
-  <div id="left_nav">
-    <div id="logo">
-        <a href="/">
-            <img src='/images/logo.png' alt='Toaglas Wiki'>
-        </a></div>
-    {{#if currentUser}}
-    <div id="search" class="navbar-search pull-left" >
-            <input class="form-control" type="search" results="5" size="15" placeholder="Search" accesskey="F" autocomplete="off" lastsearchtext="aasdfasdfsd" placeholder="" id="search-input" value="{{term}}"></div>
 
-    <nav id='pinned_nav'>
-    	<ul class="nav nav-list">
-            {{#isolate}}
-    		<li {{#if pageIs "/"}}class="selected"{{/if}}>
-                <a class="left-nav" href="/">
-                    <span aria-hidden="true" data-icon="&#x68;"></span> Home
-                </a>
-            </li>
-			<li {{#if pageIs "Help"}}class="selected"{{/if}}><a class="left-nav" href="/Help"><span aria-hidden="true" data-icon="&#x6e;"></span> Help</a></li>
-			<li {{#if pageIs "Index"}}class="selected"{{/if}}><a class="left-nav" href="/PageIndex"><span aria-hidden="true" data-icon="&#x6e;"></span> Index</a></li>
-            {{/isolate}}
-    	</ul>
-    </nav>
-    {{/if}}
-
-    <div id="buttons" >
-        {{loginButtons}}
-    </div>
-
-    {{#if currentUser}}
-    <user>
-
-            <ul class="nav nav-tabs" id="userTabs">
-                <li id="editedTab" class="{{#if isActiveTab 'editedTab'}} active {{/if}}">
-                    <a class='tabButton'>Edited</a>
-                </li>
-                <li id="starredTab" class="{{#if isActiveTab 'starredTab'}} active {{/if}}">
-                    <a class='tabButton'>Starred</a>
-                </li>
-            </ul>
-
-        <div id="usernav" class="tab-content">   
-                <div id="edited" class="tab-pane {{#if isActiveTab 'editedTab'}} active {{/if}}">
-                    <ul>
-                        {{#each edited}}
-                            <li><a class="left-nav" href="{{entryLink this}}">{{title}}</a></li>
-                        {{/each}}
-                    </ul>
-                </div> 
-            <div id="starred" class="tab-pane {{#if isActiveTab 'starredTab'}} active {{/if}}" >
-                    <ul>
-                        {{#each starred}}
-                        <li><a class="left-nav" href="{{entryLink this}}">{{title}}</a></li>
-                        {{/each}}
-                    </ul>
-            </div>
-        </div>
-    </user>
-    {{/if}}
-  </div><!-- end #left_nav -->
-
-
-</template>
 
 <template name="deleteConfirmModal">
 

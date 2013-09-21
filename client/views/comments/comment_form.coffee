@@ -30,11 +30,11 @@ Template.comment_form.helpers addingComment: ->
 Template.comment_form.events =
   "click .comment-add": (e) ->
     e.preventDefault()
-    Session.set "addingComment", true
+    Session.set('addingComment', true)
 
   "click .comment-cancel": (e) ->
     e.preventDefault()
-    Session.set "addingComment", false
+    Session.set('addingComment', false)
 
   "click .comment-save": (e) ->
     e.preventDefault()
@@ -47,5 +47,5 @@ Template.comment_form.events =
         Toast.error error.reason
       else
       # trackEvent("newComment", commentProperties);
-        Session.set "scrollToCommentId", commentProperties.commentId
-    Session.set "addingComment", false
+        Session.set('scrollToCommentId', commentProperties.commentId)
+    Session.set('addingComment', false)
