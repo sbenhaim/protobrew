@@ -233,6 +233,7 @@ Template.editEntry.rendered = ->
     el.redactor(
         plugins: ['autoSuggest']
         imageUpload: '/images'
+        linebreaks: true
         buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'deleted', '|', 
             'unorderedlist', 'orderedlist', 'outdent', 'indent', '|',
             'image', 'table', 'link', '|',
