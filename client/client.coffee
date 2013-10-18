@@ -283,24 +283,30 @@ Template.history.events
                 $(this).removeClass 'compareRadioRed'
                 next()
 
+# Regex to fix the compared text with
 tagRe = /<([A-Z][A-Z0-9]*)[^>]*>\s*(.*?)<\/\1>/gi
 paraRe = /<p>(.*?)<\/p>/gi
 listRe = /<([ou]l)>(.*?)<\/\1>/gi
 liRe = /<li>\s*(.*?)\s*<\/li>/gi
+
+# Apply chained regex to str
 fixWikiText = (str) ->
-    str = String(str).replace(/\n\s+/g,' ').replace(/\n/g,'')
-    str = str.replace(paraRe, '$1\n')
-    str = str.replace(listRe, '<$1>$2</$1>\n')
-    str = str.replace(liRe, '<li>$1</li>')
-    str = str.replace(tagRe, '<$1>$2</$1>')
+    #str = String(str).replace(/\n\s+/g,' ').replace(/\n/g,'')
+    #str = str.replace(paraRe, '$1\n')
+    #str = str.replace(listRe, '<$1>$2</$1>\n')
+    #str = str.replace(liRe, '<li>$1</li>')
+    #str = str.replace(tagRe, '<$1>$2</$1>')
     str
 
+# History comparison rendered function
 Template.compare.rendered = ->
     revId1 = Session.get 'rev1'
     revId2 = Session.get 'rev2'
     console.log revId1, revId2
     rev1 = findRevisionById revId1
     rev2 = findRevisionById revId2
+    ###
+    # TODO: we want to highlight by word/letter but maintain lines
     revText1 = difflib.stringAsLines(fixWikiText rev1.text)
     revText2 = difflib.stringAsLines(fixWikiText rev2.text)
     
@@ -309,14 +315,25 @@ Template.compare.rendered = ->
     sm = new difflib.SequenceMatcher(revText1, revText2)
     opcodes = sm.get_opcodes()
 
+    # build the diffView using the above variables + append it to #diffView
     $("#diffView").append(diffview.buildView({
         baseTextLines: revText1
         newTextLines: revText2
         opcodes: opcodes
         baseTextName: rev1.date
         newTextName: rev2.date
-        viewType: 1
-    }))    
+        viewType: 0
+    }))
+    ###
+    $("#rev1").text(rev1.text).hide()
+    $("#rev2").text(rev2.text).hide()
+    $("#revCompare").prettyTextDiff({
+        originalContainer: "#rev1",
+        changedContainer: "#rev2",
+        diffContainer: "#diffView",
+        cleanup: true,
+        debug: true
+    });    
 
 Template.main.events
     'click #sidenav_btn': (evt) ->
