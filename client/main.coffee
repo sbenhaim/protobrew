@@ -94,21 +94,6 @@ Template.search.results = ->
 Template.search.events
     'click a': evtNavigate
 
-Template.tag.events
-    'click a': evtNavigate
-
-
-Template.tag.tag = ->
-    Session.get( 'tag' )
-
-Template.tag.results = ->
-    tag = Session.get('tag')
-
-    return unless tag
-    
-    entries = Entries.find( { tags: tag } )
-    getSummaries( entries )
-
 
 ## Global Helpers
 
@@ -160,39 +145,37 @@ Handlebars.registerHelper 'editMode', ->
 ## Entry
 
 Template.entry.title = ->
-    Session.get("title")
+    Session.get('title')
 
 Template.entry.titleHidden = ->
-    Session.get("titleHidden")
+    Session.get('titleHidden')
 
 Template.entry.entryLoaded = ->
-    Session.get("entryLoaded")
+    Session.get('entryLoaded')
 
 Template.entry.userContext = ->
-    Session.get("context")
+    Session.get('context')
 
 Template.entry.lastEditedBy = ->
-    title = Session.get("title")
+    title = Session.get('title')
     context = Session.get('context')
     entry = findSingleEntryByTitle( title, context )
     lastEditedBy(entry)
 
 Template.entry.sinceLastEdit = ->
-    title = Session.get("title")
+    title = Session.get('title')
     context = Session.get('context')
     entry = findSingleEntryByTitle( title, context )
     sinceLastEdit(entry)
 
 Template.entry.entry = ->
-    title = Session.get("title")
+    title = Session.get('title')
     context = Session.get('context')
-    $("#sidebar").html('') #clear sidebar of previous state
     if title
         entry = findSingleEntryByTitle( title, context )
 
         if entry
             Session.set('entry', entry )
-            Session.set('title', entry.title )
             Session.set('entryId', entry._id )
 
             source = $('<div>').html( entry.text ) #make a div with entry.text as the innerHTML
@@ -224,9 +207,7 @@ Template.layout.loginConfigured = () ->
     else
         return false;
 
-Template.editEntry.events
-    'focus #entry-tags': (evt) ->
-        $("#tag-init").show()
+
 
 Template.editEntry.rendered = ->
     el = $( '#entry-text' )
@@ -319,14 +300,15 @@ root.saveEntry = (evt) ->
 
 Template.entry.events
 
-    'click li.article-tag a': (evt) ->
-        evt.preventDefault()
-        tag = $(evt.target).text()
-        window.scrollTo(0,0) # fix for position 
-        navigate( '/tag/' + tag ) if tag
-
     'click a.entry-link': (e) ->
         evtNavigate(e) unless Session.get('editMode')
+
+    # for Create It! button on new page
+    'click .edit': (evt) ->
+        Session.set( 'y-offset', window.pageYOffset )
+        evt.preventDefault()
+        lockEntry()
+        Session.set('editMode', true)
 
     'click #article-title': (evt) ->
 
@@ -390,45 +372,6 @@ root.rewriteLinks = ( text ) ->
     $html.html()
 
 
-
-##################################
-## NAV
-Template.sidebar.navItems = ->
-    title = Session.get("title")
-    context = Session.get('context')
-    $("#sidebar").html('') #clear sidebar of previous state
-    if title
-        entry = findSingleEntryByTitle( title, context )
-        if entry
-            source = $('<div>').html( entry.text ) #make a div with entry.text as the innerHTML
-
-            # TODO: replace wtih function and user here and Template.entry.entry
-            headings = stackTitles( filterHeadlines( source.find(":header:first")) )
-            headings.unshift( {id: 0, target: "article-title", title: Session.get('title') } )
-            if headings.length > 0
-                for e, i in source.find('h1,h2,h3,h4,h5')
-                    e.id = "entry-heading-" + (i + 1)
-            entry.text = source.html()
-            # endTODO
-
-            textWithTitle = '<h1 id="article-title" class="article-title">'+title+'</h2>'+entry.text
-            $headingNodes = $(textWithTitle).filter(":header")
-            result = $('<ul>')
-            buildRec($headingNodes,result,1)
-            result.html()
-
-
-Template.sidebar.events
-    'click a': (evt) ->
-        evt.preventDefault()
-        $el = $(evt.currentTarget)
-        #dataTarget = $el.attr('data-target')
-        dataTarget = $el.attr('href')
-        offset = $(dataTarget).offset()
-        #adjust = if Session.get( 'editMode' ) then 70 else 20
-        adjust = 50
-        $( 'html,body' ).animate( { scrollTop: offset.top - adjust }, 350 )
-
 Meteor.startup ->
     # Backbone.history.start pushState: true
     Session.set('activeTab', 'editedTab')
@@ -440,7 +383,7 @@ Meteor.startup ->
   
 
 #builds array of all heading titles
-stackTitles = (items, cur, counter) ->
+root.stackTitles = (items, cur, counter) ->
 
     cur = 1 if cur == undefined
     counter ?= 1
@@ -459,11 +402,11 @@ stackTitles = (items, cur, counter) ->
         d.children = stackTitles( children, next, counter ) if children.length > 0
         d
 
-filterHeadlines = ( $hs ) ->
+root.filterHeadlines = ( $hs ) ->
     _.filter( $hs, ( h ) -> 
         $(h).text().match(/[^\s]/) ) #matches any non-whitespace char
 
-buildNav = ( ul, items ) ->
+root.buildNav = ( ul, items ) ->
     for child, index in items
         li = $( "<li>" )
         $( ul ).append( li )
@@ -483,7 +426,7 @@ buildNav = ( ul, items ) ->
 
 
 
-buildRec = (headingNodes, $elm, lv) ->
+root.buildRec = (headingNodes, $elm, lv) ->
 
     # each time through recursive function pull a piece of the jQuery object off
     node = headingNodes.splice(0,1)
@@ -522,7 +465,7 @@ buildRec = (headingNodes, $elm, lv) ->
         buildRec headingNodes, $elm, lv + cnt
 
 
-highlightNav = ->
+root.highlightNav = ->
 
     pos = $(window).scrollTop( )
     headlines = $('h1, h2, h3, h4, h5')

@@ -37,13 +37,23 @@
         </div>
         <div id="main">
             <div class="content">
+
                 <a class="btn btn-inverse" href="#" value="sidenav_btn" id="sidenav_btn">
                     <span aria-hidden="true" data-icon="&#xe002;"></span> 
                 </a> 
+
             {{yield}}
+
             </div>
             <div id="footer"></div>
         </div>
+        {{#if currentUser}}
+            <div id="sidebar_col">
+                <div id="sidebar">
+                    {{> sidebar}}
+                </div>
+            </div>
+        {{/if}}
   </div>
 
 
@@ -53,15 +63,6 @@
 
 </template>
 
-
-
-
-
-<template name="sidebar">
-    <ul>
-         {{{ navItems }}}
-    </ul>
-</template>
 
 <template name="loading">
     {{> spinner}}
@@ -89,19 +90,8 @@
 
 </template>
 
-<template name="tag">
-    <h3>Entries tagged with "{{tag}}"</h3>
-
-    {{#each results}}
-        <h2><a href="/{{this.title}}">{{this.title}}</a></h2>
-        <p>{{this.text}}</p>
-    {{/each}}
-
-</template>
-
 
 <template name="entry">
-
     <div id="entry">
         <h1 id="article-title" class="article-title">
             {{#if userContext}}{{userContext}} / {{/if}}{{title}}
@@ -111,24 +101,24 @@
         <span class='text-muted'> {{sinceLastEdit}} </span>
 
         {{#if editMode}}
-        <form>
+            <form>
 
-            {{#with entry}}
-            {{> editEntry}}
-            {{/with}}
+                {{#with entry}}
+                {{> editEntry}}
+                {{/with}}
 
-            {{#if adminable}}
-            <p>
-                <label>Mode
-                    <select id="mode" name="mode">
-                        <option {{#if modeIs "public"}}selected{{/if}} value="public">Public</option>
-                        <option {{#if modeIs "read-only"}}selected{{/if}} value="read-only">Read-Only</option>
-                        <option {{#if modeIs "private"}}selected{{/if}} value="private">Private</option>
-                    </select>
-                </label>
-            </p>
-            {{/if}}
-        </form>
+                {{#if adminable}}
+                <p>
+                    <label>Mode
+                        <select id="mode" name="mode">
+                            <option {{#if modeIs "public"}}selected{{/if}} value="public">Public</option>
+                            <option {{#if modeIs "read-only"}}selected{{/if}} value="read-only">Read-Only</option>
+                            <option {{#if modeIs "private"}}selected{{/if}} value="private">Private</option>
+                        </select>
+                    </label>
+                </p>
+                {{/if}}
+            </form>
         {{else}}
 
         {{#if entry._id}}
@@ -137,15 +127,6 @@
 
 
                     <p>{{{entry.text}}}</p>
-
-                    {{#if entry.tags.length}}
-                    <h2>Tags</h2>
-                    <ul>
-                        {{#each entry.tags}}
-                            <li class="article-tag"><a href="javascript:void(0);">{{this}}</a></li>
-                        {{/each}}
-                    </ul>
-                    {{/if}}
 
                     
                     {{> comment_form}}
@@ -173,24 +154,11 @@
         {{/if}}
     </div>
 
-    {{#if currentUser}}
-        <div id="sidebar_col">
-            <div id="sidebar">
-                {{> sidebar}}
-            </div>
-        </div>
-    {{/if}}
-
 </template>
 
 
 <template name="editEntry">
     <textarea id="entry-text" placeholder="Just some friendly placeholder text.">{{text}}</textarea>
-    <p>
-        <h2>Tags</h2>
-        <textarea id="entry-tags"></textarea>
-        <small><em>press &#x23ce; between tags</em></small>
-    </p>
 </template>
 
 <template name="user">

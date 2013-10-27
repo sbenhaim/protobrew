@@ -43,12 +43,20 @@ Router.map ->
         path: "/search/:term"
         onBeforeRun: ->
             Session.set('search-term',@params.term)
+            Session.set('title','_nonentry') # forces sidebar to re-render need other session dependency
     @route "tag",
         path: "/tag/:tag"
+        onBeforeRun: ->
+            Session.set('tag',@params.tag)
+            Session.set('title','_nonentry')
     @route "profile",
         path: "/profile"
+        onBeforeRun: ->
+            Session.set('title','_nonentry')
     @route "pageindex",
         path: "/PageIndex"
+        onBeforeRun: ->
+            Session.set('title','_nonentry')
         waitOn: ->
             Meteor.subscribe 'userData'
             Meteor.subscribe 'entries'
@@ -57,9 +65,13 @@ Router.map ->
     @route "user_profile",
         path: "/users/:username"
         action: "sessionSetup"
+        onBeforeRun: ->
+            Session.set('title','_nonentry')
         controller: "User_profileController"
     @route "users",
         path: "/users"
+        onBeforeRun: ->
+            Session.set('title','_nonentry')
     @route "entry",
         path: "/:title"
         action: "sessionSetup"
@@ -111,27 +123,3 @@ class @User_profileController extends RouteController
         Session.set('context', null)
         Session.set('selectedUserName', @params.username);
         @render()
-
-
-
-    # redirectHome: ->
-    #     this.navigate( "", true )
-    # home: ->
-    #     unlockEntry()
-
-    # profile: (term) ->
-    #     unlockEntry()
-    #     Session.set( 'mode', 'profile' )
-
-    # userSpace: (username) ->
-    #     unlockEntry()
-    #     Session.set('titleHidden', false)
-    #     Session.set('mode', 'entry')
-    #     Session.set('context', username)
-
-    # main: (title) ->
-    #     unlockEntry()
-    #     Session.set('titleHidden', false)
-    #     Session.set('mode', 'entry')
-    #     Session.set('context', null)
-    #     Session.set('title', decodeURIComponent( title ))

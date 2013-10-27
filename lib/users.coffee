@@ -54,7 +54,7 @@ root.timeSinceLast = (user, collection) ->
 	Math.abs Math.floor((now - last.createdAt) / 1000)
 
 root.lastEditedBy = (entry) ->
-	if entry._id
+	if entry
 		lastRev = Revisions.findOne({entryId: entry._id},{sort:{ date : -1}})
 	else
 		return
@@ -66,7 +66,7 @@ root.lastEditedBy = (entry) ->
 	author.username
 
 root.sinceLastEdit = (entry) ->
-	if entry._id
+	if entry
 		lastRev = Revisions.findOne({entryId: entry._id},{sort:{ date : -1}})
 	else
 		return
