@@ -22,17 +22,12 @@ root.evtNavigate = (evt) ->
 
 
 Router.configure
-    layout: "layout"
+    layoutTemplate: "layout"
     # notFoundTemplate: "notFound"
     loadingTemplate: "loading"
-    renderTemplates: 
+    yieldTemplates: 
         'toolbar': 
             to: 'toolbar'
-            data: ->
-                title = Session.get("title")
-                context = Session.get('context')
-                if title #toolbar may render before entry is ready
-                    entry = findSingleEntryByTitle( title, context )
 
 Router.map ->
     @route "home", 
@@ -41,22 +36,23 @@ Router.map ->
         controller: "HomeController"
     @route "search",
         path: "/search/:term"
-        onBeforeRun: ->
+        before: ->
             Session.set('search-term',@params.term)
-            Session.set('title','_nonentry') # forces sidebar to re-render need other session dependency
+            Session.set('title','search') # forces sidebar to re-render need other session dependency
     @route "tag",
         path: "/tag/:tag"
-        onBeforeRun: ->
+        before: ->
             Session.set('tag',@params.tag)
-            Session.set('title','_nonentry')
-    @route "profile",
-        path: "/profile"
-        onBeforeRun: ->
-            Session.set('title','_nonentry')
+            Session.set('title',@params.tag)
+
+    #TODO
+    # need to determine how to set "title" on special pages
+    # maybe want to set page "type" and also name" (which is similar to title)
+    # type could be based on url e.g. /s/PageIndex
     @route "pageindex",
-        path: "/PageIndex"
-        onBeforeRun: ->
-            Session.set('title','_nonentry')
+        path: "/s/PageIndex"
+        before: ->
+            Session.set('title','PageIndex')
         waitOn: ->
             Meteor.subscribe 'userData'
             Meteor.subscribe 'entries'
@@ -65,13 +61,15 @@ Router.map ->
     @route "user_profile",
         path: "/users/:username"
         action: "sessionSetup"
-        onBeforeRun: ->
-            Session.set('title','_nonentry')
+        before: ->
+            Session.set('title','user_profile')
         controller: "User_profileController"
+
+    #TODO ensure /users page can't be created
     @route "users",
         path: "/users"
-        onBeforeRun: ->
-            Session.set('title','_nonentry')
+        before: ->
+            Session.set('title','users')
     @route "entry",
         path: "/:title"
         action: "sessionSetup"

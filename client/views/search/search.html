@@ -1,0 +1,9 @@
+<template name="search">
+    <h3>Search results for "{{term}}"</h3>
+
+    {{#each results}}
+        <h2><a href="/{{this.title}}">{{this.title}}</a></h2>
+        <p>{{this.text}}</p>
+    {{/each}}
+
+</template>

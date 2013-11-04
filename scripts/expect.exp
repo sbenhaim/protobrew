@@ -1,0 +1,28 @@
+#!/usr/bin/expect
+
+
+        # exp_internal 1
+        set prompt {$}
+        set METEOR_DOMAIN $::env(METEOR_DOMAIN)
+        set TMP_FILE $::env(TMP_FILE)
+        set PASSWORD $::env(PASSWORD)
+
+        spawn meteor mongo "$METEOR_DOMAIN" --url
+        expect {
+        	Password: {
+        		send "$PASSWORD\r"; 
+        		# exp_continue
+        	}
+        }
+        expect $prompt
+
+        if {[regexp -line {^mongodb:.*$} $expect_out(buffer) url]} {
+    		set url [string trimright $url]
+    		puts "Mongo URL is: '$url'"
+		}
+
+		set ::logfile [open "${TMP_FILE}" a]
+		puts $::logfile "$url"
+		close $::logfile
+
+        # expect eof

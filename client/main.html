@@ -1,6 +1,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 <title>Humon Brain</title>
 
 <!--[if IE 5]>
@@ -16,7 +16,7 @@
 /* the above proprietary zoom property gives IE the hasLayout it needs to avoid several bugs */
 </style>
 <![endif]-->
-
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
 <script type="text/javascript" src="//api.filepicker.io/v1/filepicker.js"></script>
 </head>
 
@@ -28,34 +28,24 @@
 
 <template name="layout">
 
-  <div id="container">
-        <div id="header">
-            {{yield 'toolbar'}}
-        </div>
-        <div id = "leftNavContainer">
-            {{> left_nav}}
-        </div>
-        <div id="main">
-            <div class="content">
+    {{yield 'toolbar'}}
 
-                <a class="btn btn-inverse" href="#" value="sidenav_btn" id="sidenav_btn">
-                    <span aria-hidden="true" data-icon="&#xe002;"></span> 
-                </a> 
+
+    <div id="container" class="fixed-header">
+        {{> left_nav}}
+
+        <div id="content">
+            <div class="container">
 
             {{yield}}
-
             </div>
-            <div id="footer"></div>
         </div>
-        {{#if currentUser}}
-            <div id="sidebar_col">
-                <div id="sidebar">
-                    {{> sidebar}}
-                </div>
-            </div>
-        {{/if}}
-  </div>
 
+        {{#if currentUser}}
+            {{> entry_sidebar}}
+        {{/if}}
+
+    </div>
 
   {{> newUserModal }}
   {{> deleteConfirmModal }}
@@ -70,24 +60,6 @@
 
 <template name="index">
     {{{content.text}}}
-</template>
-
-<template name="profile">
-    <h2>Profile for {{user.profile.name}}</h2>
-    <label>Username
-        <input name="username" type="text" id="username" value="{{user.profile.username}}" />
-        <input type="submit" value="save" id="save" />
-    </label>
-</template>
-
-<template name="search">
-    <h3>Search results for "{{term}}"</h3>
-
-    {{#each results}}
-        <h2><a href="/{{this.title}}">{{this.title}}</a></h2>
-        <p>{{this.text}}</p>
-    {{/each}}
-
 </template>
 
 

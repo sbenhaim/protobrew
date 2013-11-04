@@ -1,3 +1,6 @@
+Template.toolbar.entry = ->
+    Template.entry.entry()
+
 Template.toolbar.hide_toolbar = ->
     editingComment = Session.get('selectedCommentId')
     addingComment = Session.get('addingComment')

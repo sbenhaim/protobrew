@@ -73,26 +73,13 @@ Template.deleteConfirmModal.events =
         $('#delete-confirm-modal').modal('hide')
 
 
-getSummaries = (entries) ->
+root.getSummaries = (entries) ->
     entries.map (e) ->
         
         text = $('<div>').html( e.text ).text()
         text = text.substring(0,200) + '...' if text.length > 204;
         
         {text: text, title: e.title}
-
-Template.search.term = -> Session.get( 'search-term' )
-
-Template.search.results = ->
-    term = Session.get('search-term')
-
-    return unless term
-    
-    entries = Entries.find( {text: new RegExp( term, "i" )} )
-    getSummaries( entries )
-
-Template.search.events
-    'click a': evtNavigate
 
 
 ## Global Helpers
@@ -115,12 +102,19 @@ Handlebars.registerHelper 'editable', ->
     user  = Meteor.user()
     editable( entry, user, context )
 
+
+Handlebars.registerHelper 'username', ->
+    user  = Meteor.user()
+    if user
+        return user.username
+
 Handlebars.registerHelper 'isStarred', ->
     user  = Meteor.user()
-    starredPages = user.profile.starredPages
     entryId = Session.get('entryId')
-    if entryId in starredPages
-        return  true
+    if user && entryId
+        starredPages = user.profile.starredPages
+        if entryId in starredPages
+            return  true
 
 Handlebars.registerHelper 'adminable', ->
     context = Session.get("context")
@@ -348,15 +342,6 @@ Template.entry.events
             cancel(e, true) if e.keyCode == 27
         )
 
-Template.profile.user = ->
-    Meteor.user()
-
-Template.profile.events
-    'click #save': (evt) ->
-        result = Meteor.call('updateUser', $("#username").val(), (e) -> console.log( e ) )
-
-Template.user.info = ->
-    Meteor.user()
 
 root.rewriteLinks = ( text ) ->
     $html = $('<div>')

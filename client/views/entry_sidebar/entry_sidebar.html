@@ -1,0 +1,119 @@
+<template name="entry_sidebar">
+    <div id="entry-sidebar" class="sidebar-fixed">
+        <div id="entry-sidebar-divider" class="resizeable"></div>
+        <div id="entry-sidebar-content">
+
+            <!--=== Heading Map ===-->
+            <div class="sidebar-title">
+                <span>Heading Map</span>
+            </div>
+
+
+            <div id="entry-sidebar-outline">
+            {{#if navItems}}
+                <ul>
+                     {{{ navItems }}}
+                </ul>
+            {{/if}}
+            </div>
+
+
+<!--              <ul id="nav">
+                <li>
+                    <a href="#">
+                        <i class="icon-list-ol"></i>
+                        Heading Map
+                    </a>
+
+                    <ul class="sub-menu">
+                        <li class="open-default">
+                            <a href="javascript:void(0);">
+                                <i class="icon-cogs"></i>
+                                Item 1
+                                <span class="arrow"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li class="open-default">
+                                    <a href="javascript:void(0);">
+                                        <i class="icon-user"></i>
+                                        Sample Link 1
+                                        <span class="arrow"></span>
+                                    </a>
+                                    <ul class="sub-menu">
+                                        <li class="current"><a href="javascript:void(0);"><i class="icon-remove"></i> Sample Link 1</a></li>
+                                        <li><a href="javascript:void(0);"><i class="icon-pencil"></i> Sample Link 1</a></li>
+                                        <li><a href="javascript:void(0);"><i class="icon-edit"></i> Sample Link 1</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="javascript:void(0);"><i class="icon-user"></i>  Sample Link 1</a></li>
+                                <li><a href="javascript:void(0);"><i class="icon-external-link"></i>  Sample Link 2</a></li>
+                                <li><a href="javascript:void(0);"><i class="icon-bell"></i>  Sample Link 3</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);">
+                                <i class="icon-globe"></i>
+                                Item 2
+                                <span class="arrow"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li><a href="javascript:void(0);"><i class="icon-user"></i>  Sample Link 1</a></li>
+                                <li><a href="javascript:void(0);"><i class="icon-external-link"></i>  Sample Link 1</a></li>
+                                <li><a href="javascript:void(0);"><i class="icon-bell"></i>  Sample Link 1</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);">
+                                <i class="icon-folder-open"></i>
+                                Item 3
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul> -->
+
+
+            
+            <!-- /Tags -->
+            <div class="sidebar-title">
+                <span>Tags</span>
+            </div>
+
+
+
+            <div id="entry-sidebar-tags">
+            {{#if editMode}}
+                <h4>Tags</h4>
+                <p>
+                    <textarea id="entry-tags"></textarea>
+                    <small><em>press &#x23ce; between tags</em></small>
+                </p>
+            {{else}}
+                {{#if entry.tags.length}}
+                    <ul>
+                        {{#each entry.tags}}
+                            <li><a href="javascript:void(0);" class="btn btn-xs btn-grey">{{this}}</a></li>
+                        {{/each}}
+                    </ul>
+                {{/if}}
+            {{/if}}
+            </div>
+
+
+<!--                 <div class="sidebar-widget align-center">
+                <div class="btn-group" data-toggle="buttons" id="theme-switcher">
+                    <label class="btn active">
+                        <input type="radio" name="theme-switcher" data-theme="bright"><i class="icon-sun"></i> Bright
+                    </label>
+                    <label class="btn">
+                        <input type="radio" name="theme-switcher" data-theme="dark"><i class="icon-moon"></i> Dark
+                    </label>
+                </div>
+            </div> -->
+
+        </div>
+
+    </div>
+    <!-- /Sidebar -->
+
+</template>

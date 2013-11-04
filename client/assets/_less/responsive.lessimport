@@ -1,0 +1,42 @@
+/* ========================================================
+*
+* Melon - Flat & Responsive Admin Template
+*
+* ========================================================
+*
+* File: responsive.css
+* Description: Template styles for responsive design (for phone and tablet devices)
+* Version: 1.0
+*
+* ======================================================== */
+
+@import "general/mixins.lessimport";
+@import "general/variables.lessimport";
+
+/* # Responsive Classes
+================================================== */
+@import "responsive/responsive-utilities.lessimport";
+
+
+/* # Media Queries
+================================================== */
+
+/* # Responsive Navbar/Navigation/Sidebar
+================================================== */
+
+/* # From 979px and below
+-------------------------------------------------- */
+@import "responsive/responsive-navbar.lessimport";
+
+
+/* # Large desktops
+-------------------------------------------------- */
+@import "responsive/responsive-1200px-min.lessimport";
+
+/* # Tablets to regular desktops
+-------------------------------------------------- */
+@import "responsive/responsive-768px-979px.lessimport";
+
+/* # Phones to portrait tablets and narrow desktops
+-------------------------------------------------- */
+@import "responsive/responsive-767px-max.lessimport";

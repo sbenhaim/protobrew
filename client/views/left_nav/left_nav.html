@@ -1,61 +1,89 @@
 <template name="left_nav">
-  <div id="left_nav">
-    <div id="logo">
-        <a href="/">
-            <img src='/images/logo.png' alt='Toaglas Wiki'>
-        </a></div>
-    {{#if currentUser}}
-    <div id="search" class="navbar-search pull-left" >
-            <input class="form-control" type="search" results="5" size="15" placeholder="Search" accesskey="F" autocomplete="off" lastsearchtext="aasdfasdfsd" placeholder="" id="search-input" value="{{term}}"></div>
+    <div id="sidebar" class="sidebar-fixed">
+        <div id="sidebar-content">
 
-    <nav id='pinned_nav'>
-    	<ul class="nav nav-list">
-            {{#isolate}}
-    		<li {{#if pageIs "/"}}class="selected"{{/if}}>
-                <a class="left-nav" href="/">
-                    <span aria-hidden="true" data-icon="&#x68;"></span> Home
-                </a>
-            </li>
-			<li {{#if pageIs "Help"}}class="selected"{{/if}}><a class="left-nav" href="/Help"><span aria-hidden="true" data-icon="&#x6e;"></span> Help</a></li>
-			<li {{#if pageIs "Index"}}class="selected"{{/if}}><a class="left-nav" href="/PageIndex"><span aria-hidden="true" data-icon="&#x6e;"></span> Index</a></li>
-            {{/isolate}}
-    	</ul>
-    </nav>
-    {{/if}}
 
-    <div id="buttons" >
-        {{loginButtons}}
-    </div>
+            <!-- Search Input -->
+            <form class="sidebar-search">
+                <div class="input-box">
+                    <button type="submit" class="submit">
+                        <i class="icon-search"></i>
+                    </button>
+                    <span>
+                        <input id="search-input" type="text" placeholder="Search..." value="{{term}}">
+                    </span>
+                </div>
+            </form>
 
-    {{#if currentUser}}
-    <user>
 
-            <ul class="nav nav-tabs" id="userTabs">
-                <li id="editedTab" class="{{#if isActiveTab 'editedTab'}} active {{/if}}">
-                    <a class='tabButton'>Edited</a>
+            <!-- Search Results -->
+
+                <!-- Removed template content for a dropdown beneath 
+                     the search bar that contained the search results -->
+
+            <!-- /.sidebar-search-results -->
+
+            <!--=== Navigation ===-->
+            <ul id="nav">
+
+                <li {{#if pageIs "/"}}class="current"{{/if}}>
+                    <a class="left-nav" href="/">
+                        <i class="icon-home"></i>
+                        Home
+                    </a>
                 </li>
-                <li id="starredTab" class="{{#if isActiveTab 'starredTab'}} active {{/if}}">
-                    <a class='tabButton'>Starred</a>
+
+                <li {{#if pageIs "Help"}}class="current"{{/if}}>
+                    <a class="left-nav" href="/Help">
+                        <i class="icon-question-sign"></i>
+                        Help
+                    </a>
+                </li>
+
+                <li {{#if pageIs "PageIndex"}}class="current"{{/if}}>
+                    <a class="left-nav" href="/s/PageIndex">
+                        <i class="icon-list-alt"></i>
+                        Index
+                    </a>
                 </li>
             </ul>
 
-        <div id="usernav" class="tab-content">   
-                <div id="edited" class="tab-pane {{#if isActiveTab 'editedTab'}} active {{/if}}">
-                    <ul>
-                        {{#each edited}}
-                            <li><a class="left-nav" href="{{entryLink this}}">{{title}}</a></li>
-                        {{/each}}
-                    </ul>
-                </div> 
-            <div id="starred" class="tab-pane {{#if isActiveTab 'starredTab'}} active {{/if}}" >
-                    <ul>
-                        {{#each starred}}
-                        <li><a class="left-nav" href="{{entryLink this}}">{{title}}</a></li>
-                        {{/each}}
-                    </ul>
+
+            <user>
+            <div class="tabbable-custom">
+                <ul class="nav nav-tabs" id="userTabs">
+                    <li id="editedTab" class="{{#if isActiveTab 'editedTab'}} active {{/if}}">
+                        <a class='tabButton'>Edited</a>
+                    </li>
+                    <li id="starredTab" class="{{#if isActiveTab 'starredTab'}} active {{/if}}">
+                        <a class='tabButton'>Starred</a>
+                    </li>
+                </ul>
+
+                <div id="usernav" class="tab-content">   
+                        <div id="edited" class="tab-pane {{#if isActiveTab 'editedTab'}} active {{/if}}">
+                            <ul>
+                                {{#each edited}}
+                                    <li><a class="left-nav" href="{{entryLink this}}">{{title}}</a></li>
+                                {{/each}}
+                            </ul>
+                        </div> 
+                    <div id="starred" class="tab-pane {{#if isActiveTab 'starredTab'}} active {{/if}}" >
+                            <ul>
+                                {{#each starred}}
+                                <li><a class="left-nav" href="{{entryLink this}}">{{title}}</a></li>
+                                {{/each}}
+                            </ul>
+                    </div>
+                </div>
             </div>
+            </user>
+
+
+
+
         </div>
-    </user>
-    {{/if}}
-  </div>
+        <div id="divider" class="resizeable"></div>
+    </div>
+    <!-- /Sidebar -->
 </template>
