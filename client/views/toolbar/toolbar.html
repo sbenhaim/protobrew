@@ -67,15 +67,15 @@
                 {{#if isStarred}}
                     <li>
                         <a id="toggle_star" href="#" class="bs-tooltip" data-placement="bottom" data-original-title="Star This Page">
-                            <i class="icon-star-empty"></i>
-                            <span>Star</span>
+                            <i class="icon-star"></i>
+                            <span>Unstar</span>
                         </a>
                     </li>
                 {{else}}
                     <li>
                         <a id="toggle_star" href="#" class="bs-tooltip" data-placement="bottom" data-original-title="Unstar This Page">
-                            <i class="icon-star"></i>
-                            <span>Unstar</span>
+                            <i class="icon-star-empty"></i>
+                            <span>Star</span>
                         </a>
                     </li>
                 {{/if}}
@@ -206,24 +206,10 @@
 
                 <!-- User Login Dropdown -->
 
-                <div id="buttons" >
-                     {{! loginButtons}} <!-- <- commented out -->
-                </div>
-                <li class="dropdown user">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <!--<img alt="" src="assets/img/avatar1_small.jpg" />-->
-                        <i class="icon-male"></i>
-                        <span class="username">{{username}}</span>
-                        <i class="icon-caret-down small"></i>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="/users/{{username}}"><i class="icon-user"></i> My Profile</a></li>
-                        <!-- <li><a href="#"><i class="icon-tasks"></i> My Tasks</a></li> -->
-                        <li class="divider"></li>
-                        <li><a href="login.html"><i class="icon-key"></i> Log Out</a></li>
-                    </ul>
-                </li>
-                <!-- /user login dropdown -->
+                
+                {{ loginButtons}}
+                
+
             </ul>
             <!-- /Top Right Menu -->
         </div>
