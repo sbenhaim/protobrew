@@ -78,6 +78,8 @@ buildLinks = (context, tree, rootNode) ->
 Template.pageindex.test = ->
     tree = new Tree
     entry = Entries.findOne({_id: 'home'})
+    if ! entry?
+        return "No Wiki Pages Exist. You should make one!"
     tree.root = new Node "/"+entry.title,entry.title, null
     tree.nameArray.push entry.title
 
