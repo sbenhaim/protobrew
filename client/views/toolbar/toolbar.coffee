@@ -21,6 +21,41 @@ Template.toolbar.events
                 navigate('/'+pageName)
         )
 
+    # 'click #left_sidebar_toggler': (evt) ->
+    #     evt.preventDefault()
+    #     $('#leftNavContainer').toggle(0)
+    #     $("#main").toggleClass('wLeftNav')
+
+
+    'click .navbar li.left-toggle': (evt) ->
+        evt.preventDefault()
+        $('body').toggleClass('nav-open');
+
+
+    'click .toggle-left-sidebar': (evt) ->
+        evt.preventDefault()
+        # Reset manual divider-resize
+        $('#sidebar').css('width', '');
+        $('#sidebar > #divider').css('margin-left', '');
+        $('#content').css('margin-left', '');
+        # Toggle class
+        $('#container').toggleClass('sidebar-closed');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     'click #toggle_star': (evt) ->
         evt.preventDefault()
         user  = Meteor.user()

@@ -93,12 +93,12 @@
 
 		&:hover, &:focus {
 			color: @@btnFontColor;
-			background-color: @@btnHover;
+			background-color: @@btnHover !important;
 		}
 
 		&:active, &.active {
-			background-color: @@btnActive;
-			border-top: 1px solid darken(@@btnActive, 20%);
+			background-color: @@btnActive !important;
+			border-top: 1px solid darken(@@btnActive, 20%) !important;
 		}
 
 		&.disabled, &.btn[disabled] {

@@ -186,12 +186,6 @@ Template.entry.entry = ->
             Session.set( 'entryId', null )
             Session.get('entryLoaded')
 
-Template.layout.events
-    'click #sidenav_btn': (evt) ->
-        evt.preventDefault()
-        $('#leftNavContainer').toggle(0)
-        $("#main").toggleClass('wLeftNav')
-
 Template.layout.modeIs = (mode) ->
     Session.get('mode') == mode;
 

@@ -63,7 +63,8 @@ root.lastEditedBy = (entry) ->
 	else
 		authorId = lastRev.author
 	author = Meteor.users.findOne(authorId)
-	author.username
+	if author
+		return author.username
 
 root.sinceLastEdit = (entry) ->
 	if entry? and entry._id

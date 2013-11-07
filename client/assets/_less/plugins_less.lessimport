@@ -11,4 +11,5 @@
 * ======================================================== */
 
 @import "general/variables.lessimport";
+@import "plugins/typeahead.lessimport";
 

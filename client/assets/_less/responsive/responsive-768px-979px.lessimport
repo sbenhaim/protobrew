@@ -54,6 +54,50 @@
 		}
 	}
 
+	#entry-sidebar {
+		width: @sidebarWidth;
+		overflow: visible;
+		float: right;
+		border-left: 1px solid @grayLight;
+
+		ul#nav {
+			// Only mainmenu
+			& > li {
+				&.current {
+					& > a {
+						border-left: @navCurrentBorder solid lighten(@mainColor, 10%);
+
+						& > .arrow {
+							left: @navCurrentBorder !important;
+						}
+					}
+				}
+			}
+
+			// Mainmenu and submenus
+			li {
+				a {
+					font-size: @navFontSize - 1px;
+				}
+
+				ul.sub-menu {
+					margin-left: 0px;
+
+					li {
+						a {
+							font-size: @navSubFontSize - 2px;
+						}
+
+						ul.sub-menu {
+							margin-left: 10px;
+							margin-right: 0;
+						}
+					}
+				}
+			}
+		}
+	}
+
 	#divider {
 		display: none;
 	}
@@ -64,6 +108,7 @@
 
 	#content {
 		margin-left: @sidebarWidth + 1px;
+		margin-right: @sidebarWidth + 1px;
 	}
 
 

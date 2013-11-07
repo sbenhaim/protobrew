@@ -83,11 +83,12 @@
 
             <div id="entry-sidebar-tags">
             {{#if editMode}}
-                <h4>Tags</h4>
+                <div id="tags-edit">
                 <p>
                     <textarea id="entry-tags"></textarea>
-                    <small><em>press &#x23ce; between tags</em></small>
+                    <div><small><em>press &#x23ce; between tags</em></small></div>
                 </p>
+                </div>
             {{else}}
                 {{#if entry.tags.length}}
                     <ul>

@@ -21,7 +21,7 @@ label {
 textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
 	-webkit-appearance: none !important;
 	color: @grayDark;
-	padding: 6px 6px !important;
+	padding: 6px 6px; // GK - used to be !important but broke textext tags
 	//line-height: 20px;
 	font-weight: normal;
 	vertical-align: top;
