@@ -437,7 +437,7 @@ root.buildRec = (headingNodes, $elm, lv) ->
         #$a.attr( 'data-target', child.target )
         # $a.html( child.title )
         $a.attr( 'href', '#' + node[0].id ) #for cursor purposes only
-        $a.text(node[0].innerText)
+        $a.text($(node[0]).text())
         li.append( $a )
 
         # recursive call
