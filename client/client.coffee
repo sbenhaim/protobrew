@@ -287,43 +287,33 @@ Template.history.events
 # Revision compare template helpers
 #
 
-# TODO: convert to coffee
-var _htmlHash;
-var _currentHash;
-var _is_debug = false;
+_htmlHash = {}
+_currentHash = 44032
+_is_debug = false;
 
-function pushHash(tag) {
-  if (typeof(_htmlHash[tag]) == 'undefined') {
-    _htmlHash[tag] = eval('"\\u'+_currentHash.toString(16)+'"');
-    _currentHash++;
-  }
-  return _htmlHash[tag];
-}
+pushHash = (tag) ->
+  if typeof(_htmlHash[tag]) == 'undefined'
+    _htmlHash[tag] = eval('"\\u'+_currentHash.toString(16)+'"')
+    _currentHash++
+  _htmlHash[tag]
 
-function clearHash() {
-  _htmlHash = {};
-  _currentHash = 44032; //朝鲜文音节 Hangul Syllables
-}
+clearHash = ->
+  _htmlHash = {}
+  # 朝鲜文音节 Hangul Syllables
+  _currentHash = 44032 
 
-function html2plain(html) {
-  html = html.replace(/<(S*?)[^>]*>.*?|<.*?\/>/g, function(tag){
-    //debug:
-    if (_is_debug) {
-      return pushHash(tag.toUpperCase().replace(/</g, '&lt;').replace(/>/g, '&gt;'));
-    } else {
-      return pushHash(tag.toUpperCase());
-    }
-  });
-  
-  return html;
-}
+html2plain = (html) ->
+    html = html.replace /<(S*?)[^>]*>.*?|<.*?\/>/g, (tag) ->
+        if _is_debug
+          return pushHash(tag.toUpperCase().replace(/</g, '&lt;').replace(/>/g, '&gt;'))
+        else
+          return pushHash(tag.toUpperCase())
+    html
 
-function plain2html(plain) {
-  for(var tag in _htmlHash){
-    plain = plain.replace(RegExp(_htmlHash[tag], 'g'), tag);
-  }
-  return plain;
-}
+plain2html = (plain) ->
+    for tag, c of _htmlHash
+        plain = plain.replace RegExp(c, 'g'), tag
+    plain
 
 
 # History comparison rendered function
@@ -333,9 +323,11 @@ Template.compare.rendered = ->
     console.log revId1, revId2
     rev1 = findRevisionById revId1
     rev2 = findRevisionById revId2
-    revText1 = html2plain rev1.text
-    revText2 = html2plain rev2.text
+    revText1 = html2plain(rev1.text)
+    revText2 = html2plain(rev2.text)
     
+    $("#compareTitle").text("Comparing revision #{rev1.date} to revision #{rev2.date}")
+
     $("#rev1").text(revText1).hide()
     $("#rev2").text(revText2).hide()
     $("#revCompare").prettyTextDiff({
@@ -346,6 +338,8 @@ Template.compare.rendered = ->
         debug: true
     });
     # TODO: plain2html the diff result.
+    diffText = plain2html($("#diffView").html()).replace(/<br>/gi,'')
+    $("#diffView").html(diffText)
 
 Template.main.events
     'click #sidenav_btn': (evt) ->
