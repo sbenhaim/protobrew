@@ -8,7 +8,12 @@ root.navigate = (location, context) ->
 
 root.evtNavigate = (evt) ->
     evt.preventDefault()
+    if Session.get('editMode')
+        Toast.warning('Save or Cancel changes before navigating away')
+        return
     window.scrollTo(0,0)
+    document.body.style.height = "" # restore bigger document from magicscroll
+
     $a = $(evt.target).closest('a')
     href = $a.attr('href')
     localhost = document.location.host
@@ -28,6 +33,11 @@ Router.configure
     yieldTemplates: 
         'toolbar': 
             to: 'toolbar'
+
+
+# TODO
+# each page should have a editing permission based on
+# 
 
 Router.map ->
     @route "home", 
@@ -83,8 +93,6 @@ class @HomeController extends RouteController
         @render     
             toolbar: 
                 to: 'toolbar'
-                data: ->
-                    return entry: true
 
         entry = Entries.findOne({_id: 'home'})
         if ! entry # bang on it a bit
@@ -110,8 +118,6 @@ class @EntryController extends RouteController
         @render     
             toolbar: 
                 to: 'toolbar'
-                data: ->
-                    return entry: true
         @render()
 
 class @User_profileController extends RouteController

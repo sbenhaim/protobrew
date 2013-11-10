@@ -65,9 +65,11 @@
         <h1 id="article-title" class="article-title">
             {{#if userContext}}{{userContext}} / {{/if}}{{title}}
         </h1>
-        <span class='text-muted'> last edited by </span>
-        <a href="/users/{{lastEditedBy}} ">{{lastEditedBy}}</a> 
-        <span class='text-muted'> {{sinceLastEdit}} </span>
+        <div id="last-edit-person-and-time">
+            <span class='text-muted'> last edited by </span>
+            <a href="/users/{{lastEditedBy}} ">{{lastEditedBy}}</a> 
+            <span class='text-muted'> {{sinceLastEdit}} </span>
+        </div>
 
         {{#if editMode}}
             <form>
@@ -94,8 +96,9 @@
 
                 {{#if viewable}}
 
-
-                    <p>{{{entry.text}}}</p>
+                    <div id="view-entry-content-wrapper">
+                        <p>{{{entry.text}}}</p>
+                    </div>
 
                     
                     {{> comment_form}}

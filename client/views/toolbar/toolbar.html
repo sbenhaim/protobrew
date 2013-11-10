@@ -55,54 +55,52 @@
             </ul>
 
     {{else}} 
-        {{#if entry}}
-            {{#if viewable}}
-                <ul class="nav navbar-nav navbar-left hidden-xs hidden-sm">
+        {{#if viewable}}
+            <ul class="nav navbar-nav navbar-left">
 
-                    <li>
-                        <a id="new_page" href="#" class=" bs-tooltip" data-placement="bottom" data-original-title="Create New Wiki Page" >
-                            <i class="icon-file-text"></i>
-                            <span>New</span>
-                        </a>
-                    </li>
+                <li>
+                    <a id="new_page" href="#" class=" bs-tooltip" data-placement="bottom" data-original-title="Create New Wiki Page" >
+                        <i class="icon-file-text"></i>
+                        <span>New</span>
+                    </a>
+                </li>
 
-                {{#if isStarred}}
-                    <li>
-                        <a id="toggle_star" href="#" class="bs-tooltip" data-placement="bottom" data-original-title="Star This Page">
-                            <i class="icon-star"></i>
-                            <span>Unstar</span>
-                        </a>
-                    </li>
-                {{else}}
-                    <li>
-                        <a id="toggle_star" href="#" class="bs-tooltip" data-placement="bottom" data-original-title="Unstar This Page">
-                            <i class="icon-star-empty"></i>
-                            <span>Star</span>
-                        </a>
-                    </li>
-                {{/if}}
-
-
-
-                {{#if editable}}       
-                    {{#if locked}}
-                            <li>
-                                <a id="edit_btn" href="#" class="edit bs-tooltip" data-placement="bottom" data-original-title="Locked By Other User" >
-                                    <i class="icon-edit"></i>
-                                    <span>Locked</span>
-                                </a>
-                            </li>
-                    {{else}}
-                            <li>
-                                <a id="" href="#" class="edit bs-tooltip" data-placement="bottom" data-original-title="Edit Wiki Page" >
-                                    <i class="icon-edit"></i>
-                                    <span>Edit</span>
-                                </a>
-                            </li>
-                    {{/if}}
-                {{/if}}
-                </ul>
+            {{#if isStarred}}
+                <li>
+                    <a id="toggle_star" href="#" class="bs-tooltip" data-placement="bottom" data-original-title="Star This Page">
+                        <i class="icon-star"></i>
+                        <span>Unstar</span>
+                    </a>
+                </li>
+            {{else}}
+                <li>
+                    <a id="toggle_star" href="#" class="bs-tooltip" data-placement="bottom" data-original-title="Unstar This Page">
+                        <i class="icon-star-empty"></i>
+                        <span>Star</span>
+                    </a>
+                </li>
             {{/if}}
+
+
+
+            {{#if editable}}       
+                {{#if locked}}
+                        <li>
+                            <a id="edit_btn" href="#" class="edit bs-tooltip" data-placement="bottom" data-original-title="Locked By Other User" >
+                                <i class="icon-edit"></i>
+                                <span>Locked</span>
+                            </a>
+                        </li>
+                {{else}}
+                        <li>
+                            <a id="" href="#" class="edit bs-tooltip" data-placement="bottom" data-original-title="Edit Wiki Page" >
+                                <i class="icon-edit"></i>
+                                <span>Edit</span>
+                            </a>
+                        </li>
+                {{/if}}
+            {{/if}}
+            </ul>
         {{/if}}
     {{/if}}
 {{/if}}

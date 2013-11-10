@@ -200,7 +200,7 @@ Template.layout.loginConfigured = () ->
 Template.editEntry.rendered = ->
     el = $( '#entry-text' )
     el.redactor(
-        plugins: ['autoSuggest']
+        plugins: ['autoSuggest', 'stickyScrollToolbar']
         imageUpload: '/images'
         linebreaks: true
         buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'deleted', '|', 
@@ -233,7 +233,7 @@ Template.editEntry.rendered = ->
 
     window.scrollTo(0,Session.get('y-offset'))
 
-    minHeight = $(window).height() - 250 #50 -> top toolbar 60 -> title 20 -> bottom margin (120 for tags and admin)
+    minHeight = $(window).height() - 190 #   top toolbar = 50px,  title = 90px wmargin,  redactor toolbar = 30 px,  bottom margin = 20px
     if( $('.redactor_').height() < minHeight ) 
         $('.redactor_').css('min-height', minHeight)
 
@@ -245,6 +245,7 @@ Template.editEntry.rendered = ->
         tagsItems: if entry then entry.tags else []
         suggestions: tags.map (t) -> t.name
     });
+
 
 deleteEntry = (evt) ->
     entry = Session.get('entry')
@@ -289,7 +290,7 @@ root.saveEntry = (evt) ->
 Template.entry.events
 
     'click a.entry-link': (e) ->
-        evtNavigate(e) unless Session.get('editMode')
+        evtNavigate(e) 
 
     # for Create It! button on new page
     'click .edit': (evt) ->
@@ -506,6 +507,21 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
 
 
 @RedactorPlugins = {}  if typeof RedactorPlugins is "undefined"
+@RedactorPlugins.stickyScrollToolbar =
+    init: ->
+        toolbarOffsetFromTop = $("#entry .redactor_toolbar").offset().top
+        headerHeight = $("#entry").offset().top
+
+        stickyToolbar = ->
+            scrollTop = $(window).scrollTop()
+            if scrollTop > toolbarOffsetFromTop - headerHeight
+                $("#entry .redactor_toolbar").addClass "sticky-toolbar-onscroll"
+            else
+                $("#entry .redactor_toolbar").removeClass "sticky-toolbar-onscroll"
+        stickyToolbar()
+        $(window).scroll ->
+            stickyToolbar()
+
 @RedactorPlugins.autoSuggest = 
     init: ->
         #hijack redactor modalClose

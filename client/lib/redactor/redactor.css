@@ -46,6 +46,8 @@ body .redactor_box_fullscreen {
 	font-family: Menlo, Monaco, monospace, sans-serif;
 	resize: none;
 }
+/*
+GK: styling for text comes from bootstrap
 
 .redactor_editor,
 .redactor_editor:focus,
@@ -71,8 +73,6 @@ body .redactor_box_fullscreen {
 	font-family: Menlo, Monaco, monospace, sans-serif !important;
 }
 
-/*
-GK: styling for text comes from bootstrap
 .redactor_editor,
 .redactor_editor:focus,
 .redactor_editor div,
@@ -85,7 +85,8 @@ GK: styling for text comes from bootstrap
 .redactor_editor pre {
 	font-size: 15px !important;
 	line-height: 1.5em;
-}*/
+}
+
 
 .redactor_editor,
 .redactor_editor:focus {
@@ -100,6 +101,9 @@ GK: styling for text comes from bootstrap
 	box-shadow: none !important;
 	white-space: normal;
 }
+
+
+
 .redactor_editor a {
 	color: #15c !important;
 	text-decoration: underline !important;
@@ -110,6 +114,8 @@ GK: styling for text comes from bootstrap
 	display: block !important;
 	margin-bottom: 10px !important;
 }
+
+*/
 
 .redactor_editor object,
 .redactor_editor embed,
@@ -123,6 +129,8 @@ GK: styling for text comes from bootstrap
 	height: auto;
 }
 
+/*
+GK: styling for text comes from bootstrap
 .redactor_editor div,
 .redactor_editor p,
 .redactor_editor ul,
@@ -278,6 +286,8 @@ GK: styling for text comes from bootstrap
 .redactor_editor_wym ol li ul {
 	border: none !important;
 }
+
+*/
 
 /*
 	TOOLBAR

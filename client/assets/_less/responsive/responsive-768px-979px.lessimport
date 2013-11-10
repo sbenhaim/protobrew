@@ -5,6 +5,14 @@
 
 @media (min-width: 768px) and (max-width: 979px) {
 
+	// Redactor Toolbar
+	.sticky-toolbar-onscroll {  
+	    position: fixed;  
+	    top: 50px; 
+	    left: 201px;
+	    right: 201px; 
+	} 
+
 	// Sidebar / Navigation
 	// ----------------
 

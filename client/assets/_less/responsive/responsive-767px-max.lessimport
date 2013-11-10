@@ -4,6 +4,13 @@
 
 @media (max-width: 767px) {
 
+	.sticky-toolbar-onscroll {  
+	    position: fixed;  
+	    top: 50px; 
+	    left: 0px;
+	    right: 0px; 
+	} 
+
 	// Padding to set content in a bit
 	body {
 		padding-left: 0px;
@@ -36,6 +43,11 @@
 
 			.nav > li.nav-toggle {
 				display: block;
+			}
+
+			.nav > li > a {
+				padding-left: 10px;
+				padding-right: 10px;
 			}
 
 			.navbar-brand {

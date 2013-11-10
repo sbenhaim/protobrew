@@ -39,8 +39,12 @@ Template.entry_sidebar.events
         #dataTarget = $el.attr('data-target')
         dataTarget = $el.attr('href')
         offset = $(dataTarget).offset()
-        #adjust = if Session.get( 'editMode' ) then 70 else 20
-        adjust = 50
+        adjust = if Session.get( 'editMode' ) then 80 else 50
+        
+        # ensures the document has enough height so that the heading can be scrolled fully to the top left
+        if ( offset.top - adjust + $(window).height() ) > $(document).height()
+            document.body.style.height = ( offset.top - adjust + $(window).height() ) + "px" #reset in the evtNavigate function
+
         $( 'html,body' ).animate( { scrollTop: offset.top - adjust }, 350 )
     
     'click #entry-sidebar-tags a': (evt) ->
