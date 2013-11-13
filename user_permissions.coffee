@@ -16,6 +16,10 @@ root.viewable = ( entry, user, context ) ->
 # Edit in context or public entries
 # TODO: add ability to restrict public editing priveledges from
 # users who do not belog to group = 'editor'
+
+# TODO: editable should only return true if the page is editable 
+# e.g. editable special pages, and editable entires, but not non-editable special pages
+# or special pages that are editable but only by the admin
 root.editable = ( entry, user, context ) ->
     user && 
     ( adminable( user, context ) ||

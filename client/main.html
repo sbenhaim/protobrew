@@ -164,3 +164,82 @@
         {{/isolate}}
     </div>
 </template>
+
+
+<template name="redactorInsertLinkModal">
+    <div id="redactorInsertLinkModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title" id="myModalLabel">Insert Links</h4>
+          </div>
+          <div class="modal-body">
+                <div class="tabbable"> <!-- Only required for left/right tabs -->
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#tab_wiki"   data-toggle="tab">Wiki Link</a></li>
+                        <li>               <a href="#tab_url"    data-toggle="tab">Url Link</a></li>
+                        <li>               <a href="#tab_email"  data-toggle="tab">Email</a></li>
+                        <li>               <a href="#tab_anchor" data-toggle="tab">Anchor</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="tab_wiki" class="tab-pane active" >
+                            <form>
+                                <div class="form-group">
+                                    <label> Wiki Page </label>
+                                    <input type="text" class="form-control" id="redactor_wiki_link" placeholder="Enter Title of Wiki Page"/>
+                                </div>
+                                <div class="form-group">
+                                    <label> Text to Display</label>
+                                    <input type="text" class="form-control redactor_link_text" id="redactor_wiki_link_text" />
+                                </div>
+                            </form>
+                        </div>
+                        <div id="tab_url" class="tab-pane" >
+                            <form>
+                                <div class="form-group">
+                                    <label>URL</label>
+                                    <input type="text" id="redactor_link_url" class="form-control" placeholder="Enter URL e.g. www.humon.com"/>
+                                </div>
+                                <div class="form-group">
+                                    <label> Text to Display</label>
+                                    <input type="text" class="form-control redactor_link_text" id="redactor_link_url_text"/>
+                                    <label><input type="checkbox" id="redactor_link_blank"> Open Link In New Tab?</label>
+                                </div>
+                            </form>         
+                        </div>
+                        <div id="tab_email" class="tab-pane" >
+                            <form>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="text" id="redactor_link_mailto" class="form-control" placeholder="Enter email address"/>
+                                </div>
+                                <div class="form-group">
+                                    <label> Text to Display</label>
+                                    <input type="text" class="form-control redactor_link_text" id="redactor_link_mailto_text"/>
+                                </div>
+                            </form>   
+                        </div>
+                        <div id="tab_anchor" class="tab-pane" >
+                            <form>
+                                <div class="form-group">
+                                    <label>Anchor</label>
+                                    <input type="text" id="redactor_link_anchor" class="form-control" placeholder="Enter Anchor"/>
+                                </div>
+                                <div class="form-group">
+                                    <label> Text to Display</label>
+                                    <input type="text" class="form-control redactor_link_text" id="redactor_link_anchor_text"/>
+                                </div>
+                            </form>   
+                        </div>
+                    </div>
+                </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</template>
