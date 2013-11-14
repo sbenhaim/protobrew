@@ -1,0 +1,54 @@
+<template name="toolbar">
+{{#if hide_toolbar}}
+{{else}}
+    {{#if editMode}}
+        <div id='edit_mode_toolbar'class="action-toolbar edit_mode">
+            <a class="btn btn-danger delete" href="#" value="delete"><span aria-hidden="true" data-icon="&#x64;"></span></a>
+            <a class="btn btn-warning cancel" href="#" value="cancel" ><span aria-hidden="true" data-icon="&#x62;"></span></a>
+            <a class="btn btn-success save" href="#" value="save"><span aria-hidden="true" data-icon="&#x22;"></span> Save</a>
+        </div>
+    {{else}}
+        {{#if entry}}
+            {{#if viewable}}
+
+                <div id= "user_toolbar" class="action-toolbar">
+                    <a class="btn btn-default" href="#" value="new_page" id="new_page">
+                        <span aria-hidden="true" data-icon="&#xe001;"></span> 
+                        New
+                    </a>
+
+                    {{#if isStarred}}
+                        <a class="btn btn-default" href="#" value="toggle_star" id="toggle_star">
+                            <span aria-hidden="true" data-icon="&#xe003;"></span> 
+                            Unstar
+                        </a>
+                    {{else}}
+                        <a class="btn btn-default" href="#" value="toggle_star" id="toggle_star">
+                            <span aria-hidden="true" data-icon="&#xe004;"></span> 
+                            Star
+                        </a>
+                    {{/if}}
+
+                    {{#if editable}}
+
+                        {{#if locked}}
+                            <a class="btn btn-default disabled" href="javascript:void(0)" value="" id="">
+                                <i class="icon-lock"></i>
+                                Locked
+                            </a>
+                        {{else}}
+                            <a class="btn btn-default edit" href="javascript:void(0);" value="edit" id="edit_btn">
+                                 <span aria-hidden="true" data-icon="&#x23;"></span> 
+                                 Edit
+                             </a>
+                        {{/if}}
+
+
+                    {{/if}}
+
+                </div>
+            {{/if}}
+        {{/if}}
+    {{/if}}
+{{/if}}
+</template>

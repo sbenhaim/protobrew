@@ -61,7 +61,8 @@ body .redactor_box_fullscreen {
 .redactor_editor h2,
 .redactor_editor h3,
 .redactor_editor h4,
-.redactor_editor h5 {
+.redactor_editor h5,
+.redactor_editor h6 {
 	font-family: Arial, Helvetica, Verdana, Tahoma, sans-serif !important;
 }
 
@@ -70,6 +71,8 @@ body .redactor_box_fullscreen {
 	font-family: Menlo, Monaco, monospace, sans-serif !important;
 }
 
+/*
+GK: styling for text comes from bootstrap
 .redactor_editor,
 .redactor_editor:focus,
 .redactor_editor div,
@@ -82,7 +85,7 @@ body .redactor_box_fullscreen {
 .redactor_editor pre {
 	font-size: 15px !important;
 	line-height: 1.5em;
-}
+}*/
 
 .redactor_editor,
 .redactor_editor:focus {
@@ -196,7 +199,8 @@ body .redactor_box_fullscreen {
 .redactor_editor h2,
 .redactor_editor h3,
 .redactor_editor h4,
-.redactor_editor h5 {
+.redactor_editor h5,
+.redactor_editor h6 {
 	margin-top: 0 !important;
 	margin-right: 0 !important;
 	margin-left: 0;
@@ -253,6 +257,9 @@ body .redactor_box_fullscreen {
 	padding: 10px !important;
 	border: 1px solid #e4e4e4 !important;
 	background-color: #fff !important;
+}
+.redactor_editor_wym blockquote:before {
+	content: '';
 }
 .redactor_editor_wym div {
 	border: 1px dotted #aaa !important;
@@ -450,7 +457,11 @@ body .redactor_toolbar li a.redactor_btn_pre		 		{ background-position: -875px; 
 .redactor_format_pre {
 	font-family: monospace, sans-serif;
 }
-.redactor_format_h1, .redactor_format_h2, .redactor_format_h3, .redactor_format_h4 {
+.redactor_format_h1,
+.redactor_format_h2,
+.redactor_format_h3,
+.redactor_format_h4,
+.redactor_format_h5 {
 	font-weight: bold;
 }
 .redactor_format_h1 {
@@ -469,6 +480,11 @@ body .redactor_toolbar li a.redactor_btn_pre		 		{ background-position: -875px; 
 	font-size: 16px;
 	line-height: 26px;
 }
+.redactor_format_h5 {
+	font-size: 14px;
+	line-height: 23px;
+}
+
 
 /*
 	DROPDOWN
@@ -505,27 +521,6 @@ body .redactor_toolbar li a.redactor_btn_pre		 		{ background-position: -875px; 
 	text-decoration: none;
 }
 
-/* ColorPicker */
-.redactor_color_link {
-	float: left !important;
-	padding: 0 !important;
-	width: 15px !important;
-	height: 15px !important;
-	border: 2px solid #fff !important;
-	border-radius: 4px !important;
-	box-shadow: 0 1px 2px rgba(0, 0, 0, .2) inset !important;
-	font-size: 0;
-}
-.redactor_color_none {
-	display: block;
-	clear: both;
-	padding: 4px 0 !important;
-	font-size: 11px;
-	line-height: 1;
-}
-
-
-
 /* MODAL */
 #redactor_modal_overlay {
 	position: fixed;
@@ -538,7 +533,6 @@ body .redactor_toolbar li a.redactor_btn_pre		 		{ background-position: -875px; 
 
 	background-color: #333 !important;
 	opacity: 0.50;
-
 	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
 	filter:alpha(opacity=50);
 }
@@ -550,15 +544,7 @@ body .redactor_toolbar li a.redactor_btn_pre		 		{ background-position: -875px; 
   	z-index: 50001;
 	padding: 0;
   	border-radius: 3px;
-	background: #f7f7f7;
-	background: -moz-linear-gradient(top,  #f7f7f7 0%, #e2e2e2 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f7f7f7), color-stop(100%,#e2e2e2));
-	background: -webkit-linear-gradient(top,  #f7f7f7 0%,#e2e2e2 100%);
-	background: -o-linear-gradient(top,  #f7f7f7 0%,#e2e2e2 100%);
-	background: -ms-linear-gradient(top,  #f7f7f7 0%,#e2e2e2 100%);
-	background: linear-gradient(to bottom,  #f7f7f7 0%,#e2e2e2 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f7f7f7', endColorstr='#e2e2e2',GradientType=0 );
-
+	background: #f5f5f5;
 	box-shadow: 0px 5px 60px #000;
 	color: #000;
 	text-shadow: 0 1px 0 #fff;
@@ -604,9 +590,6 @@ body .redactor_toolbar li a.redactor_btn_pre		 		{ background-position: -875px; 
 	width: 99%;
 	font-size: 14px;
 }
-
-
-
 .redactor_modal_box {
 	overflow: auto;
 	margin-bottom: 10px;
@@ -619,7 +602,7 @@ body .redactor_toolbar li a.redactor_btn_pre		 		{ background-position: -875px; 
 }
 #redactor_image_box_select {
 	display: block;
-	margin-bottom: 15px;
+	margin-bottom: 15px !important;
 	width: 200px;
 }
 #redactor_image_box img {
@@ -725,8 +708,6 @@ body .redactor_toolbar li a.redactor_btn_pre		 		{ background-position: -875px; 
 }
 .redactor_modal_btn:hover {
 	color: #555;
-}
-.redactor_modal_btn:hover {
 	background: none;
 	background: #f3f3f3;
 	text-decoration: none;
@@ -773,6 +754,18 @@ body .redactor_toolbar li a.redactor_btn_pre		 		{ background-position: -875px; 
 
 /* =Progress
 -----------------------------------------------------------------------------*/
+#redactor-progress-drag {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	width: 200px;
+	margin-left: -130px;
+	margin-top: -35px;
+	z-index: 10000;
+	padding: 30px;
+	background: rgba(0, 0, 0, .7);
+	box-shadow: none;
+}
 .redactor-progress {
 	height: 12px;
 	overflow: hidden;

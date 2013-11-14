@@ -1,0 +1,12 @@
+{
+  "packages": {
+    "require": {},
+    "toastjs": {},
+    "select2": {},
+    "typeahead-js": {},
+    "momentjs": {},
+    "spin": {},
+    "iron-router": {},
+    "bootstrap3-less": {}
+  }
+}

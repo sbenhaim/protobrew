@@ -1,2 +1,8 @@
+require
 toastjs
 select2
+typeahead-js
+momentjs
+spin
+scss
+bootstrap3-less

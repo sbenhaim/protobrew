@@ -11,7 +11,12 @@ coffeescript
 accounts-ui
 accounts-google
 less
-bootstrap
 toastjs
 select2
+typeahead-js
 standard-app-packages
+require
+momentjs
+spin
+iron-router
+bootstrap3-less

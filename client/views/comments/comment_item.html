@@ -1,0 +1,63 @@
+<template name="comment_item">
+  <li class="comment comment-displayed" id="{{_id}}">
+   <div class="comment-body">
+      <div class="comment-content">
+        <!-- TODO add voting -->
+<!--         <div class="comment-actions {{#if upvoted}}upvoted{{else}}not-upvoted{{/if}} {{#if downvoted}}downvoted{{else}}not-downvoted{{/if}}">
+          <a class="upvote" href="#">
+            <i class="icon-up"></i>
+            <span>upvote</span>
+          </a>
+          <a class="downvote" href="#">
+            <i class="icon-down"></i>
+            <span>downvote</span>
+          </a>
+        </div> -->
+        <!-- TODO add avatars -->
+        <!-- <div class="user-avatar"><img src="{{user_avatar}}" /></div> -->
+        <div class="comment-main well well-sm">
+          <div class="comment-meta">
+            <a class="comment-username" href="/users/{{authorName}}">{{authorName}}</a>
+            <span class="comment-time">{{ago}},</span>
+            <!-- <span class="points">{{votes}} <span class="unit">points </span> -->
+            <!-- <a href="/comments/{{_id}}" class="comment-permalink icon-link goto-comment">link</a> -->
+            {{#if can_edit}}
+              <!-- | <a class="edit-link" href="/comments/{{_id}}/edit">Edit</a> -->
+              | <a class="edit-comment">Edit</a>
+            {{/if}}
+            {{#if currentUser.isAdmin}}
+              | <span>{{full_date}}</span>
+            {{/if}}
+          </div>
+          {{#if editing}}
+                {{#with this}}
+                  {{> editComment}}
+                {{/with}}
+          {{else}}
+            <div class="comment-text">{{{comment_text}}}</div>
+          {{/if}}
+          <!-- <a href="/comments/{{_id}}/reply" class="comment-reply goto-comment">Reply</a> -->
+        </div>
+      </div>
+
+      <!-- TODO re-add child comments -->
+
+<!--       {{#if showChildComments}}
+      <ul class="comment-children comment-list">
+      {{#each child_comments}}
+        {{#with this}}
+        {{> comment_item}}
+        {{/with}}
+      {{/each}}
+      </ul>
+      {{/if}} -->
+    </div>
+  </li>
+</template>
+
+<template name="editComment">
+  <textarea class="comment-text-editor">{{text}}</textarea>
+  <a class="save-comment">Save</a>
+  <a class="cancel-comment">Cancel</a>
+  <!-- TODO add delete -->
+</template>

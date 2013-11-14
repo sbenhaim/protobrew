@@ -1,0 +1,226 @@
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Humon Brain</title>
+
+<!--[if IE 5]>
+<style type="text/css">
+/* place css box model fixes for IE 5* in this conditional comment */
+#sidebar1 { width: 230px; }
+</style>
+<![endif]--><!--[if IE]>
+<style type="text/css">
+/* place css fixes for all versions of IE in this conditional comment */
+#sidebar1 { padding-top: 30px; }
+#mainContent { zoom: 1; }
+/* the above proprietary zoom property gives IE the hasLayout it needs to avoid several bugs */
+</style>
+<![endif]-->
+
+<script type="text/javascript" src="//api.filepicker.io/v1/filepicker.js"></script>
+</head>
+
+<body>
+    <!-- empty body -->
+</body>
+
+
+
+<template name="layout">
+
+  <div id="container">
+        <div id="header">
+            {{yield 'toolbar'}}
+        </div>
+        <div id = "leftNavContainer">
+            {{> left_nav}}
+        </div>
+        <div id="main">
+            <div class="content">
+                <a class="btn btn-inverse" href="#" value="sidenav_btn" id="sidenav_btn">
+                    <span aria-hidden="true" data-icon="&#xe002;"></span> 
+                </a> 
+            {{yield}}
+            </div>
+            <div id="footer"></div>
+        </div>
+  </div>
+
+
+  {{> newUserModal }}
+  {{> deleteConfirmModal }}
+
+
+</template>
+
+
+
+
+
+<template name="sidebar">
+    <ul>
+         {{{ navItems }}}
+    </ul>
+</template>
+
+<template name="loading">
+    {{> spinner}}
+</template>
+
+<template name="index">
+    {{{content.text}}}
+</template>
+
+<template name="profile">
+    <h2>Profile for {{user.profile.name}}</h2>
+    <label>Username
+        <input name="username" type="text" id="username" value="{{user.profile.username}}" />
+        <input type="submit" value="save" id="save" />
+    </label>
+</template>
+
+<template name="search">
+    <h3>Search results for "{{term}}"</h3>
+
+    {{#each results}}
+        <h2><a href="/{{this.title}}">{{this.title}}</a></h2>
+        <p>{{this.text}}</p>
+    {{/each}}
+
+</template>
+
+<template name="tag">
+    <h3>Entries tagged with "{{tag}}"</h3>
+
+    {{#each results}}
+        <h2><a href="/{{this.title}}">{{this.title}}</a></h2>
+        <p>{{this.text}}</p>
+    {{/each}}
+
+</template>
+
+
+<template name="entry">
+
+    <div id="entry">
+        <h1 id="article-title" class="article-title">
+            {{#if userContext}}{{userContext}} / {{/if}}{{title}}
+        </h1>
+        <span class='text-muted'> last edited by </span>
+        <a href="/users/{{lastEditedBy}} ">{{lastEditedBy}}</a> 
+        <span class='text-muted'> {{sinceLastEdit}} </span>
+
+        {{#if editMode}}
+        <form>
+
+            {{#with entry}}
+            {{> editEntry}}
+            {{/with}}
+
+            {{#if adminable}}
+            <p>
+                <label>Mode
+                    <select id="mode" name="mode">
+                        <option {{#if modeIs "public"}}selected{{/if}} value="public">Public</option>
+                        <option {{#if modeIs "read-only"}}selected{{/if}} value="read-only">Read-Only</option>
+                        <option {{#if modeIs "private"}}selected{{/if}} value="private">Private</option>
+                    </select>
+                </label>
+            </p>
+            {{/if}}
+        </form>
+        {{else}}
+
+        {{#if entry._id}}
+
+                {{#if viewable}}
+
+
+                    <p>{{{entry.text}}}</p>
+
+                    {{#if entry.tags.length}}
+                    <h2>Tags</h2>
+                    <ul>
+                        {{#each entry.tags}}
+                            <li class="article-tag"><a href="javascript:void(0);">{{this}}</a></li>
+                        {{/each}}
+                    </ul>
+                    {{/if}}
+
+                    
+                    {{> comment_form}}
+                    {{> comment_list}}
+
+                {{else}}
+
+                <p>{{entry.title}} is private.</p>
+
+                {{/if}}
+
+            {{else}}
+
+                {{#if entryLoaded}}
+                    <p>{{title}} doesn't exist yet.</p>
+                        {{#if currentUser}}
+                        	<a class="btn btn-success edit" href="#" value="edit" id="create_btn"><span aria-hidden="true" data-icon="&#x22;"></span> Create it!</a>
+                        {{/if}}
+                {{else}}    
+                    {{> spinner}}
+                {{/if}}
+
+            {{/if}}
+
+        {{/if}}
+    </div>
+
+    {{#if currentUser}}
+        <div id="sidebar_col">
+            <div id="sidebar">
+                {{> sidebar}}
+            </div>
+        </div>
+    {{/if}}
+
+</template>
+
+
+<template name="editEntry">
+    <textarea id="entry-text" placeholder="Just some friendly placeholder text.">{{text}}</textarea>
+    <p>
+        <h2>Tags</h2>
+        <textarea id="entry-tags"></textarea>
+        <small><em>press &#x23ce; between tags</em></small>
+    </p>
+</template>
+
+<template name="user">
+    {{info}}
+</template>
+
+
+
+
+<template name="deleteConfirmModal">
+
+    <div id="delete-confirm-modal" class="modal hide fade">
+        <div class="modal-header">
+            <h3>Delete Page</h3>
+        </div>
+        
+        {{#isolate}}
+        <div class="modal-body">
+            <h4>Warning:</h4>
+            <p>This will delete the current page and all the content inside.</p>
+            <p> </p>
+            <p>If you are sure please type in DELETE below:</p>
+            <input type="text" id="delete-confirm-input"/>
+
+        </div>
+        
+        <div class="modal-footer">
+            <a id="delete-confirm-button" href="javascript:void(0);" class="btn btn-danger"> DELETE NOW</a>
+            <a id="delete-cancel-button" href="javascript:void(0);" class="btn btn-primary"> Do not Delete</a>
+        </div>
+        {{/isolate}}
+    </div>
+</template>

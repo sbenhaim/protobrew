@@ -1,5 +1,15 @@
+root = exports ? this
+
 Meteor.subscribe 'entries', onComplete = ->
   Session.set('entryLoaded', true)
+
+Meteor.subscribe('comments')
+
+Meteor.subscribe('settings', ->
+  #runs once on site load
+  # analyticsInit()
+  Session.set('settingsLoaded',true)
+)
 
 Meteor.subscribe('tags')
 
@@ -7,15 +17,22 @@ Meteor.subscribe('revisions')
 
 Meteor.subscribe('allUserData')
 
-Meteor.autosubscribe( ->
-    Meteor.subscribe("userData");
+Deps.autorun( ->
+    Meteor.subscribe("userData")
 );
 
-lockEntry = ->
+# Deps.autorun(function() {
+#   var query = { $or : [ { post : Session.get('selectedPostId') } , { _id : Session.get('selectedCommentId') } ] };
+#   Meteor.subscribe('comments', query, function() {
+#     Session.set('singleCommentReady', true);
+#   });
+# });
+
+root.lockEntry = ->
     Meteor.call( 'lockEntry', Session.get('entryId') ) if Session.get('entryId')
     Session.set('entryLocked', true)
 
-unlockEntry = ->
+root.unlockEntry = ->
     # if Session.get('entryLocked')
         Meteor.call( 'unlockEntry', Session.get('entryId') ) if Session.get('entryId')
         Session.set('editMode', false)
@@ -27,28 +44,6 @@ window.onbeforeunload = ->
 
 Session.set('editMode', false)
 
-# Todo: reloadEntry = true
-navigate = (location, context) ->
-    location = "/u/#{context}/#{location}" if context
-    Router.navigate(location, true)
-
-evtNavigate = (evt) ->
-    evt.preventDefault()
-    window.scrollTo(0,0)
-    $a = $(evt.target).closest('a')
-    href = $a.attr('href')
-    localhost = document.location.host
-    linkhost = $a[0].host
-    if localhost == linkhost
-        # support for full local URLs (e.g. http://www.yourwiki.com/page <-- won't refresh)
-        relHref = href.replace(/^(?:\/\/|[^\/]+)*\//, "") #string after first single / in full URL
-        if relHref.charAt(0) is '/'
-            navigate(relHref)
-        else
-            navigate('/'+relHref)
-    else
-        window.open( href, '_blank')
-   
 
 ## Nav
 
@@ -58,45 +53,25 @@ Deps.autorun ->
     if Meteor.user() && ! Meteor.user().username
         $('#new-user-modal').modal({'backdrop':'static', 'keyboard': false})
 
+# currently the spinner atmosphere package has a bug in it where it does not work
+# spinner is clone directly into the project directory
+Meteor.Spinner.options = {
+    top : '50'
+    left : '50'
+}
 
-Template.newUserModal.rendered = () ->
-    Session.set('selectedUsername', $('#initial-username-input').val() )
+Template.deleteConfirmModal.events =
+    'click #delete-confirm-button': (e) ->
+        deleteInput = $('#delete-confirm-input').val()
+        if deleteInput == "DELETE"
+            deleteEntry()
+            $('#delete-confirm-modal').modal('hide')
+        else
+            Toast.error('Must type in "DELETE" in all caps to delete')
 
-usernameTaken = (username) ->
-    Meteor.users.find({username: username}).count() > 0
+    'click #delete-cancel-button': (e) ->
+        $('#delete-confirm-modal').modal('hide')
 
-Template.newUserModal.continueDisabled = () ->
-    Session.get('selectedUsername')
-    username = $('#initial-username-input').val()
-    username == '' || usernameTaken( username )
-
-Template.newUserModal.usernameTaken = () ->
-    Session.get('selectedUsername')
-    username = $('#initial-username-input').val()
-    usernameTaken( username )
-
-Template.newUserModal.events =
-    'keyup #initial-username-input': () ->
-        Session.set('selectedUsername', $('#initial-username-input').val() )
-
-    'click #new-username-button': (e) ->
-        if ! $(e.target).hasClass('disabled')
-            console.log( "click" );
-            Meteor.call('updateUser', $("#initial-username-input").val(), (e) -> $("#new-user-modal").modal("hide") )
-            Meteor.call 'createHome'
-            navigate( "home", Session.get( "context" ) ) 
-Template.leftNav.events =
-    'click a.left-nav': evtNavigate
-
-    'change #search-input': (evt) ->
-        term = $(evt.target).val()
-        navigate( '/search/' + term ) if term
-
-    'click #usernav a': evtNavigate
-
-    'click #userTabs > li' : (evt) ->
-        $el = $(evt.currentTarget)
-        Session.set( 'activeTab' , $el.attr('id'))
 
 getSummaries = (entries) ->
     entries.map (e) ->
@@ -135,39 +110,7 @@ Template.tag.results = ->
     getSummaries( entries )
 
 
-Template.leftNav.isActiveTab = (tab, options)->
-    Session.equals "activeTab", tab 
-
-Template.leftNav.isActivePanel = (panel, options)->
-    Session.equals "activePanel", panel
-
-Template.leftNav.term = -> 
-    Session.get( 'search-term' )
-
-Template.leftNav.pageIs = (u) ->
-    page = Session.get('title')
-    return u == "/" if page == undefined
-    return u == page
-
-Template.leftNav.edited = () ->
-    revisions = Revisions.find({author: Meteor.userId()}, {entryId: true}).fetch()
-    ids = _.map( revisions, (r) -> r.entryId )
-    entries = Entries.find({_id: {$in: ids}}).fetch()
-    _.sortBy( entries, (e) -> e.date ).reverse()
-
-
-Template.leftNav.starred = () ->
-    user = Meteor.user()
-    if ! user 
-        return
-    else
-        starredPages = user.profile.starredPages
-        if ! starredPages
-            return
-        starred =  Entries.find({ _id :{$in: starredPages}}).fetch()
-        if ! starred or starred.length == 0
-          return # starred = {starred:["nothing"]} #would need to make this not a link
-        return starred
+## Global Helpers
 
 Handlebars.registerHelper( 'entryLink', (entry) ->
     entryLink( entry )
@@ -175,6 +118,47 @@ Handlebars.registerHelper( 'entryLink', (entry) ->
 Handlebars.registerHelper( 'historyLink', (entry) ->
     historyLink( entry )
 )
+
+Handlebars.registerHelper( 'modeIs', (v) ->
+    return v == Session.get('entry').mode
+)
+
+Handlebars.registerHelper 'locked', ->
+    entry = Session.get('entry')
+    entry && entry.editing
+
+Handlebars.registerHelper 'editable', ->
+    entry = Session.get('entry')
+    context = Session.get("context")
+    user  = Meteor.user()
+    editable( entry, user, context )
+
+Handlebars.registerHelper 'isStarred', ->
+    user  = Meteor.user()
+    starredPages = user.profile.starredPages
+    entryId = Session.get('entryId')
+    if entryId in starredPages
+        return  true
+
+Handlebars.registerHelper 'adminable', ->
+    context = Session.get("context")
+    user  = Meteor.user()
+    adminable( user, context )
+
+Handlebars.registerHelper 'viewable', ->
+    entry = Session.get('entry')
+    context = Session.get("context")
+    user  = Meteor.user()
+    viewable( entry, user, context )
+
+Handlebars.registerHelper 'entryLoaded', ->
+    Session.get('entryLoaded')
+
+Handlebars.registerHelper 'editMode', ->
+    Session.get('editMode')
+
+
+
 
 ## Entry
 
@@ -190,41 +174,17 @@ Template.entry.entryLoaded = ->
 Template.entry.userContext = ->
     Session.get("context")
 
-Template.entry.editable = ->
-    entry = Session.get('entry')
-    context = Session.get("context")
-    user  = Meteor.user()
-    editable( entry, user, context )
+Template.entry.lastEditedBy = ->
+    title = Session.get("title")
+    context = Session.get('context')
+    entry = findSingleEntryByTitle( title, context )
+    lastEditedBy(entry)
 
-Template.entry.locked = ->
-    entry = Session.get('entry')
-    return entry && entry.editing
-
-Template.entry.isStarred = ->
-    user  = Meteor.user()
-    starredPages = user.profile.starredPages
-    entryId = Session.get('entryId')
-    if entryId in starredPages
-        return  true
-
-
-Template.entry.adminable = ->
-    context = Session.get("context")
-    user  = Meteor.user()
-    adminable( user, context )
-
-Template.entry.viewable = ->
-    entry = Session.get('entry')
-    context = Session.get("context")
-    user  = Meteor.user()
-    viewable( entry, user, context )
-
-Template.entry.modeIs = (v) ->
-    return v == Session.get('entry').mode
-
-Template.entry.entryLoaded = ->
-    Session.get('entryLoaded')
-
+Template.entry.sinceLastEdit = ->
+    title = Session.get("title")
+    context = Session.get('context')
+    entry = findSingleEntryByTitle( title, context )
+    sinceLastEdit(entry)
 
 Template.entry.entry = ->
     title = Session.get("title")
@@ -252,6 +212,7 @@ Template.entry.entry = ->
             Session.set( 'entryId', null )
             Session.get('entryLoaded')
 
+Template.layout.events
 
 Template.entry.edit_mode = ->
     Session.get('editMode')
@@ -347,10 +308,10 @@ Template.main.events
         $('#leftNavContainer').toggle(0)
         $("#main").toggleClass('wLeftNav')
 
-Template.main.modeIs = (mode) ->
+Template.layout.modeIs = (mode) ->
     Session.get('mode') == mode;
 
-Template.main.loginConfigured = () ->
+Template.layout.loginConfigured = () ->
     if Accounts.loginServicesConfigured()
         return true;
     else
@@ -365,6 +326,7 @@ Template.editEntry.rendered = ->
     el.redactor(
         plugins: ['autoSuggest']
         imageUpload: '/images'
+        linebreaks: true
         buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'deleted', '|', 
             'unorderedlist', 'orderedlist', 'outdent', 'indent', '|',
             'image', 'table', 'link', '|',
@@ -396,7 +358,6 @@ Template.editEntry.rendered = ->
     window.scrollTo(0,Session.get('y-offset'))
 
     minHeight = $(window).height() - 250 #50 -> top toolbar 60 -> title 20 -> bottom margin (120 for tags and admin)
-    console.log minHeight
     if( $('.redactor_').height() < minHeight ) 
         $('.redactor_').css('min-height', minHeight)
 
@@ -411,14 +372,17 @@ Template.editEntry.rendered = ->
 
 deleteEntry = (evt) ->
     entry = Session.get('entry')
-    if entry && confirm( "Are you sure you want to delete #{entry.title}?")
+    if entry
         Meteor.call('deleteEntry',entry)
         Entries.remove({_id: entry._id})
         Session.set('editMode', false)
+        Session.set('editEntry', false)
+    else
+        Toast.error('Cannot DELETE a page that has not been created!')
 
-saveEntry = (evt) ->
+root.saveEntry = (evt) ->
     reroute = ( e ) ->
-        navigate( entry.title, Session.get( "context" ) ) unless entry.title == "home"
+        navigate( '/'+entry.title, Session.get( "context" ) ) unless entry.title == "home"
 
     title = Session.get('title')
 
@@ -440,48 +404,18 @@ saveEntry = (evt) ->
 
     context = Session.get('context')
 
-    Meteor.call('saveEntry', title, entry, context, reroute)
+    # Meteor.call('saveEntry', title, entry, context, reroute)
+    Meteor.call('saveEntry', title, entry, context)
     Entries.update({_id: entry._id}, entry)
     Session.set("editMode", false)
 
 
 Template.entry.events
 
-    'click #new_page': (evt) ->
-        evt.preventDefault()
-        console.log('event')
-        Meteor.call('createNewPage', 
-           (error, pageName) ->
-                console.log(error, pageName);
-                #TODO: fix non-editable navigate
-                navigate(pageName)
-        )
-
-    'click #toggle_star': (evt) ->
-        evt.preventDefault()
-        user  = Meteor.user()
-        starredPages = user.profile.starredPages
-        entryId = Session.get('entryId')
-        context = Session.get('context')
-        title = Session.get("title")
-        entry = findSingleEntryByTitle( title, context )
-
-        if not entry
-            Toast.error('Cannot star a blank page!')
-        else if entryId in starredPages
-            console.log('match pulling')
-            Meteor.users.update(Meteor.userId(), {
-                $pull: {'profile.starredPages': entryId}
-            })
-        else
-            console.log('no match pushing')
-            Meteor.users.update(Meteor.userId(), {
-                $push: {'profile.starredPages': entryId}
-            })
-
     'click li.article-tag a': (evt) ->
         evt.preventDefault()
         tag = $(evt.target).text()
+        window.scrollTo(0,0) # fix for position 
         navigate( '/tag/' + tag ) if tag
 
     'click a.entry-link': (e) ->
@@ -542,7 +476,7 @@ Template.entry.events
                 $in.replaceWith($el)
                 $(document).off('click')
 
-        $(document).on('click', cancel)
+        $(document).on('click', updateTitle)
 
         $in.on("keyup", (e) ->
             updateTitle(e, true) if e.keyCode == 13
@@ -559,7 +493,7 @@ Template.profile.events
 Template.user.info = ->
     Meteor.user()
 
-rewriteLinks = ( text ) ->
+root.rewriteLinks = ( text ) ->
     $html = $('<div>')
     $html.html( text )
 
@@ -684,8 +618,13 @@ Template.sidebar.events
 Router = new EntryRouter()
 
 Meteor.startup ->
-    Backbone.history.start pushState: true
+    # Backbone.history.start pushState: true
     Session.set('activeTab', 'editedTab')
+    Session.set('selectedCommentId', null)
+    Session.set('editMode', false)
+    # on small screens make sure the login screen is displayed first
+    $('#leftNavContainer').toggle(true)
+    $("#main").toggleClass('wLeftNav')
   
 
 #builds array of all heading titles
@@ -771,9 +710,6 @@ buildRec = (headingNodes, $elm, lv) ->
         buildRec headingNodes, $elm, lv + cnt
 
 
-
-
-
 highlightNav = ->
 
     pos = $(window).scrollTop( )
@@ -855,7 +791,8 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
     autoSuggest: ->
         #.on to catch creation of modal (DNE before dropdown is selected)
         $('body').on 'focus','#redactor_modal', ->
-            #remove the event ti stop focus from multi-firing
+            # evt.preventDefault()
+            #remove the event to stop focus from multi-firing
             $('body').off 'focus','#redactor_modal'
 
 
@@ -895,41 +832,22 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
 
             idarray = []
             for i in listTitles
-                idarray.push({id: i, text: i})
+                idarray.push(i)
 
             # case where 0 length put some junk in there
             if idarray.length == 0
-               idarray.push({id: " ", text: " "})
+               idarray.push("")
 
-            console.log $("#redactor_wiki_link").val()
+            console.log 'hit'
             defaultValue = $("#redactor_wiki_link").val()
-            $("#redactor_wiki_link").select2
-                data: idarray
-                # placeholder: "Select or Enter a Wiki Name"
-                initSelection : (element, callback) ->
-                    data =
-                        id: element.val()
-                        text: element.val()
-                    callback data
-                createSearchChoice: (term, data) ->
-                    if $(data).filter(->
-                        @text.localeCompare(term) is 0
-                    ).length is 0
-                        id: term
-                        text: term
-            .select2 "val", defaultValue
-            #alert("Selected value is: "+$("#redactor_wiki_link").select2("val"));
 
-            # $('#redactor_wiki_link').select2().select2('val', $("#redactor_wiki_link").val());
-            
-            # $("#redactor_wiki_link").textext(plugins: "autocomplete").on "getSuggestions", (e, data) ->
-            #     console.log 'by here'
-            #     console.log e
-            #     list = listTitles
+            #BUG 
+            # this whole method is fired twice so check if already applied before applying typeahead
+            if $("#redactor_wiki_link").hasClass('tt-query')
+                return
+            else
+                $("#redactor_wiki_link").typeahead
+                    local: idarray
 
-              #   list = listTitles
-              #  textext = $(e.target).textext()[0]
-              #   query = ((if data then data.query else "")) or ""
-              #   $(this).trigger "setSuggestions",
-              #       result: textext.itemManager().filter(list, query)
+
 

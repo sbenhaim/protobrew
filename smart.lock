@@ -1,0 +1,57 @@
+{
+  "meteor": {},
+  "dependencies": {
+    "basePackages": {
+      "require": {},
+      "toastjs": {},
+      "select2": {},
+      "typeahead-js": {},
+      "momentjs": {},
+      "spin": {},
+      "iron-router": {},
+      "bootstrap3-less": {}
+    },
+    "packages": {
+      "require": {
+        "git": "https://github.com/tomconnors/meteor-require.git",
+        "tag": "v0.1.0",
+        "commit": "b9c5a87e9f92019cca882234086b7d32719f67e2"
+      },
+      "toastjs": {
+        "git": "https://github.com/srackham/toast.js.git",
+        "tag": "v2.0.6",
+        "commit": "a81915d9df2f432486ac6ce8d6981419119e7007"
+      },
+      "select2": {
+        "git": "https://github.com/nate-strauser/meteor-select2.git",
+        "tag": "v3.4.0",
+        "commit": "a731bdb357cadd840aa5d9a3e893ab3df097a09c"
+      },
+      "typeahead-js": {
+        "git": "https://github.com/olragon/meteor-typeahead-js.git",
+        "tag": "v0.9.3",
+        "commit": "9241c6c68f39cf37699b5de7b03d60a5434a5d21"
+      },
+      "momentjs": {
+        "git": "https://github.com/crapthings/meteor-momentjs.git",
+        "tag": "v2.1.0.2",
+        "commit": "59a762e297082eea8b8cae00374c2b7ac6f89529"
+      },
+      "spin": {
+        "git": "https://github.com/SachaG/meteor-spin.git",
+        "tag": "v0.2.0",
+        "commit": "fd3a2871a69442848b4b4e74f5e1ae28fa4a95a4"
+      },
+      "iron-router": {
+        "git": "https://github.com/EventedMind/iron-router.git",
+        "tag": "v0.5.4",
+        "commit": "3e0e22ff85630b7503d0daa1538c6d90abb84020"
+      },
+      "bootstrap3-less": {
+        "git": "https://github.com/eprochasson/bootstrap3-less",
+        "tag": "v0.1.1",
+        "commit": "82d3e32b6a44bad7bd439b9e02ce33161e58996d"
+      }
+    }
+  }
+}
