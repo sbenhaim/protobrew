@@ -28,6 +28,30 @@ Deps.autorun( ->
 #   });
 # });
 
+#builds array of all heading titles
+stackTitles = (items, cur, counter) ->
+
+  cur = 1 if cur == undefined
+  counter ?= 1
+
+  next = cur + 1
+
+  for elem, index in items
+    elem = $(elem)
+    children  =  filterHeadlines( elem.nextUntil( 'h' + cur, 'h' + next ) )
+    d = {};
+    d.title = elem.text()
+    # d.y  = elem.offset().top
+    d.id = counter++
+    d.target = "entry-heading-#{d.id}"
+    d.style = "top" if cur == 0
+    d.children = stackTitles( children, next, counter ) if children.length > 0
+    d
+
+filterHeadlines = ( $hs ) ->
+  _.filter( $hs, ( h ) ->
+    $(h).text().match(/[^\s]/) ) #matches any non-whitespace char
+
 root.lockEntry = ->
     Meteor.call( 'lockEntry', Session.get('entryId') ) if Session.get('entryId')
     Session.set('entryLocked', true)
@@ -77,7 +101,7 @@ getSummaries = (entries) ->
     entries.map (e) ->
         
         text = $('<div>').html( e.text ).text()
-        text = text.substring(0,200) + '...' if text.length > 204;
+        text = (text.substring(0,200) + '...') if text.length > 204
         
         {text: text, title: e.title}
 
@@ -114,9 +138,6 @@ Template.tag.results = ->
 
 Handlebars.registerHelper( 'entryLink', (entry) ->
     entryLink( entry )
-)
-Handlebars.registerHelper( 'historyLink', (entry) ->
-    historyLink( entry )
 )
 
 Handlebars.registerHelper( 'modeIs', (v) ->
@@ -216,159 +237,58 @@ Template.layout.events
 
 Template.entry.edit_mode = ->
     Session.get('editMode')
-
-Template.history.revisions = ->
-    title = Session.get("title")
-    console.log "History for #{title}"
-    if title
-        revs = findRevisionsByTitle( title )
-        console.log revs
-        revs
-    else
-        console.log "No revs found."
-        []
-
-Template.history.events
-    'click #compareSelected': (evt) ->
-        evt.preventDefault()
-        rev1 = $('.historyForm input[name=rev1]:checked').val()
-        rev2 = $('.historyForm input[name=rev2]:checked').val()
-        if typeof rev1 != 'undefined' and typeof rev2 != 'undefined'
-            Router.navigate('/compare/'+Session.get('title')+'/'+rev1+'/'+rev2,{trigger:true})
-        else
-            $('.compareRadio').queue (next) ->
-                $(this).addClass 'compareRadioRed'
-                next()
-            $('.compareRadio').delay 1000
-            $('.compareRadio').queue (next) ->
-                $(this).removeClass 'compareRadioRed'
-                next()
-
-#
-# Revision compare template helpers
-#
-
-_htmlHash = {}
-_currentHash = 44032
-_is_debug = false;
-
-pushHash = (tag) ->
-  if typeof(_htmlHash[tag]) == 'undefined'
-    _htmlHash[tag] = eval('"\\u'+_currentHash.toString(16)+'"')
-    _currentHash++
-  _htmlHash[tag]
-
-clearHash = ->
-  _htmlHash = {}
-  # 朝鲜文音节 Hangul Syllables
-  _currentHash = 44032 
-
-html2plain = (html) ->
-    html = html.replace /<(S*?)[^>]*>.*?|<.*?\/>/g, (tag) ->
-        if _is_debug
-          return pushHash(tag.toUpperCase().replace(/</g, '&lt;').replace(/>/g, '&gt;'))
-        else
-          return pushHash(tag.toUpperCase())
-    html
-
-plain2html = (plain) ->
-    for tag, c of _htmlHash
-        plain = plain.replace RegExp(c, 'g'), tag
-    plain
-
-
-# History comparison rendered function
-Template.compare.rendered = ->
-    revId1 = Session.get 'rev1'
-    revId2 = Session.get 'rev2'
-    console.log revId1, revId2
-    rev1 = findRevisionById revId1
-    rev2 = findRevisionById revId2
-    revText1 = html2plain(rev1.text)
-    revText2 = html2plain(rev2.text)
-    
-    $("#compareTitle").text("Comparing revision #{rev1.date} to revision #{rev2.date}")
-
-    $("#rev1").text(revText1).hide()
-    $("#rev2").text(revText2).hide()
-    $("#revCompare").prettyTextDiff({
-        originalContainer: "#rev1",
-        changedContainer: "#rev2",
-        diffContainer: "#diffView",
-        cleanup: true,
-        debug: true
-    });
-    # TODO: plain2html the diff result.
-    diffText = plain2html($("#diffView").html()).replace(/<br>/gi,'')
-    $("#diffView").html(diffText)
-
-Template.main.events
-    'click #sidenav_btn': (evt) ->
-        evt.preventDefault()
-        $('#leftNavContainer').toggle(0)
-        $("#main").toggleClass('wLeftNav')
-
-Template.layout.modeIs = (mode) ->
-    Session.get('mode') == mode;
-
-Template.layout.loginConfigured = () ->
-    if Accounts.loginServicesConfigured()
-        return true;
-    else
-        return false;
-
 Template.editEntry.events
-    'focus #entry-tags': (evt) ->
-        $("#tag-init").show()
+  'focus #entry-tags': (evt) ->
+    $("#tag-init").show()
 
 Template.editEntry.rendered = ->
-    el = $( '#entry-text' )
-    el.redactor(
-        plugins: ['autoSuggest']
-        imageUpload: '/images'
-        linebreaks: true
-        buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'deleted', '|', 
-            'unorderedlist', 'orderedlist', 'outdent', 'indent', '|',
-            'image', 'table', 'link', '|',
-            'fontcolor', 'backcolor', '|', 'alignment', '|', 'horizontalrule'],
-        #    'save', 'cancel', 'delete'],
-        # buttonsCustom:
-        #     save:
-        #         title: 'Save'
-        #         callback: saveEntry
-        #     cancel:
-        #         title: 'Cancel'
-        #         callback: ->
-        #             Session.set("edit-mode", false)
-        #     delete:
-        #         title: 'Delete'
-        #         callback: deleteEntry
+  el = $( '#entry-text' )
+  el.redactor(
+    plugins: ['autoSuggest']
+    imageUpload: '/images'
+    linebreaks: true
+    buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'deleted', '|',
+              'unorderedlist', 'orderedlist', 'outdent', 'indent', '|',
+              'image', 'table', 'link', '|',
+              'fontcolor', 'backcolor', '|', 'alignment', '|', 'horizontalrule'],
+  #    'save', 'cancel', 'delete'],
+  # buttonsCustom:
+  #     save:
+  #         title: 'Save'
+  #         callback: saveEntry
+  #     cancel:
+  #         title: 'Cancel'
+  #         callback: ->
+  #             Session.set("edit-mode", false)
+  #     delete:
+  #         title: 'Delete'
+  #         callback: deleteEntry
 
-        focus: true
-        autoresize: true
-        filepicker: (callback) ->
+    focus: true
+    autoresize: true
+    filepicker: (callback) ->
 
-            filepicker.setKey('AjmU2eDdtRDyMpagSeV7rz')
+      filepicker.setKey('AjmU2eDdtRDyMpagSeV7rz')
 
-            filepicker.pick({mimetype:"image/*"}, (file) ->
-                filepicker.store(file, {location:"S3", path: Meteor.userId() + "/" + file.filename },
-                (file) -> callback( filelink: file.url )))
-    )
+      filepicker.pick({mimetype:"image/*"}, (file) ->
+        filepicker.store(file, {location:"S3", path: Meteor.userId() + "/" + file.filename },
+        (file) -> callback( filelink: file.url )))
+  )
 
-    window.scrollTo(0,Session.get('y-offset'))
+  window.scrollTo(0,Session.get('y-offset'))
 
-    minHeight = $(window).height() - 250 #50 -> top toolbar 60 -> title 20 -> bottom margin (120 for tags and admin)
-    if( $('.redactor_').height() < minHeight ) 
-        $('.redactor_').css('min-height', minHeight)
+  minHeight = $(window).height() - 250 #50 -> top toolbar 60 -> title 20 -> bottom margin (120 for tags and admin)
+  if( $('.redactor_').height() < minHeight )
+    $('.redactor_').css('min-height', minHeight)
 
-    tags = Tags.find({})
-    entry = Session.get('entry')
+  tags = Tags.find({})
+  entry = Session.get('entry')
 
-    $('#entry-tags').textext({
-        plugins : 'autocomplete suggestions tags',
-        tagsItems: if entry then entry.tags else []
-        suggestions: tags.map (t) -> t.name
-    });
+  $('#entry-tags').textext({
+    plugins : 'autocomplete suggestions tags',
+    tagsItems: if entry then entry.tags else []
+    suggestions: tags.map (t) -> t.name
+  });
 
 deleteEntry = (evt) ->
     entry = Session.get('entry')
@@ -427,9 +347,6 @@ Template.entry.events
         evt.preventDefault()
         lockEntry()
         Session.set('editMode', true)
-
-    'click .history': (evt) ->
-        Router.navigate('/history/'+Session.get('title'))
 
     'click #save': (evt) ->
         evt.preventDefault()
@@ -506,77 +423,6 @@ root.rewriteLinks = ( text ) ->
 
     $html.html()
 
-
-EntryRouter = Backbone.Router.extend({
-    routes: {
-        "history/:historyTitle": "entryHistory",
-        "compare/:title/:rev1/:rev2": "entryCompare",
-        "search/:term": "search"
-        "tag/:tag": "tag",
-        "profile": "profile",
-        "PageIndex":"indexroute",
-        "images": "images",
-        "u/:user/:title": "userSpace",
-        ":title": "main",
-        "": "home"
-    },
-    indexroute: ->
-        console.log("index route")
-    redirectHome: ->
-        this.navigate( "", true )
-    home: ->
-        unlockEntry()
-        reroute = () ->
-            entry = Entries.findOne({_id: 'home'})
-            if ! entry # bang on it a bit
-               Meteor.call 'createHome', reroute
-            else
-               Session.set('titleHidden', false)
-               Session.set('mode', 'entry')
-               Session.set('title', entry.title)
-        Meteor.call 'createHome', reroute
-    profile: (term) ->
-        unlockEntry()
-        Session.set( 'mode', 'profile' )
-    search: (term) ->
-        unlockEntry()
-        Session.set( 'mode', 'search' )
-        Session.set( 'search-term', decodeURIComponent( term ) )
-    tag: (tag) ->
-        unlockEntry()
-        Session.set( 'mode', 'tag' )
-        Session.set( 'tag', decodeURIComponent( tag ) )
-    userSpace: (username, title) ->
-        unlockEntry()
-        Session.set('titleHidden', false)
-        Session.set('mode', 'entry')
-        Session.set('context', username)
-        Session.set('title', decodeURIComponent( title ))
-    main: (title) ->
-        unlockEntry()
-        Session.set('titleHidden', false)
-        Session.set('mode', 'entry')
-        Session.set('context', null)
-        Session.set('title', decodeURIComponent( title ))
-    entryHistory: (historyTitle) ->
-        unlockEntry()
-        Session.set('titleHidden', false)
-        Session.set('mode', 'history')
-        Session.set('context', null)
-        Session.set('title', decodeURIComponent( historyTitle ))
-    entryCompare: (title, rev1, rev2) ->
-        unlockEntry()
-        Session.set('titleHidden', false)
-        Session.set('rev1', rev1)
-        Session.set('rev2', rev2)
-        Session.set('mode', 'compare')
-        # Placeholder title
-        Session.set('title', title )
-    setTitle: (title) ->
-        console.log "set title"
-        this.navigate(title, true)
-})
-
 ##################################
 ## NAV
 Template.sidebar.navItems = ->
@@ -615,7 +461,6 @@ Template.sidebar.events
         adjust = 50
         $( 'html,body' ).animate( { scrollTop: offset.top - adjust }, 350 )
 
-Router = new EntryRouter()
 
 Meteor.startup ->
     # Backbone.history.start pushState: true
@@ -627,29 +472,6 @@ Meteor.startup ->
     $("#main").toggleClass('wLeftNav')
   
 
-#builds array of all heading titles
-stackTitles = (items, cur, counter) ->
-
-    cur = 1 if cur == undefined
-    counter ?= 1
-
-    next = cur + 1
-
-    for elem, index in items
-        elem = $(elem)
-        children  =  filterHeadlines( elem.nextUntil( 'h' + cur, 'h' + next ) )
-        d = {};
-        d.title = elem.text()
-        # d.y  = elem.offset().top
-        d.id = counter++
-        d.target = "entry-heading-#{d.id}"
-        d.style = "top" if cur == 0
-        d.children = stackTitles( children, next, counter ) if children.length > 0
-        d
-
-filterHeadlines = ( $hs ) ->
-    _.filter( $hs, ( h ) -> 
-        $(h).text().match(/[^\s]/) ) #matches any non-whitespace char
 
 buildNav = ( ul, items ) ->
     for child, index in items

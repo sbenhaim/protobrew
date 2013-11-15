@@ -61,3 +61,6 @@ Template.toolbar.events
         $('#delete-confirm-input').val('')
         $('#delete-confirm-modal').modal('show')
         # deleteEntry(evt)
+
+    'click #history_btn': (evt) ->
+         navigate("/history/" + Session.get("title"))

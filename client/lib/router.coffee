@@ -60,6 +60,10 @@ Router.map ->
         controller: "User_profileController"
     @route "users",
         path: "/users"
+    @route "history",
+        path: "/history/:title"
+    @route "compare",
+        path: "/compare/"
     @route "entry",
         path: "/:title"
         action: "sessionSetup"
