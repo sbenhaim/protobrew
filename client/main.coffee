@@ -202,7 +202,8 @@ Template.editEntry.rendered = ->
     el.redactor(
         plugins: ['autoSuggest', 'stickyScrollToolbar']
         imageUpload: '/images'
-        linebreaks: true
+        # linebreaks: true # buggy - insert link on last line, hit enter to break, 
+        # with cursor on newline try to insert link (modal only show edit of previous link)
         buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'deleted', '|', 
             'unorderedlist', 'orderedlist', 'outdent', 'indent', '|',
             'image', 'table', 'link', '|',
@@ -289,8 +290,12 @@ root.saveEntry = (evt) ->
 
 Template.entry.events
 
-    'click a.entry-link': (e) ->
-        evtNavigate(e) 
+    'click a.entry-link': (evt) ->
+        if Session.get('editMode')
+            evt.preventDefault()
+            return
+        else
+            evtNavigate(e) 
 
     # for Create It! button on new page
     'click .edit': (evt) ->
@@ -524,13 +529,12 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
 
 @RedactorPlugins.autoSuggest = 
     init: ->
-        #hijack redactor modalClose
-        this.selectModalClose = this.modalClose
-        this.modalClose = ->
-            $("#redactor_wiki_link").select2("close")
-            this.selectModalClose()
+        #hijack redactor modalClose - if need to clean-up before closing
+        # this.selectModalClose = this.modalClose
+        # this.modalClose = ->
+        #     this.selectModalClose()
 
-        $('body').on 'click','.insert_link_btns', ->
+        $('body').on 'click','.redactor_dropdown_link', ->
             RedactorPlugins.autoSuggest.autoSuggest()
         
         # $('body').on 'click','#redactor_modal_overlay', ->
@@ -546,17 +550,30 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
             $('body').off 'focus','#redactor_modal'
 
 
-            $("#redactor_wiki_link ").on "keyup keypress blur input paste change", (e)->
-                linkText = $("#redactor_wiki_link").val()
-                displayText = $("#redactor_wiki_link_text").val()
-                re = new RegExp('^'+displayText, 'g')
+            # $("#redactor_wiki_link").on "keyup keypress blur input paste change", (e)->
+            #     linkText = $("#redactor_wiki_link").val()
+            #     displayText = $("#redactor_wiki_link_text").val()
+            #     re = new RegExp('^'+displayText, 'g')
 
-                if not displayText
-                    $("#redactor_wiki_link_text").val linkText
-                else if displayText is linkText.slice(0,-1) #linkText with the last char stripped off
-                    $("#redactor_wiki_link_text").val linkText
-                else if re.test(linkText)
-                    $("#redactor_wiki_link_text").val linkText 
+            #     if not displayText
+            #         $("#redactor_wiki_link_text").val linkText
+            #     else if displayText is linkText.slice(0,-1) #linkText with the last char stripped off
+            #         $("#redactor_wiki_link_text").val linkText
+            #     else if re.test(linkText)
+            #         $("#redactor_wiki_link_text").val linkText 
+
+
+            # $("#redactor_link_url").on "keyup keypress blur input paste change", (e)->
+            #     linkText = $("#redactor_link_url").val()
+            #     displayText = $("#redactor_link_url_text").val()
+            #     re = new RegExp('^'+displayText, 'g')
+
+            #     if not displayText
+            #         $("#redactor_link_url_text").val linkText
+            #     else if displayText is linkText.slice(0,-1) #linkText with the last char stripped off
+            #         $("#redactor_link_url_text").val linkText
+            #     else if re.test(linkText)
+            #         $("#redactor_link_url_text").val linkText     
 
 
             $("#redactor_link_url").on "keyup keypress blur input paste change", (e)->
@@ -569,7 +586,7 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
                 else if displayText is linkText.slice(0,-1) #linkText with the last char stripped off
                     $("#redactor_link_url_text").val linkText
                 else if re.test(linkText)
-                    $("#redactor_link_url_text").val linkText       
+                    $("#redactor_link_url_text").val linkText  
             
 
             listTitles = Entries.find({},title: 1, context: 1).map (e) -> 
@@ -588,15 +605,14 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
             if idarray.length == 0
                idarray.push("")
 
-            console.log 'hit'
-            defaultValue = $("#redactor_wiki_link").val()
+            #defaultValue = $("#redactor_wiki_link").val()
 
             #BUG 
             # this whole method is fired twice so check if already applied before applying typeahead
-            if $("#redactor_wiki_link").hasClass('tt-query')
+            if $("#redactor_link_url").hasClass('tt-query')
                 return
             else
-                $("#redactor_wiki_link").typeahead
+                $("#redactor_link_url").typeahead
                     local: idarray
 
 

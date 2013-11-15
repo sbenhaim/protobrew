@@ -215,8 +215,7 @@
                     image: 'Insert Image',
                     table: 'Table',
                     link: 'Link',
-                    wiki_insert: 'Add Wiki Link',       // GK
-                    link_insert: 'Add External link',   // GK
+					link_insert: 'Insert link',
                     link_edit: 'Edit link',
                     unlink: 'Unlink',
                     formatting: 'Formatting',
@@ -576,17 +575,10 @@
                     func: 'show',
                     dropdown:
                     {
-                        wiki_link: // GK
-                        {
-                            title: lang.wiki_insert,
-                            func: 'showWikiLink',
-                            className : 'linkDropdown insert_link_btns'
-                        },
                         link:
                         {
                             title: lang.link_insert,
-                            func: 'linkShow',                           // GK
-                            className : 'linkDropdown insert_link_btns' // GK
+							func: 'linkShow'
                         },
                         unlink:
                         {
@@ -5272,19 +5264,11 @@
             this.sync();
             this.modalClose();
         },
-        
-        // GK added
-        showWikiLink: function() {
-            this.linkShow(true);
-        },
 
         // LINK
-        linkShow: function(insert_type)
+		linkShow: function()
         {
             this.selectionSave();
-            var isWikiLink = false;
-            if(insert_type === true) 
-                isWikiLink = true;
 
             var callback = $.proxy(function()
             {
@@ -5313,16 +5297,24 @@
                 // populates display text fields and wiki page field
                 $('.redactor_link_text').val(text);
                 
-                // removes trailing '/' if there is one
-                var thref = self.location.href.replace(/\/$/i, '');
-                var turl = url.replace(thref, '');
 
-                // remove everything but the
+                // var thref = self.location.href.replace(/\/$/i, '');
+                // thref is self.location.href without trailing '/' if exists
+                //GK - modification made so that origin is used instead of current url (href)
+                //     origin is not cross-browser so need to define if doesnt exist
+                if (!window.location.origin) {
+                    window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+                }
+                var thref = self.location.origin.replace(/\/$/i, '');
+
+                // removing the origin and any preceeding / gives us true relative wiki url
+                var turl = url.replace(thref, '');
+                turl = turl.replace(/^\//i, '');
+
                 if (this.opts.linkProtocol === false)
                 {
-                    var re = new RegExp('^(http|ftp|https)://' + self.location.host, 'i');
+                    var re = '/^(http|ftp|https)://' + self.location.host + '/?/i';
                     turl = turl.replace(re, '');
-                    //url has any protocol or a dot'.' plus 2-4 letter extension followed by end of line or /
                 }
 
                 var tabs = $('#redactor_tabs').find('a');
@@ -5336,7 +5328,6 @@
                 }
                 else
                 {
-                    debugger;
                     if (url.search('mailto:') === 0)
                     {
                         this.modalSetTab.call(this, 2);
@@ -5351,24 +5342,18 @@
                         $('#redactor_tab_selected').val(3);
                         $('#redactor_link_anchor').val(turl.replace(/^#/gi, '' ));
                     }
-                    else if ( url.match(/^(http|ftp|https):\/\/|(\....?.?)($|\/)/i) )
-                    {
-                        this.modalSetTab.call(this, 1);
-                        $('#redactor_tab_selected').val(1);
-                        $('#redactor_link_url').val(turl);
-
-                    }
-                    else
-                    {
-                        this.modalSetTab.call(this, 4);
-                        $('#redactor_tab_selected').val(4);
+                    //url has any protocol or a dot'.' plus 2-4 letter extension followed by end of line or /
+                    //else ( url.match(/^(http|ftp|https):\/\/|(\....?.?)($|\/)/i) )
+					else
+                    {   
+                        if (turl) $('#redactor_link_url').val(turl);
+                        else      $('#redactor_link_url').val(text);
                         // remove baseURL from wiki href and decode to plain text
                         // TODO: does not explcitly handle external links and is likely to break
                         // var pathArray = thref.split("/");
                         // var baseURL = 'http://' + pathArray[2] + '/';
                         // var wikiURL = url.replace(baseURL, '');
                         // wikiURL = wikiURL.replace('%20', " ");
-
                         // $('#redactor_wiki_link').val(wikiURL);
                     }
                 }
@@ -5393,29 +5378,8 @@
             var tab_selected = $('#redactor_tab_selected').val();
             var link = '', text = '', target = '', targetBlank = '';
 
-            if (tab_selected === '4') // wiki link
-            {
-                link = $('#redactor_wiki_link').val();
-                text = $('#redactor_wiki_link_text').val();
-
-                if ($('#redactor_link_blank').prop('checked'))
-                {
-                    target = ' target="_blank"';
-                    targetBlank = '_blank';
-                }
-
-                // test url
-                var pattern = '((xn--)?[a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}';
-                var re = new RegExp('^(http|ftp|https)://' + pattern,'i');
-                var re2 = new RegExp('^' + pattern,'i');
-                if (link.search(re) == -1 && link.search(re2) == 0 && this.opts.linkProtocol)
-                {
-                    link = this.opts.linkProtocol + link;
-                }
-
-            }
-            // url
-            else if (tab_selected === '1') 
+			// url
+            if (tab_selected === '1') 
             {
                 link = $('#redactor_link_url').val();
                 text = $('#redactor_link_url_text').val();
@@ -5426,11 +5390,12 @@
                     targetBlank = '_blank';
                 }
 
-                // test url (add protocol)
-                var pattern = '((xn--)?[a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}';
+                // matches www-data.it -- needs at least (1 letter + '.' + 2 letters )
+                var pattern = '((xn--)?[a-z0-9]+(-[a-z0-9]+)*\\.)+[a-z]{2,}';
                 var re = new RegExp('^(http|ftp|https)://' + pattern, 'i');
                 var re2 = new RegExp('^' + pattern, 'i');
 
+                // if no http and there is something.something
                 if (link.search(re) == -1 && link.search(re2) == 0 && this.opts.linkProtocol)
                 {
                     link = this.opts.linkProtocol + link;
@@ -6197,37 +6162,28 @@
                 + '<section>'
                     + '<form id="redactorInsertLinkForm" method="post" action="">'
                         + '<div id="redactor_tabs">'
-                            + '<a href="#">URL</a>'
+							+ '<a href="#" class="redactor_tabs_act">URL</a>'
                             + '<a href="#">Email</a>'
                             + '<a href="#">' + this.opts.curLang.anchor + '</a>'
-                            + '<a href="#" class="redactor_tabs_act">Wiki Link</a>'
                         + '</div>'
-                        + '<input type="hidden" id="redactor_tab_selected" value="4" />'
-                        + '<div class="redactor_tab" id="redactor_tab4">'
-                            + '<label>Wiki Link</label>'
-                            + '<input type="text" class="redactor_input redactor_link_text" id="redactor_wiki_link"   />'
-                            + '<p>example: New Page</p>'
-                            + '<label>' + 'Display Text' + '</label>'
-                            + '<input type="text" class="redactor_input redactor_link_text" id="redactor_wiki_link_text" />'
-                        + '</div>'
-                        + '<div class="redactor_tab" id="redactor_tab1" style="display: none;">'
+						+ '<input type="hidden" id="redactor_tab_selected" value="1" />'
+						+ '<div class="redactor_tab" id="redactor_tab1">'
                             + '<label>URL</label>'
                             + '<input type="text" id="redactor_link_url" class="redactor_input"  />'
-                            + '<p>example: www.example.com</p>'
-                            + '<label>' + 'Display Text' + '</label>'
+							+ '<label>' + this.opts.curLang.text + '</label>'
                             + '<input type="text" class="redactor_input redactor_link_text" id="redactor_link_url_text" />'
                             + '<label><input type="checkbox" id="redactor_link_blank"> ' + this.opts.curLang.link_new_tab + '</label>'
                         + '</div>'
                         + '<div class="redactor_tab" id="redactor_tab2" style="display: none;">'
                             + '<label>Email</label>'
                             + '<input type="text" id="redactor_link_mailto" class="redactor_input" />'
-                            + '<label>' + 'Display Text' + '</label>'
+							+ '<label>' + this.opts.curLang.text + '</label>'
                             + '<input type="text" class="redactor_input redactor_link_text" id="redactor_link_mailto_text" />'
                         + '</div>'
                         + '<div class="redactor_tab" id="redactor_tab3" style="display: none;">'
                             + '<label>' + this.opts.curLang.anchor + '</label>'
                             + '<input type="text" class="redactor_input" id="redactor_link_anchor"  />'
-                            + '<label>' + 'Display Text' + '</label>'
+							+ '<label>' + this.opts.curLang.text + '</label>'
                             + '<input type="text" class="redactor_input redactor_link_text" id="redactor_link_anchor_text" />'
                         + '</div>'
                     + '</form>'
@@ -6247,29 +6203,16 @@
                           + '<div class="modal-body">'
                                 + '<div class="tabbable">'
                                     + '<ul class="nav nav-tabs">'
-                                        + '<li class="active"> <a href="#tab_wiki"   data-toggle="tab">Wiki Link </a> </li>'
                                         + '<li>                <a href="#tab_url"    data-toggle="tab">Url Link  </a> </li>'
                                         + '<li>                <a href="#tab_email"  data-toggle="tab">Email     </a> </li>'
                                         + '<li>                <a href="#tab_anchor" data-toggle="tab">Anchor    </a> </li>'
                                     + '</ul>'
                                     + '<div class="tab-content">'
-                                        + '<div id="tab_wiki" class="tab-pane active" >'
-                                            + '<form>'
-                                                + '<div class="form-group">'
-                                                    + '<label> Wiki Page </label>'
-                                                    + '<input type="text" class="form-control redactor_link_text" id="redactor_wiki_link" placeholder="Enter Title of Wiki Page"/>'
-                                                + '</div>'
-                                                + '<div class="form-group">'
-                                                    + '<label> Text to Display </label>'
-                                                    + '<input type="text" class="form-control redactor_link_text" id="redactor_wiki_link_text" />'
-                                                + '</div>'
-                                            + '</form>'
-                                        + '</div>'
                                         + '<div id="tab_url" class="tab-pane" >'
                                             + '<form>'
                                                 + '<div class="form-group">'
                                                     + '<label>URL </label>'
-                                                    + '<input type="text" id="redactor_link_url" class="form-control" placeholder="Enter URL e.g. www.humon.com"/>'
+                                                    + '<input type="text" id="redactor_link_url" class="form-control" placeholder="Enter URL or Wikipage Title">'
                                                 + '</div>'
                                                 + '<div class="form-group">'
                                                     + '<label> Text to Display </label>'

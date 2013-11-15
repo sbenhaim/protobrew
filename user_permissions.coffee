@@ -10,7 +10,7 @@ root.adminable = ( user, context ) ->
 # View all in context, view public and read-only otherwise
 root.viewable = ( entry, user, context ) ->
     adminable( user, context ) ||
-    ( context == null && (entry == null || !entry._id?) ) ||
+    ( context == null && (entry == null || !(entry._id?))) ||
     ( entry && entry.mode != "private" )
 
 # Edit in context or public entries
@@ -23,7 +23,7 @@ root.viewable = ( entry, user, context ) ->
 root.editable = ( entry, user, context ) ->
     user && 
     ( adminable( user, context ) ||
-      ( context == null && (entry == null || !entry._id?) ) ||
+      ( context == null && (entry == null || !(entry._id?))) ||
       ( entry && entry.mode == "public" ) )
 
 
