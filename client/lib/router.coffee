@@ -62,8 +62,14 @@ Router.map ->
         path: "/users"
     @route "history",
         path: "/history/:title"
+        template: "history"
     @route "compare",
-        path: "/compare/"
+        path: "/compare/:title/:rev1/:rev2"
+        template: "compare"
+        onBeforeRun: ->
+            Session.set('rev1', @params.rev1)
+            Session.set('rev2', @params.rev2)
+            Session.set('title', @params.title)
     @route "entry",
         path: "/:title"
         action: "sessionSetup"
