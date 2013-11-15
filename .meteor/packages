@@ -8,7 +8,6 @@ spiderable
 jquery
 preserve-inputs
 coffeescript
-accounts-ui
 accounts-google
 less
 toastjs
@@ -20,3 +19,7 @@ momentjs
 spin
 iron-router
 bootstrap3-less
+font-awesome
+accounts-ui-bootstrap-3
+accounts-base
+accounts-password

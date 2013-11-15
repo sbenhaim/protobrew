@@ -1,0 +1,101 @@
+#login-dropdown-list {
+	.dropdown-menu {
+		width:	300px;
+		padding: 15px;
+	}
+}
+
+#login-dropdown-list {
+	#forgot-password-link,
+	#signup-link {
+		margin-top:10px;
+	}
+	.btn {
+		margin-top: 5px;
+	}
+	input {
+		margin:0px;
+		border-radius:0px;
+	}
+
+	input:first-of-type {
+		margin-top:0px;
+		border-top-left-radius: 5px;
+		border-top-right-radius: 5px;
+	}
+
+	input:last-of-type {
+		margin-bottom:5px;
+		border-bottom-left-radius: 5px;
+		border-bottom-right-radius: 5px;
+		}
+}
+
+.modal-backdrop {
+	opacity: 0.75;
+}
+
+#login-buttons-reset-password-modal, #login-buttons-enroll-account-modal {
+	.modal-content {
+		margin-top: 30%;
+	}
+}
+
+
+
+
+
+
+// from login_buttons.less in accounts-ui package
+
+#login-dropdown-list {
+  .login-buttons-padding {
+    display: inline-block;
+    width: 30px;
+  }
+
+  .login-image {
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    width: 16px;
+    height: 16px;
+  }
+
+  .text-besides-image {
+    margin-left: 18px;
+  }
+
+  .no-services { color: red; }
+
+  .login-link-and-dropdown-list {
+    position: relative;
+  }
+  .login-close-text {
+    float: left;
+    position: relative;
+    padding-bottom: 8px;
+  }
+
+  .login-text-and-button .loading, .login-link-and-dropdown-list .loading {
+    display: inline-block;
+  }
+  &.login-buttons-dropdown-align-left #login-dropdown-list .loading {
+    float: right;
+  }
+  &.login-buttons-dropdown-align-right #login-dropdown-list .loading {
+    float: left;
+  }
+
+
+  .login-close-text-clear { clear: both; }
+
+  .or { text-align: center; }
+  .hline { text-decoration: line-through; color: lightgrey; }
+  .or-text { font-weight: bold; }
+
+  #signup-link { float: right; }
+  #forgot-password-link { float: left; }
+  #back-to-login-link { float: right; }
+}
+

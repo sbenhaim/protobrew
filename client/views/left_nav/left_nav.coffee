@@ -1,6 +1,12 @@
 Template.left_nav.events =
     'click a.left-nav': evtNavigate
 
+    'submit form': (evt) ->
+        evt.preventDefault()
+        term = $("#search-input").val()
+        window.scrollTo(0,0) # fix for position being screwed up (also in tags click, and new page)
+        navigate( '/search/' + term ) if term
+
     'change #search-input': (evt) ->
         term = $(evt.target).val()
         window.scrollTo(0,0) # fix for position being screwed up (also in tags click, and new page)
@@ -23,7 +29,10 @@ Template.left_nav.term = ->
 
 Template.left_nav.pageIs = (u) ->
     page = Session.get('title')
-    return u == "/" if page == undefined
+    entry = Entries.findOne({_id: 'home'})
+    if entry
+        if entry.title == page
+            return u == "/"
     return u == page
 
 Template.left_nav.edited = () ->

@@ -73,41 +73,13 @@ Template.deleteConfirmModal.events =
         $('#delete-confirm-modal').modal('hide')
 
 
-getSummaries = (entries) ->
+root.getSummaries = (entries) ->
     entries.map (e) ->
         
         text = $('<div>').html( e.text ).text()
         text = text.substring(0,200) + '...' if text.length > 204;
         
         {text: text, title: e.title}
-
-Template.search.term = -> Session.get( 'search-term' )
-
-Template.search.results = ->
-    term = Session.get('search-term')
-
-    return unless term
-    
-    entries = Entries.find( {text: new RegExp( term, "i" )} )
-    getSummaries( entries )
-
-Template.search.events
-    'click a': evtNavigate
-
-Template.tag.events
-    'click a': evtNavigate
-
-
-Template.tag.tag = ->
-    Session.get( 'tag' )
-
-Template.tag.results = ->
-    tag = Session.get('tag')
-
-    return unless tag
-    
-    entries = Entries.find( { tags: tag } )
-    getSummaries( entries )
 
 
 ## Global Helpers
@@ -130,12 +102,19 @@ Handlebars.registerHelper 'editable', ->
     user  = Meteor.user()
     editable( entry, user, context )
 
+
+Handlebars.registerHelper 'username', ->
+    user  = Meteor.user()
+    if user
+        return user.username
+
 Handlebars.registerHelper 'isStarred', ->
     user  = Meteor.user()
-    starredPages = user.profile.starredPages
     entryId = Session.get('entryId')
-    if entryId in starredPages
-        return  true
+    if user && entryId
+        starredPages = user.profile.starredPages
+        if entryId in starredPages
+            return  true
 
 Handlebars.registerHelper 'adminable', ->
     context = Session.get("context")
@@ -160,39 +139,37 @@ Handlebars.registerHelper 'editMode', ->
 ## Entry
 
 Template.entry.title = ->
-    Session.get("title")
+    Session.get('title')
 
 Template.entry.titleHidden = ->
-    Session.get("titleHidden")
+    Session.get('titleHidden')
 
 Template.entry.entryLoaded = ->
-    Session.get("entryLoaded")
+    Session.get('entryLoaded')
 
 Template.entry.userContext = ->
-    Session.get("context")
+    Session.get('context')
 
 Template.entry.lastEditedBy = ->
-    title = Session.get("title")
+    title = Session.get('title')
     context = Session.get('context')
     entry = findSingleEntryByTitle( title, context )
     lastEditedBy(entry)
 
 Template.entry.sinceLastEdit = ->
-    title = Session.get("title")
+    title = Session.get('title')
     context = Session.get('context')
     entry = findSingleEntryByTitle( title, context )
     sinceLastEdit(entry)
 
 Template.entry.entry = ->
-    title = Session.get("title")
+    title = Session.get('title')
     context = Session.get('context')
-    $("#sidebar").html('') #clear sidebar of previous state
     if title
         entry = findSingleEntryByTitle( title, context )
 
         if entry
             Session.set('entry', entry )
-            Session.set('title', entry.title )
             Session.set('entryId', entry._id )
 
             source = $('<div>').html( entry.text ) #make a div with entry.text as the innerHTML
@@ -209,12 +186,6 @@ Template.entry.entry = ->
             Session.set( 'entryId', null )
             Session.get('entryLoaded')
 
-Template.layout.events
-    'click #sidenav_btn': (evt) ->
-        evt.preventDefault()
-        $('#leftNavContainer').toggle(0)
-        $("#main").toggleClass('wLeftNav')
-
 Template.layout.modeIs = (mode) ->
     Session.get('mode') == mode;
 
@@ -224,16 +195,15 @@ Template.layout.loginConfigured = () ->
     else
         return false;
 
-Template.editEntry.events
-    'focus #entry-tags': (evt) ->
-        $("#tag-init").show()
+
 
 Template.editEntry.rendered = ->
     el = $( '#entry-text' )
     el.redactor(
-        plugins: ['autoSuggest']
+        plugins: ['autoSuggest', 'stickyScrollToolbar']
         imageUpload: '/images'
-        linebreaks: true
+        # linebreaks: true # buggy - insert link on last line, hit enter to break, 
+        # with cursor on newline try to insert link (modal only show edit of previous link)
         buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'deleted', '|', 
             'unorderedlist', 'orderedlist', 'outdent', 'indent', '|',
             'image', 'table', 'link', '|',
@@ -264,7 +234,7 @@ Template.editEntry.rendered = ->
 
     window.scrollTo(0,Session.get('y-offset'))
 
-    minHeight = $(window).height() - 250 #50 -> top toolbar 60 -> title 20 -> bottom margin (120 for tags and admin)
+    minHeight = $(window).height() - 190 #   top toolbar = 50px,  title = 90px wmargin,  redactor toolbar = 30 px,  bottom margin = 20px
     if( $('.redactor_').height() < minHeight ) 
         $('.redactor_').css('min-height', minHeight)
 
@@ -276,6 +246,7 @@ Template.editEntry.rendered = ->
         tagsItems: if entry then entry.tags else []
         suggestions: tags.map (t) -> t.name
     });
+
 
 deleteEntry = (evt) ->
     entry = Session.get('entry')
@@ -319,14 +290,19 @@ root.saveEntry = (evt) ->
 
 Template.entry.events
 
-    'click li.article-tag a': (evt) ->
-        evt.preventDefault()
-        tag = $(evt.target).text()
-        window.scrollTo(0,0) # fix for position 
-        navigate( '/tag/' + tag ) if tag
+    'click a.entry-link': (evt) ->
+        if Session.get('editMode')
+            evt.preventDefault()
+            return
+        else
+            evtNavigate(e) 
 
-    'click a.entry-link': (e) ->
-        evtNavigate(e) unless Session.get('editMode')
+    # for Create It! button on new page
+    'click .edit': (evt) ->
+        Session.set( 'y-offset', window.pageYOffset )
+        evt.preventDefault()
+        lockEntry()
+        Session.set('editMode', true)
 
     'click #article-title': (evt) ->
 
@@ -366,15 +342,6 @@ Template.entry.events
             cancel(e, true) if e.keyCode == 27
         )
 
-Template.profile.user = ->
-    Meteor.user()
-
-Template.profile.events
-    'click #save': (evt) ->
-        result = Meteor.call('updateUser', $("#username").val(), (e) -> console.log( e ) )
-
-Template.user.info = ->
-    Meteor.user()
 
 root.rewriteLinks = ( text ) ->
     $html = $('<div>')
@@ -390,45 +357,6 @@ root.rewriteLinks = ( text ) ->
     $html.html()
 
 
-
-##################################
-## NAV
-Template.sidebar.navItems = ->
-    title = Session.get("title")
-    context = Session.get('context')
-    $("#sidebar").html('') #clear sidebar of previous state
-    if title
-        entry = findSingleEntryByTitle( title, context )
-        if entry
-            source = $('<div>').html( entry.text ) #make a div with entry.text as the innerHTML
-
-            # TODO: replace wtih function and user here and Template.entry.entry
-            headings = stackTitles( filterHeadlines( source.find(":header:first")) )
-            headings.unshift( {id: 0, target: "article-title", title: Session.get('title') } )
-            if headings.length > 0
-                for e, i in source.find('h1,h2,h3,h4,h5')
-                    e.id = "entry-heading-" + (i + 1)
-            entry.text = source.html()
-            # endTODO
-
-            textWithTitle = '<h1 id="article-title" class="article-title">'+title+'</h2>'+entry.text
-            $headingNodes = $(textWithTitle).filter(":header")
-            result = $('<ul>')
-            buildRec($headingNodes,result,1)
-            result.html()
-
-
-Template.sidebar.events
-    'click a': (evt) ->
-        evt.preventDefault()
-        $el = $(evt.currentTarget)
-        #dataTarget = $el.attr('data-target')
-        dataTarget = $el.attr('href')
-        offset = $(dataTarget).offset()
-        #adjust = if Session.get( 'editMode' ) then 70 else 20
-        adjust = 50
-        $( 'html,body' ).animate( { scrollTop: offset.top - adjust }, 350 )
-
 Meteor.startup ->
     # Backbone.history.start pushState: true
     Session.set('activeTab', 'editedTab')
@@ -440,7 +368,7 @@ Meteor.startup ->
   
 
 #builds array of all heading titles
-stackTitles = (items, cur, counter) ->
+root.stackTitles = (items, cur, counter) ->
 
     cur = 1 if cur == undefined
     counter ?= 1
@@ -459,11 +387,11 @@ stackTitles = (items, cur, counter) ->
         d.children = stackTitles( children, next, counter ) if children.length > 0
         d
 
-filterHeadlines = ( $hs ) ->
+root.filterHeadlines = ( $hs ) ->
     _.filter( $hs, ( h ) -> 
         $(h).text().match(/[^\s]/) ) #matches any non-whitespace char
 
-buildNav = ( ul, items ) ->
+root.buildNav = ( ul, items ) ->
     for child, index in items
         li = $( "<li>" )
         $( ul ).append( li )
@@ -483,7 +411,7 @@ buildNav = ( ul, items ) ->
 
 
 
-buildRec = (headingNodes, $elm, lv) ->
+root.buildRec = (headingNodes, $elm, lv) ->
 
     # each time through recursive function pull a piece of the jQuery object off
     node = headingNodes.splice(0,1)
@@ -515,14 +443,14 @@ buildRec = (headingNodes, $elm, lv) ->
         #$a.attr( 'data-target', child.target )
         # $a.html( child.title )
         $a.attr( 'href', '#' + node[0].id ) #for cursor purposes only
-        $a.text(node[0].innerText)
+        $a.text($(node[0]).text())
         li.append( $a )
 
         # recursive call
         buildRec headingNodes, $elm, lv + cnt
 
 
-highlightNav = ->
+root.highlightNav = ->
 
     pos = $(window).scrollTop( )
     headlines = $('h1, h2, h3, h4, h5')
@@ -584,15 +512,29 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
 
 
 @RedactorPlugins = {}  if typeof RedactorPlugins is "undefined"
+@RedactorPlugins.stickyScrollToolbar =
+    init: ->
+        toolbarOffsetFromTop = $("#entry .redactor_toolbar").offset().top
+        headerHeight = $("#entry").offset().top
+
+        stickyToolbar = ->
+            scrollTop = $(window).scrollTop()
+            if scrollTop > toolbarOffsetFromTop - headerHeight
+                $("#entry .redactor_toolbar").addClass "sticky-toolbar-onscroll"
+            else
+                $("#entry .redactor_toolbar").removeClass "sticky-toolbar-onscroll"
+        stickyToolbar()
+        $(window).scroll ->
+            stickyToolbar()
+
 @RedactorPlugins.autoSuggest = 
     init: ->
-        #hijack redactor modalClose
-        this.selectModalClose = this.modalClose
-        this.modalClose = ->
-            $("#redactor_wiki_link").select2("close")
-            this.selectModalClose()
+        #hijack redactor modalClose - if need to clean-up before closing
+        # this.selectModalClose = this.modalClose
+        # this.modalClose = ->
+        #     this.selectModalClose()
 
-        $('body').on 'click','.insert_link_btns', ->
+        $('body').on 'click','.redactor_dropdown_link', ->
             RedactorPlugins.autoSuggest.autoSuggest()
         
         # $('body').on 'click','#redactor_modal_overlay', ->
@@ -608,17 +550,30 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
             $('body').off 'focus','#redactor_modal'
 
 
-            $("#redactor_wiki_link ").on "keyup keypress blur input paste change", (e)->
-                linkText = $("#redactor_wiki_link").val()
-                displayText = $("#redactor_wiki_link_text").val()
-                re = new RegExp('^'+displayText, 'g')
+            # $("#redactor_wiki_link").on "keyup keypress blur input paste change", (e)->
+            #     linkText = $("#redactor_wiki_link").val()
+            #     displayText = $("#redactor_wiki_link_text").val()
+            #     re = new RegExp('^'+displayText, 'g')
 
-                if not displayText
-                    $("#redactor_wiki_link_text").val linkText
-                else if displayText is linkText.slice(0,-1) #linkText with the last char stripped off
-                    $("#redactor_wiki_link_text").val linkText
-                else if re.test(linkText)
-                    $("#redactor_wiki_link_text").val linkText 
+            #     if not displayText
+            #         $("#redactor_wiki_link_text").val linkText
+            #     else if displayText is linkText.slice(0,-1) #linkText with the last char stripped off
+            #         $("#redactor_wiki_link_text").val linkText
+            #     else if re.test(linkText)
+            #         $("#redactor_wiki_link_text").val linkText 
+
+
+            # $("#redactor_link_url").on "keyup keypress blur input paste change", (e)->
+            #     linkText = $("#redactor_link_url").val()
+            #     displayText = $("#redactor_link_url_text").val()
+            #     re = new RegExp('^'+displayText, 'g')
+
+            #     if not displayText
+            #         $("#redactor_link_url_text").val linkText
+            #     else if displayText is linkText.slice(0,-1) #linkText with the last char stripped off
+            #         $("#redactor_link_url_text").val linkText
+            #     else if re.test(linkText)
+            #         $("#redactor_link_url_text").val linkText     
 
 
             $("#redactor_link_url").on "keyup keypress blur input paste change", (e)->
@@ -631,7 +586,7 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
                 else if displayText is linkText.slice(0,-1) #linkText with the last char stripped off
                     $("#redactor_link_url_text").val linkText
                 else if re.test(linkText)
-                    $("#redactor_link_url_text").val linkText       
+                    $("#redactor_link_url_text").val linkText  
             
 
             listTitles = Entries.find({},title: 1, context: 1).map (e) -> 
@@ -650,15 +605,14 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
             if idarray.length == 0
                idarray.push("")
 
-            console.log 'hit'
-            defaultValue = $("#redactor_wiki_link").val()
+            #defaultValue = $("#redactor_wiki_link").val()
 
             #BUG 
             # this whole method is fired twice so check if already applied before applying typeahead
-            if $("#redactor_wiki_link").hasClass('tt-query')
+            if $("#redactor_link_url").hasClass('tt-query')
                 return
             else
-                $("#redactor_wiki_link").typeahead
+                $("#redactor_link_url").typeahead
                     local: idarray
 
 
