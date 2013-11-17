@@ -1,7 +1,7 @@
 
 <template name="history">
     <form class="historyForm">
-        <table class="revisionsTable">
+        <table class="table revisionsTable">
             <thead>
             <tr>
                 <th>
@@ -13,11 +13,6 @@
                 <th>
                     Author
                 </th>
-                <!--
-                <th>
-                    Comment
-                </th>
-                -->
             </tr>
             </thead>
             <tbody>
@@ -33,7 +28,7 @@
                     {{date}}
                 </td>
                 <td>
-                    {{author}}
+                    {{getUserName author}}
                 </td>
                 <!--
                 <td>
