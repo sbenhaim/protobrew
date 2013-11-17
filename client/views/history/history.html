@@ -1,0 +1,61 @@
+
+<template name="history">
+    <form class="historyForm">
+        <table class="revisionsTable">
+            <thead>
+            <tr>
+                <th>
+                    <button id="compareSelected">Compare Selected</button>
+                </th>
+                <th>
+                    Date
+                </th>
+                <th>
+                    Author
+                </th>
+                <!--
+                <th>
+                    Comment
+                </th>
+                -->
+            </tr>
+            </thead>
+            <tbody>
+            <!-- for revs -->
+            {{#each revisions}}
+            <tr>
+                <td class="compareRadio">
+                    <div>
+                        <input type="radio" name="rev1" value="{{_id}}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="rev2" value="{{_id}}">
+                    </div>
+                </td>
+                <td>
+                    {{date}}
+                </td>
+                <td>
+                    {{author}}
+                </td>
+                <!--
+                <td>
+                     comment
+                </td>
+                -->
+            </tr>
+            {{/each}}
+            </tbody>
+        </table>
+    </form>
+    </div>
+</template>
+
+<template name="compare">
+    <h3 id="compareTitle"></h3>
+        <div id="revCompare">
+            <div id="rev1" class="original"></div>
+            <div id="rev2" class="changed"></div>
+            <div id="diffView" class="diff">
+                {{result}}
+            </div>
+        </div>
+</template>
+

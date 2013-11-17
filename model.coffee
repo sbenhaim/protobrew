@@ -20,6 +20,8 @@ Tags.allow
 root.entryLink = ( entry ) ->
     unless entry.context then "/#{entry.title}" else "/u/#{entry.context}/#{entry.title}"
 
+root.historyLink = ( entry ) ->
+    "/history/#{entry.title}"
 
 
 root.findAll = (context) ->
@@ -29,6 +31,18 @@ root.findSingleEntryByTitle = ( title, context ) ->
     titleEscaped = escapeRegExp( title )
     titleTerm = new RegExp( "^" + titleEscaped + "$", 'i' )
     Entries.findOne({title: titleTerm, context: context})
+
+root.findRevisionsByTitle = ( title ) ->
+    titleEscaped = escapeRegExp( title )
+    titleTerm = new RegExp( "^" + titleEscaped + "$", 'i' )
+    entry = Entries.findOne({title: titleTerm})
+    if entry
+      Revisions.find({entryId: entry._id}).fetch()
+    else
+      []
+
+root.findRevisionById = ( id ) ->
+    Revisions.findOne({"_id": id})
 
 root.verifySave = (title, entry, user, context ) ->
 

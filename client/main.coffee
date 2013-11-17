@@ -28,6 +28,30 @@ Deps.autorun( ->
 #   });
 # });
 
+#builds array of all heading titles
+@stackTitles = (items, cur, counter) ->
+
+  cur = 1 if cur == undefined
+  counter ?= 1
+
+  next = cur + 1
+
+  for elem, index in items
+    elem = $(elem)
+    children  =  filterHeadlines( elem.nextUntil( 'h' + cur, 'h' + next ) )
+    d = {};
+    d.title = elem.text()
+    # d.y  = elem.offset().top
+    d.id = counter++
+    d.target = "entry-heading-#{d.id}"
+    d.style = "top" if cur == 0
+    d.children = stackTitles( children, next, counter ) if children.length > 0
+    d
+
+@filterHeadlines = ( $hs ) ->
+  _.filter( $hs, ( h ) ->
+    $(h).text().match(/[^\s]/) ) #matches any non-whitespace char
+
 root.lockEntry = ->
     Meteor.call( 'lockEntry', Session.get('entryId') ) if Session.get('entryId')
     Session.set('entryLocked', true)
@@ -366,30 +390,6 @@ Meteor.startup ->
     $('#leftNavContainer').toggle(true)
     $("#main").toggleClass('wLeftNav')
   
-
-#builds array of all heading titles
-root.stackTitles = (items, cur, counter) ->
-
-    cur = 1 if cur == undefined
-    counter ?= 1
-
-    next = cur + 1
-
-    for elem, index in items
-        elem = $(elem)
-        children  =  filterHeadlines( elem.nextUntil( 'h' + cur, 'h' + next ) )
-        d = {};
-        d.title = elem.text()
-        # d.y  = elem.offset().top
-        d.id = counter++
-        d.target = "entry-heading-#{d.id}"
-        d.style = "top" if cur == 0
-        d.children = stackTitles( children, next, counter ) if children.length > 0
-        d
-
-root.filterHeadlines = ( $hs ) ->
-    _.filter( $hs, ( h ) -> 
-        $(h).text().match(/[^\s]/) ) #matches any non-whitespace char
 
 root.buildNav = ( ul, items ) ->
     for child, index in items

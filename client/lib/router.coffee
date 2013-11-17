@@ -78,8 +78,18 @@ Router.map ->
     #TODO ensure /users page can't be created
     @route "users",
         path: "/users"
-        before: ->
-            Session.set('title','users')
+    @route "history",
+        path: "/history/:title"
+        template: "history"
+    @route "compare",
+        path: "/compare/:title/:rev1/:rev2"
+        template: "compare"
+        before: [
+          ->
+            Session.set('rev1', @params.rev1)
+            Session.set('rev2', @params.rev2)
+            Session.set('title', @params.title)
+        ]
     @route "entry",
         path: "/:title"
         action: "sessionSetup"
