@@ -1,0 +1,15 @@
+/* ========================================================
+*
+* Melon - Flat & Responsive Admin Template
+*
+* ========================================================
+*
+* File: plugins.css
+* Description: Contains styles for plugins, if you don't use any of plugins, you can remove its styling
+* Version: 1.0
+*
+* ======================================================== */
+
+@import "general/variables.lessimport";
+@import "plugins/typeahead.lessimport";
+

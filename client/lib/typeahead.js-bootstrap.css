@@ -1,4 +1,4 @@
-.twitter-typeahead .tt-query,
+/*.twitter-typeahead .tt-query,
 .twitter-typeahead .tt-hint {
   margin-bottom: 0;
 }
@@ -46,7 +46,7 @@
 
 .tt-suggestion p {
   margin: 0;
-}
+}*/
 
 /*hacks*/
 .dropdown-menu {

@@ -8,7 +8,12 @@ root.navigate = (location, context) ->
 
 root.evtNavigate = (evt) ->
     evt.preventDefault()
+    if Session.get('editMode')
+        Toast.warning('Save or Cancel changes before navigating away')
+        return
     window.scrollTo(0,0)
+    document.body.style.height = "" # restore bigger document from magicscroll
+
     $a = $(evt.target).closest('a')
     href = $a.attr('href')
     localhost = document.location.host
@@ -22,17 +27,17 @@ root.evtNavigate = (evt) ->
 
 
 Router.configure
-    layout: "layout"
+    layoutTemplate: "layout"
     # notFoundTemplate: "notFound"
     loadingTemplate: "loading"
-    renderTemplates: 
+    yieldTemplates: 
         'toolbar': 
             to: 'toolbar'
-            data: ->
-                title = Session.get("title")
-                context = Session.get('context')
-                if title #toolbar may render before entry is ready
-                    entry = findSingleEntryByTitle( title, context )
+
+
+# TODO
+# each page should have a editing permission based on
+# 
 
 Router.map ->
     @route "home", 
@@ -41,14 +46,23 @@ Router.map ->
         controller: "HomeController"
     @route "search",
         path: "/search/:term"
-        onBeforeRun: ->
+        before: ->
             Session.set('search-term',@params.term)
+            Session.set('title','search') # forces sidebar to re-render need other session dependency
     @route "tag",
         path: "/tag/:tag"
-    @route "profile",
-        path: "/profile"
+        before: ->
+            Session.set('tag',@params.tag)
+            Session.set('title',@params.tag)
+
+    #TODO
+    # need to determine how to set "title" on special pages
+    # maybe want to set page "type" and also name" (which is similar to title)
+    # type could be based on url e.g. /s/PageIndex
     @route "pageindex",
-        path: "/PageIndex"
+        path: "/s/PageIndex"
+        before: ->
+            Session.set('title','PageIndex')
         waitOn: ->
             Meteor.subscribe 'userData'
             Meteor.subscribe 'entries'
@@ -57,7 +71,11 @@ Router.map ->
     @route "user_profile",
         path: "/users/:username"
         action: "sessionSetup"
+        before: ->
+            Session.set('title','user_profile')
         controller: "User_profileController"
+
+    #TODO ensure /users page can't be created
     @route "users",
         path: "/users"
     @route "history",
@@ -66,10 +84,12 @@ Router.map ->
     @route "compare",
         path: "/compare/:title/:rev1/:rev2"
         template: "compare"
-        onBeforeRun: ->
+        before: [
+          ->
             Session.set('rev1', @params.rev1)
             Session.set('rev2', @params.rev2)
             Session.set('title', @params.title)
+        ]
     @route "entry",
         path: "/:title"
         action: "sessionSetup"
@@ -83,8 +103,6 @@ class @HomeController extends RouteController
         @render     
             toolbar: 
                 to: 'toolbar'
-                data: ->
-                    return entry: true
 
         entry = Entries.findOne({_id: 'home'})
         if ! entry # bang on it a bit
@@ -110,8 +128,6 @@ class @EntryController extends RouteController
         @render     
             toolbar: 
                 to: 'toolbar'
-                data: ->
-                    return entry: true
         @render()
 
 class @User_profileController extends RouteController
@@ -121,27 +137,3 @@ class @User_profileController extends RouteController
         Session.set('context', null)
         Session.set('selectedUserName', @params.username);
         @render()
-
-
-
-    # redirectHome: ->
-    #     this.navigate( "", true )
-    # home: ->
-    #     unlockEntry()
-
-    # profile: (term) ->
-    #     unlockEntry()
-    #     Session.set( 'mode', 'profile' )
-
-    # userSpace: (username) ->
-    #     unlockEntry()
-    #     Session.set('titleHidden', false)
-    #     Session.set('mode', 'entry')
-    #     Session.set('context', username)
-
-    # main: (title) ->
-    #     unlockEntry()
-    #     Session.set('titleHidden', false)
-    #     Session.set('mode', 'entry')
-    #     Session.set('context', null)
-    #     Session.set('title', decodeURIComponent( title ))

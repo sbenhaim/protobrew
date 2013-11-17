@@ -1,6 +1,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 <title>Humon Brain</title>
 
 <!--[if IE 5]>
@@ -16,7 +16,7 @@
 /* the above proprietary zoom property gives IE the hasLayout it needs to avoid several bugs */
 </style>
 <![endif]-->
-
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
 <script type="text/javascript" src="//api.filepicker.io/v1/filepicker.js"></script>
 </head>
 
@@ -28,24 +28,21 @@
 
 <template name="layout">
 
-  <div id="container">
-        <div id="header">
-            {{yield 'toolbar'}}
-        </div>
-        <div id = "leftNavContainer">
-            {{> left_nav}}
-        </div>
-        <div id="main">
-            <div class="content">
-                <a class="btn btn-inverse" href="#" value="sidenav_btn" id="sidenav_btn">
-                    <span aria-hidden="true" data-icon="&#xe002;"></span> 
-                </a> 
+    {{yield 'toolbar'}}
+
+
+    <div id="container" class="fixed-header">
+        {{> left_nav}}
+
+        <div id="content">
+            <div class="container">
+
             {{yield}}
             </div>
-            <div id="footer"></div>
         </div>
-  </div>
+         {{> entry_sidebar}}
 
+    </div>
 
   {{> newUserModal }}
   {{> deleteConfirmModal }}
@@ -53,15 +50,6 @@
 
 </template>
 
-
-
-
-
-<template name="sidebar">
-    <ul>
-         {{{ navItems }}}
-    </ul>
-</template>
 
 <template name="loading">
     {{> spinner}}
@@ -71,81 +59,46 @@
     {{{content.text}}}
 </template>
 
-<template name="profile">
-    <h2>Profile for {{user.profile.name}}</h2>
-    <label>Username
-        <input name="username" type="text" id="username" value="{{user.profile.username}}" />
-        <input type="submit" value="save" id="save" />
-    </label>
-</template>
-
-<template name="search">
-    <h3>Search results for "{{term}}"</h3>
-
-    {{#each results}}
-        <h2><a href="/{{this.title}}">{{this.title}}</a></h2>
-        <p>{{this.text}}</p>
-    {{/each}}
-
-</template>
-
-<template name="tag">
-    <h3>Entries tagged with "{{tag}}"</h3>
-
-    {{#each results}}
-        <h2><a href="/{{this.title}}">{{this.title}}</a></h2>
-        <p>{{this.text}}</p>
-    {{/each}}
-
-</template>
-
 
 <template name="entry">
-
     <div id="entry">
         <h1 id="article-title" class="article-title">
             {{#if userContext}}{{userContext}} / {{/if}}{{title}}
         </h1>
-        <span class='text-muted'> last edited by </span>
-        <a href="/users/{{lastEditedBy}} ">{{lastEditedBy}}</a> 
-        <span class='text-muted'> {{sinceLastEdit}} </span>
+        <div id="last-edit-person-and-time">
+            <span class='text-muted'> last edited by </span>
+            <a href="/users/{{lastEditedBy}} ">{{lastEditedBy}}</a> 
+            <span class='text-muted'> {{sinceLastEdit}} </span>
+        </div>
 
         {{#if editMode}}
-        <form>
+            <form>
 
-            {{#with entry}}
-            {{> editEntry}}
-            {{/with}}
+                {{#with entry}}
+                {{> editEntry}}
+                {{/with}}
 
-            {{#if adminable}}
-            <p>
-                <label>Mode
-                    <select id="mode" name="mode">
-                        <option {{#if modeIs "public"}}selected{{/if}} value="public">Public</option>
-                        <option {{#if modeIs "read-only"}}selected{{/if}} value="read-only">Read-Only</option>
-                        <option {{#if modeIs "private"}}selected{{/if}} value="private">Private</option>
-                    </select>
-                </label>
-            </p>
-            {{/if}}
-        </form>
+                {{#if adminable}}
+                <p>
+                    <label>Mode
+                        <select id="mode" name="mode">
+                            <option {{#if modeIs "public"}}selected{{/if}} value="public">Public</option>
+                            <option {{#if modeIs "read-only"}}selected{{/if}} value="read-only">Read-Only</option>
+                            <option {{#if modeIs "private"}}selected{{/if}} value="private">Private</option>
+                        </select>
+                    </label>
+                </p>
+                {{/if}}
+            </form>
         {{else}}
 
         {{#if entry._id}}
 
                 {{#if viewable}}
 
-
-                    <p>{{{entry.text}}}</p>
-
-                    {{#if entry.tags.length}}
-                    <h2>Tags</h2>
-                    <ul>
-                        {{#each entry.tags}}
-                            <li class="article-tag"><a href="javascript:void(0);">{{this}}</a></li>
-                        {{/each}}
-                    </ul>
-                    {{/if}}
+                    <div id="view-entry-content-wrapper">
+                        <p>{{{entry.text}}}</p>
+                    </div>
 
                     
                     {{> comment_form}}
@@ -173,24 +126,11 @@
         {{/if}}
     </div>
 
-    {{#if currentUser}}
-        <div id="sidebar_col">
-            <div id="sidebar">
-                {{> sidebar}}
-            </div>
-        </div>
-    {{/if}}
-
 </template>
 
 
 <template name="editEntry">
     <textarea id="entry-text" placeholder="Just some friendly placeholder text.">{{text}}</textarea>
-    <p>
-        <h2>Tags</h2>
-        <textarea id="entry-tags"></textarea>
-        <small><em>press &#x23ce; between tags</em></small>
-    </p>
 </template>
 
 <template name="user">
@@ -220,4 +160,83 @@
         </div>
         {{/isolate}}
     </div>
+</template>
+
+
+<template name="redactorInsertLinkModal">
+    <div id="redactorInsertLinkModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title" id="myModalLabel">Insert Links</h4>
+          </div>
+          <div class="modal-body">
+                <div class="tabbable"> <!-- Only required for left/right tabs -->
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#tab_wiki"   data-toggle="tab">Wiki Link</a></li>
+                        <li>               <a href="#tab_url"    data-toggle="tab">Url Link</a></li>
+                        <li>               <a href="#tab_email"  data-toggle="tab">Email</a></li>
+                        <li>               <a href="#tab_anchor" data-toggle="tab">Anchor</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="tab_wiki" class="tab-pane active" >
+                            <form>
+                                <div class="form-group">
+                                    <label> Wiki Page </label>
+                                    <input type="text" class="form-control" id="redactor_wiki_link" placeholder="Enter Title of Wiki Page"/>
+                                </div>
+                                <div class="form-group">
+                                    <label> Text to Display</label>
+                                    <input type="text" class="form-control redactor_link_text" id="redactor_wiki_link_text" />
+                                </div>
+                            </form>
+                        </div>
+                        <div id="tab_url" class="tab-pane" >
+                            <form>
+                                <div class="form-group">
+                                    <label>URL</label>
+                                    <input type="text" id="redactor_link_url" class="form-control" placeholder="Enter URL e.g. www.humon.com"/>
+                                </div>
+                                <div class="form-group">
+                                    <label> Text to Display</label>
+                                    <input type="text" class="form-control redactor_link_text" id="redactor_link_url_text"/>
+                                    <label><input type="checkbox" id="redactor_link_blank"> Open Link In New Tab?</label>
+                                </div>
+                            </form>         
+                        </div>
+                        <div id="tab_email" class="tab-pane" >
+                            <form>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="text" id="redactor_link_mailto" class="form-control" placeholder="Enter email address"/>
+                                </div>
+                                <div class="form-group">
+                                    <label> Text to Display</label>
+                                    <input type="text" class="form-control redactor_link_text" id="redactor_link_mailto_text"/>
+                                </div>
+                            </form>   
+                        </div>
+                        <div id="tab_anchor" class="tab-pane" >
+                            <form>
+                                <div class="form-group">
+                                    <label>Anchor</label>
+                                    <input type="text" id="redactor_link_anchor" class="form-control" placeholder="Enter Anchor"/>
+                                </div>
+                                <div class="form-group">
+                                    <label> Text to Display</label>
+                                    <input type="text" class="form-control redactor_link_text" id="redactor_link_anchor_text"/>
+                                </div>
+                            </form>   
+                        </div>
+                    </div>
+                </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 </template>

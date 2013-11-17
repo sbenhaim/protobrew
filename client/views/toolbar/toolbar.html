@@ -1,59 +1,227 @@
 <template name="toolbar">
+
+    <!-- Header -->
+    <header class="header navbar navbar-fixed-top" role="banner">
+        <!-- Top Navigation Bar -->
+        <div class="container">
+
+            <!-- Only visible on smartphones, menu toggle -->
+            <ul class="nav navbar-nav">
+                <li class="nav-toggle left-toggle"><a href="javascript:void(0);" title=""><i class="icon-reorder"></i></a></li>
+            </ul>
+
+            <!-- Logo -->
+
+
+            <a class="navbar-brand" href="#">
+                <img src="assets/img/logo.png" alt="logo" />
+                <strong>HU</strong>MON
+            </a>
+            <!-- /logo -->
+
+            <!-- Sidebar Toggler -->
+            <a href="#" class="toggle-sidebar toggle-left-sidebar bs-tooltip" data-placement="bottom" data-original-title="Toggle navigation">
+                <i class="icon-reorder"></i>
+            </a>
+            <!-- /Sidebar Toggler -->
+
+            <!-- Top Left Menu -->
+
+
+
 {{#if hide_toolbar}}
 {{else}}
     {{#if editMode}}
-        <div id='edit_mode_toolbar'class="action-toolbar edit_mode">
-            <a class="btn btn-danger delete" href="#" value="delete"><span aria-hidden="true" data-icon="&#x64;"></span></a>
-            <a class="btn btn-warning cancel" href="#" value="cancel" ><span aria-hidden="true" data-icon="&#x62;"></span></a>
-            <a class="btn btn-success save" href="#" value="save"><span aria-hidden="true" data-icon="&#x22;"></span> Save</a>
-        </div>
-    {{else}}
-        {{#if entry}}
-            {{#if viewable}}
 
-                <div id= "user_toolbar" class="action-toolbar">
-                    <a class="btn btn-default" href="#" value="new_page" id="new_page">
-                        <span aria-hidden="true" data-icon="&#xe001;"></span> 
-                        New
+            <ul id='edit_mode_toolbar'class="nav navbar-nav navbar-left edit_mode">
+                <li>
+                    <a class="btn btn-danger delete bs-tooltip" data-placement="bottom" data-original-title="Delete the Current Page" href="#">
+                        <i class="icon-trash"></i>
+                        <span>Delete</span>
                     </a>
+                </li>
+                <li>
+                    <a class="btn btn-warning cancel bs-tooltip" data-placement="bottom" data-original-title="Cancel Changes" href="#">
+                        <i class="icon-arrow-left"></i>
+                        <span>Cancel</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="btn btn-success save bs-tooltip" data-placement="bottom" data-original-title="Save Changes" href="#">
+                        <i class="icon-save"></i>
+                        <span>Save</span>
+                    </a>
+                </li>
+            </ul>
 
-                    {{#if isStarred}}
-                        <a class="btn btn-default" href="#" value="toggle_star" id="toggle_star">
-                            <span aria-hidden="true" data-icon="&#xe003;"></span> 
-                            Unstar
-                        </a>
-                    {{else}}
-                        <a class="btn btn-default" href="#" value="toggle_star" id="toggle_star">
-                            <span aria-hidden="true" data-icon="&#xe004;"></span> 
-                            Star
-                        </a>
-                    {{/if}}
+    {{else}} 
+        {{#if viewable}}
+            <ul class="nav navbar-nav navbar-left">
 
-                    {{#if editable}}
+                <li>
+                    <a id="new_page" href="#" class=" bs-tooltip" data-placement="bottom" data-original-title="Create New Wiki Page" >
+                        <i class="icon-file-text"></i>
+                        <span>New</span>
+                    </a>
+                </li>
 
-                        {{#if locked}}
-                            <a class="btn btn-default disabled" href="javascript:void(0)" value="" id="">
-                                <i class="icon-lock"></i>
-                                Locked
-                            </a>
-                        {{else}}
-                            <a class="btn btn-default edit" href="javascript:void(0);" value="edit" id="edit_btn">
-                                 <span aria-hidden="true" data-icon="&#x23;"></span> 
-                                 Edit
-                             </a>
-                        {{/if}}
-
-                        <!-- if revisions condition -->
-                        <a class="btn btn-default history" href="javascript:void(0);" id="history_btn">
-                            <span aria-hidden="true" data-icon="&#x68;"></span>
-                            History
-                        </a>
-
-                    {{/if}}
-
-                </div>
+            {{#if isStarred}}
+                <li>
+                    <a id="toggle_star" href="#" class="bs-tooltip" data-placement="bottom" data-original-title="Star This Page">
+                        <i class="icon-star"></i>
+                        <span>Unstar</span>
+                    </a>
+                </li>
+            {{else}}
+                <li>
+                    <a id="toggle_star" href="#" class="bs-tooltip" data-placement="bottom" data-original-title="Unstar This Page">
+                        <i class="icon-star-empty"></i>
+                        <span>Star</span>
+                    </a>
+                </li>
             {{/if}}
+
+
+
+            {{#if editable}}       
+                {{#if locked}}
+                        <li>
+                            <a id="edit_btn" href="#" class="edit bs-tooltip" data-placement="bottom" data-original-title="Locked By Other User" >
+                                <i class="icon-edit"></i>
+                                <span>Locked</span>
+                            </a>
+                        </li>
+                {{else}}
+                        <li>
+                            <a id="" href="#" class="edit bs-tooltip" data-placement="bottom" data-original-title="Edit Wiki Page" >
+                                <i class="icon-edit"></i>
+                                <span>Edit</span>
+                            </a>
+                        </li>
+                {{/if}}
+            {{/if}}
+            <!-- if revisions condition -->
+			<li>
+		        <a class="btn btn-default history" href="javascript:void(0);" id="history_btn">
+		            <span aria-hidden="true" data-icon="&#x68;"></span>
+		            History
+		        </a>
+			</li>
+            </ul>
         {{/if}}
     {{/if}}
 {{/if}}
+<!-- /Top Left Menu -->
+
+            <!-- Top Right Menu -->
+            <ul class="nav navbar-nav navbar-right">
+
+
+<!-- make admin
+        put in helpers
+            users / members (with ban)
+            site admin panel
+ -->
+                <!-- Notifications -->
+<!--                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="icon-warning-sign"></i>
+                        <span class="badge">5</span>
+                    </a>
+                    <ul class="dropdown-menu extended notification">
+                        <li class="title">
+                            <p>You have 5 new notifications</p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);">
+                                <span class="label label-success"><i class="icon-plus"></i></span>
+                                <span class="message">New user registration.</span>
+                                <span class="time">1 mins</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li> -->
+
+
+                <!-- Tasks -->
+<!--                <li class="dropdown hidden-xs hidden-sm">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="icon-tasks"></i>
+                        <span class="badge">7</span>
+                    </a>
+                    <ul class="dropdown-menu extended notification">
+                        <li class="title">
+                            <p>You have 7 pending tasks</p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);">
+                                <span class="task">
+                                    <span class="desc">Preparing new release</span>
+                                    <span class="percent">30%</span>
+                                </span>
+                                <div class="progress progress-small">
+                                    <div style="width: 30%;" class="progress-bar progress-bar-info"></div>
+                                </div>
+                            </a>
+                        </li>
+        
+                        <li class="footer">
+                            <a href="javascript:void(0);">View all tasks</a>
+                        </li>
+                    </ul>
+                </li> -->
+
+<!-- put in helpers
+        for number of messages
+        for person from
+        for image of person
+        for time since
+        for text/content
+     
+
+ -->
+
+                <!-- Messages -->
+<!--                <li class="dropdown hidden-xs hidden-sm">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="icon-envelope"></i>
+                        <span class="badge">1</span>
+                    </a>
+                    <ul class="dropdown-menu extended notification">
+
+                        <li class="title">
+                            <p>You have 3 new messages</p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);">
+                                <span class="photo"><img src="assets/img/demo/avatar-1.jpg" alt="" /></span>
+                                <span class="subject">
+                                    <span class="from">Bob Carter</span>
+                                    <span class="time">Just Now</span>
+                                </span>
+                                <span class="text">
+                                    Consetetur sadipscing elitr...
+                                </span>
+                            </a>
+                        </li>
+                        
+
+                    </ul>
+                </li> -->
+
+
+
+                <!-- User Login Dropdown -->
+
+                
+                {{ loginButtons}}
+                
+
+            </ul>
+            <!-- /Top Right Menu -->
+        </div>
+        <!-- /top navigation bar -->
+
+    </header> <!-- /.header -->
+
 </template>
