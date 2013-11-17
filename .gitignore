@@ -1,2 +1,4 @@
 .idea/
 _settings.coffee
+packages/
+packages/spin/.build
