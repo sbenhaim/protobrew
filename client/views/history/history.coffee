@@ -10,7 +10,7 @@ Template.history.revisions = ->
     []
 
 Template.history.getUserName = (userID) ->
-    getDisplayNameById(userID)
+    UserLib.getDisplayNameById(userID)
 
 Template.history.events
   'click #compareSelected': (evt) ->
