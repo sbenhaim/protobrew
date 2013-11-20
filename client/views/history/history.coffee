@@ -86,4 +86,3 @@ Template.compare.rendered = ->
     # TODO: plain2html the diff result.
     diffText = plain2html($("#diffView").html()).replace(/<br>/gi,'')
     $("#diffView").html(diffText)
-

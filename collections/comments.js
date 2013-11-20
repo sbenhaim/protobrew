@@ -29,14 +29,14 @@ Meteor.methods({
     var user = Meteor.user(),
         entry=Entries.findOne(entryId),
         // postUser=Meteor.users.findOne(post.userId),
-        timeSinceLastComment=timeSinceLast(user, Comments),
+        timeSinceLastComment=UserLib.timeSinceLast(user, Comments),
 
         //TODO: cleanup text
         cleanText= text,
         commentInterval = Math.abs(parseInt(getSetting('commentInterval',15))),
         properties={
           'commentAuthorId': user._id,
-          'commentAuthorName': getDisplayName(user),
+          'commentAuthorName': UserLib.getDisplayName(user),
           'entryId': entryId
         };
     // check that user can comment
