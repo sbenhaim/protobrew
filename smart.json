@@ -8,7 +8,7 @@
     "spin": {},
     "iron-router": {},
     "bootstrap3-less": {},
-    "accounts-ui-bootstrap-3": {},
-    "font-awesome": {}
+    "font-awesome": {},
+    "meteor-accounts-ui-bootstrap-3": {}
   }
 }

@@ -2,7 +2,9 @@
 .DS_Store
 _settings.coffee
 packages/
-packages/spin/.build
 smart.json
 smart.lock
 public/user-images
+packages/spin/.build
+packages/bootstrap3-less/.build
+packages/meteor-accounts-ui-bootstrap-3/.build

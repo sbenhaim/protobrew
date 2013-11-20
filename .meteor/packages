@@ -19,7 +19,7 @@ momentjs
 spin
 iron-router
 font-awesome
-accounts-ui-bootstrap-3
 accounts-base
 accounts-password
 bootstrap3-less
+meteor-accounts-ui-bootstrap-3
