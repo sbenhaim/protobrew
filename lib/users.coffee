@@ -6,7 +6,7 @@ class _UserLib
         (if (user.profile and user.profile.name) then user.profile.name else user.username)
 
     getDisplayNameById: (userId) ->
-      getDisplayName(Meteor.users.findOne(userId))
+      @getDisplayName(Meteor.users.findOne(userId))
 
     createdAt: (user) ->
         if user.createdAt
