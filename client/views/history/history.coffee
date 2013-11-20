@@ -9,6 +9,9 @@ Template.history.revisions = ->
     console.log "No revs found."
     []
 
+Template.history.getUserName = (userID) ->
+    getDisplayNameById(userID)
+
 Template.history.events
   'click #compareSelected': (evt) ->
     evt.preventDefault()
@@ -56,16 +59,6 @@ plain2html = (plain) ->
   for tag, c of _htmlHash
     plain = plain.replace RegExp(c, 'g'), tag
   plain
-
-
-Template.layout.modeIs = (mode) ->
-  Session.get('mode') == mode;
-
-Template.layout.loginConfigured = () ->
-  if Accounts.loginServicesConfigured()
-    return true;
-  else
-    return false;
 
 
 # History comparison rendered function
