@@ -41,7 +41,7 @@
 
 @media (min-width: @screen-sm-min) {
   .container {
-    width: @container-sm;
+    max-width: @container-sm;
   }
 
   .make-grid-columns-float(sm);
@@ -61,7 +61,7 @@
 
 @media (min-width: @screen-md-min) {
   .container {
-    width: @container-md;
+    max-width: @container-md;
   }
 
   .make-grid-columns-float(md);
@@ -81,7 +81,7 @@
 
 @media (min-width: @screen-lg-min) {
   .container {
-    width: @container-lg;
+    max-width: @container-lg;
   }
 
   .make-grid-columns-float(lg);
