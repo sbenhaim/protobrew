@@ -43,7 +43,7 @@ class Tree
       li = $("<li>")
       $(ulElem).append(li)
       $a = $("<a/>")
-      $a.attr('href', node.url ) 
+      $a.attr('href', "/" + node.url )
       $a.html(node.name)
       li.append($a)
       child_stack = []
