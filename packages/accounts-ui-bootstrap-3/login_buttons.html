@@ -5,7 +5,6 @@
   -->
 
 <template name="_loginButtons">
-  <div id="login-buttons" class="login-buttons-dropdown-align-{{align}}"></div>
   {{#if currentUser}}
     {{#if loggingIn}}
       {{! We aren't actually logged in yet; we're just setting Meteor.userId

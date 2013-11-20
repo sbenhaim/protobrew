@@ -2,12 +2,13 @@
 <!-- LOGGED IN -->
 <!--           -->
 <template name="_loginButtonsLoggedInDropdown">
-  <li id="login-dropdown-list" class="dropdown">
-    <a class="dropdown-toggle"  data-toggle="dropdown">
-      {{displayName}}
-      <b class="caret"></b>
+  <li id="login-dropdown-list" class="dropdown user">
+    <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+      <i class="icon-male"></i>
+      <span class="username">{{username}}</span>
+      <i class="icon-caret-down small"></i>
     </a>
-    <div class="dropdown-menu col-sm-3">
+    <ul class="dropdown-menu col-sm-3">
       {{#if inMessageOnlyFlow}}
         {{> _loginButtonsMessages}}
       {{else}}
@@ -17,7 +18,7 @@
           {{> _loginButtonsLoggedInDropdownActions}}
         {{/if}}
       {{/if}}
-    </div>
+    </ul>
   </li>
 </template>
 

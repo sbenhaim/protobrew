@@ -9,6 +9,9 @@
     'click input, click label, click button, click .dropdown-menu, click .alert': function(event) {
       event.stopPropagation();
     },
+    'click .dropdown-menu > li > a': function(event) {
+      event.preventDefault();
+    },
     'click #login-name-link, click #login-sign-in-link': function () {
       event.stopPropagation();
       loginButtonsSession.set('dropdownVisible', true);
@@ -60,6 +63,12 @@
     return user.username || (user.emails && user.emails[0] && user.emails[0].address);
   };
 
+
+  Template._loginButtonsLoggedInDropdownActions.events({
+    'click li .profile': function (e) {
+      evtNavigate(e);
+    }
+  });
 
   //
   // loginButtonsLoggedOutDropdown template and related

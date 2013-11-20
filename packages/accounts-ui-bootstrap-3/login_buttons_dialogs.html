@@ -75,43 +75,43 @@
               <h4 class="modal-title">Configure Service</h4>
           </div>
           <div class="modal-body">
-            <div id="configure-login-service-dialog" class="accounts-dialog accounts-centered-dialog">
-              {{{configurationSteps}}}
-              <p>
-                Now, copy over some details.
-              </p>
-              <p>
-                <table>
-                  <colgroup>
-                    <col span="1" class="configuration_labels">
-                    <col span="1" class="configuration_inputs">
-                  </colgroup>
-                  {{#each configurationFields}}
-                    <tr>
-                      <td>
-                        <label for="configure-login-service-dialog-{{property}}">{{label}}</label>
-                      </td>
-                      <td>
-                        <input id="configure-login-service-dialog-{{property}}" type="text" />
-                      </td>
-                    </tr>
-                  {{/each}}
-                </table>
-              </p>
+    <div id="configure-login-service-dialog" class="accounts-dialog accounts-centered-dialog">
+      {{{configurationSteps}}}
+      <p>
+        Now, copy over some details.
+      </p>
+      <p>
+        <table>
+          <colgroup>
+            <col span="1" class="configuration_labels">
+            <col span="1" class="configuration_inputs">
+          </colgroup>
+          {{#each configurationFields}}
+            <tr>
+              <td>
+                <label for="configure-login-service-dialog-{{property}}">{{label}}</label>
+              </td>
+              <td>
+                <input id="configure-login-service-dialog-{{property}}" type="text" />
+              </td>
+            </tr>
+          {{/each}}
+        </table>
+      </p>
             </div>
           </div>
           <div class="modal-footer new-section">
                 <div class="login-button btn btn-danger configure-login-service-dismiss-button">
-                  I'll do this later
-                </div>
-                {{#isolate}}
+          I'll do this later
+        </div>
+        {{#isolate}}
                   <div class="login-button login-button-configure btn btn-success {{#if saveDisabled}}login-button-disabled{{/if}}"
-                     id="configure-login-service-dialog-save-configuration">
-                    Save Configuration
-                  </div>
-                {{/isolate}}
-              </div>
+             id="configure-login-service-dialog-save-configuration">
+            Save Configuration
+          </div>
+        {{/isolate}}
       </div>
+    </div>
   </div>
   <div class="modal-backdrop  in"></div>
   {{/if}}
