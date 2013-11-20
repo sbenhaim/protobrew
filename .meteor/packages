@@ -18,8 +18,8 @@ require
 momentjs
 spin
 iron-router
-bootstrap3-less
 font-awesome
 accounts-ui-bootstrap-3
 accounts-base
 accounts-password
+bootstrap3-less

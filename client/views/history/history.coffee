@@ -75,21 +75,22 @@ Template.compare.rendered = ->
   console.log(revId1, revId2)
   rev1 = findRevisionById revId1
   rev2 = findRevisionById revId2
-  revText1 = html2plain(rev1.text)
-  revText2 = html2plain(rev2.text)
+  if rev1 and rev2
+    revText1 = html2plain(rev1.text)
+    revText2 = html2plain(rev2.text)
 
-  $("#compareTitle").text("Comparing revision #{rev1.date} to revision #{rev2.date}")
+    $("#compareTitle").text("Comparing revision #{rev1.date} to revision #{rev2.date}")
 
-  $("#rev1").text(revText1).hide()
-  $("#rev2").text(revText2).hide()
-  $("#revCompare").prettyTextDiff({
-    originalContainer: "#rev1",
-    changedContainer: "#rev2",
-    diffContainer: "#diffView",
-    cleanup: true,
-    debug: true
-  });
-  # TODO: plain2html the diff result.
-  diffText = plain2html($("#diffView").html()).replace(/<br>/gi,'')
-  $("#diffView").html(diffText)
+    $("#rev1").text(revText1).hide()
+    $("#rev2").text(revText2).hide()
+    $("#revCompare").prettyTextDiff({
+      originalContainer: "#rev1",
+      changedContainer: "#rev2",
+      diffContainer: "#diffView",
+      cleanup: true,
+      debug: true
+    });
+    # TODO: plain2html the diff result.
+    diffText = plain2html($("#diffView").html()).replace(/<br>/gi,'')
+    $("#diffView").html(diffText)
 
