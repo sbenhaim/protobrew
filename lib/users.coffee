@@ -18,7 +18,7 @@ class _UserLib
 
     timeSinceLast: (user, collection) ->
         now = new Date().getTime()
-        last = findLast(user, collection)
+        last = @findLast(user, collection)
         return 999  unless last # if this is the user's first post or comment ever, stop here
         Math.abs Math.floor((now - last.createdAt) / 1000)
 

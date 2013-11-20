@@ -56,7 +56,7 @@ Meteor.methods({
         text: cleanText,
         userId: user._id,
         submitted: new Date().getTime(),
-        author: getDisplayName(user)
+        author: UserLib.getDisplayName(user)
     };
     
     if(parentCommentId)
@@ -78,7 +78,7 @@ Meteor.methods({
 
         properties.parentCommentId = parentCommentId;
         properties.parentAuthorId = parentComment.userId;
-        properties.parentAuthorName = getDisplayName(parentUser);
+        properties.parentAuthorName = UserLib.getDisplayName(parentUser);
 
         // do not notify users of their own actions (i.e. they're replying to themselves)
         // if(parentUser._id != user._id)
