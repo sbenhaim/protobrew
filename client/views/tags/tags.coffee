@@ -1,7 +1,6 @@
 Template.tag.events
     'click a': evtNavigate
 
-
 Template.tag.tag = ->
     Session.get( 'tag' )
 
@@ -11,4 +10,4 @@ Template.tag.results = ->
     return unless tag
     
     entries = Entries.find( { tags: tag } )
-    getSummaries( entries )
+    EntryLib.getSummaries( entries )

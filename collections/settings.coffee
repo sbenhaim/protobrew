@@ -1,5 +1,5 @@
 root = exports ? this
-root.Settings = new Meteor.Collection("settings")
+@Settings = new Meteor.Collection("settings")
 
 Settings.allow
   insert: root.isAdminById

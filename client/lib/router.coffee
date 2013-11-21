@@ -1,12 +1,12 @@
 root = exports ? this
 
 # Todo: reloadEntry = true
-root.navigate = (location, context) ->
+@navigate = (location, context) ->
     location = "/u/#{context}/#{location}" if context
     location = '/'+location if location.indexOf('/') != 0 #prevents calling route directly
     Router.go(location)
 
-root.evtNavigate = (evt) ->
+@evtNavigate = (evt) ->
     evt.preventDefault()
     if Session.get('editMode')
         Toast.warning('Save or Cancel changes before navigating away')

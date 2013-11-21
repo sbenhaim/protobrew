@@ -22,4 +22,4 @@ Template.newUserModal.events =
         if ! $(e.target).hasClass('disabled')
             Meteor.call('updateUser', $("#initial-username-input").val(), (e) -> $("#new-user-modal").modal("hide") )
             Meteor.call 'createHome'
-            navigate( "home", Session.get( "context" ) ) 
+            navigate( "home", Session.get( "context" ) )

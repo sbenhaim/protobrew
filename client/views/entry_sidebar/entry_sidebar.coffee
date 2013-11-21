@@ -1,10 +1,43 @@
+buildRec = (headingNodes, $elm, lv) ->
+    # each time through recursive function pull a piece of the jQuery object off
+    node = headingNodes.splice(0,1)
+
+    if node && node.length > 0
+        curLv = parseInt(node[0].tagName.substring(1))
+        if curLv is lv # same level append an il
+            cnt = 0
+        else if curLv < lv # walk up then append il
+            cnt = 0
+            loop
+                $elm = $elm.parent().parent()
+                cnt--
+                break unless cnt > (curLv - lv)
+        else if curLv > lv # create children then append li
+            cnt = 0
+            loop
+                li = $elm.children().last() # if there are already li's at this level
+                if ($elm.children().last().length == 0)
+                    li = $("<li>").appendTo($elm);
+                $elm = $("<ul>").appendTo(li);
+                cnt++
+                break unless cnt < (curLv - lv)
+        li = $("<li>").appendTo($elm);
+        # li.text(node[0].innerText)
+        $a = $("<a/>")
+        # $a.attr( "id", "nav-title-" + child.id )
+        # $a.addClass( child.style )
+        #$a.attr( 'data-target', child.target )
+        # $a.html( child.title )
+        $a.attr( 'href', '#' + node[0].id ) #for cursor purposes only
+        $a.text($(node[0]).text())
+        li.append( $a )
+
+        # recursive call
+        buildRec headingNodes, $elm, lv + cnt
+
+
 Template.entry_sidebar.entry = ->
     Template.entry.entry()
-
-
-# Template.editEntry.events
-#     'focus #entry-tags': (evt) ->
-#         $("#tag-init").show()
 
 Template.entry_sidebar.navItems = ->
     title = Session.get("title")

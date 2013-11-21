@@ -10,7 +10,7 @@ Template.history.revisions = ->
     []
 
 Template.history.getUserName = (userID) ->
-    getDisplayNameById(userID)
+    UserLib.getDisplayNameById(userID)
 
 Template.history.events
   'click #compareSelected': (evt) ->
@@ -86,4 +86,3 @@ Template.compare.rendered = ->
     # TODO: plain2html the diff result.
     diffText = plain2html($("#diffView").html()).replace(/<br>/gi,'')
     $("#diffView").html(diffText)
-

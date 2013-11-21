@@ -41,21 +41,6 @@ Template.toolbar.events
         # Toggle class
         $('#container').toggleClass('sidebar-closed');
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     'click #toggle_star': (evt) ->
         evt.preventDefault()
         user  = Meteor.user()

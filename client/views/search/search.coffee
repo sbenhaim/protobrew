@@ -6,7 +6,7 @@ Template.search.results = ->
     return unless term
     
     entries = Entries.find( {text: new RegExp( term, "i" )} )
-    getSummaries( entries )
+    EntryLib.getSummaries( entries )
 
 Template.search.events
     'click a': evtNavigate
