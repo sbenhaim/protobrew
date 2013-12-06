@@ -40,3 +40,23 @@ Step 4: Install meteorite dependencies
 Step 5: Run the wiki!
 
     $ meteor
+
+Application Deployment
+----------------------
+
+Currently, the wiki is deployed to a server on rackspace.  Deployment
+and configuration management is done using fabric.
+
+Install Fabric (can also be installed via pip)
+
+    $ sudo apt-get install fabric
+
+Fabric defines different commands that can be executed in "fabfile.py"
+in the root of the project.  It is encouraged that ssh keys be setup
+with the machines to which things are being deployed to make things
+easier on ones self.
+
+Here's an example of how one would deploy to the staging server
+
+    $ fab staging deploy
+
