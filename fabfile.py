@@ -26,7 +26,7 @@ def staging():
     # Example: fab staging deploy
     #
     env.user = 'humonwiki'
-    env.hosts = ['checksum.io', ]
+    env.hosts = ['humon.com', ]
     env.is_configured = True
 
 
@@ -57,6 +57,8 @@ def hostconfig():
              "/etc/apt/sources.list.d/wheezy-backports.list")
         run("apt-get update")
         run("apt-get install nodejs curl")
+        run("rm -f /usr/bin/node")
+        run("ln -s /usr/bin/nodejs /usr/bin/node")
         run("curl https://npmjs.org/install.sh | sh")
 
         # install mongodb
@@ -66,6 +68,10 @@ def hostconfig():
         run("apt-get update")
         run("apt-get install mongodb-10gen")
         run("service mongodb restart")
+
+        # setup /srv/node/humonwiki directory with right perms
+        run("mkdir -p /srv/node")
+        run("chown -R humonwiki /srv/node")
 
 
 def install_configs():
