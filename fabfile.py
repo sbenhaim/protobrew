@@ -12,12 +12,13 @@
 # Now, RTFM.  http://docs.fabfile.org/en/1.4.2/tutorial.html
 #
 import os
-from fabric.api import run, local, abort, settings, lcd, cd, require, env, put
+from fabric.api import run, local, abort, settings, lcd, cd, require, env, put, sudo
 
 APP_LOCATION = "/srv/node/humonwiki"
 THIS_DIR = os.path.dirname(__file__)
 BUILD_DIR = os.path.join(THIS_DIR, ".build")
 DEMETEORIZED_DIR = os.path.join(BUILD_DIR, ".demeteorized")
+
 
 def staging():
     # Prefix used to point at staging environment
@@ -27,6 +28,52 @@ def staging():
     env.user = 'humonwiki'
     env.hosts = ['checksum.io', ]
     env.is_configured = True
+
+
+def hostconfig():
+    """Run against a server to perform the initia setup
+
+    Exampele::
+
+        $ fab staging hostconfig
+
+    These scripts assume that the target server for deployment is running
+    Debian 7.0 "wheezy"
+
+    """
+    with settings(user='root'):
+        # install supervisord
+        run("apt-get install supervisor")
+        with settings(warn_only=True):
+            # for some reason, this gives a non-zero return even when it succeeds
+            run("service supervisor restart")
+
+        # install nginx
+        run("apt-get install nginx")
+        run("service nginx restart")
+
+        # install nodejs and npm from backports
+        run("echo 'deb http://ftp.us.debian.org/debian wheezy-backports main' > "
+             "/etc/apt/sources.list.d/wheezy-backports.list")
+        run("apt-get update")
+        run("apt-get install nodejs curl")
+        run("curl https://npmjs.org/install.sh | sh")
+
+        # install mongodb
+        run("apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10")
+        run("echo 'deb http://downloads-distro.mongodb.org/repo/debian-sysvinit dist 10gen' > "
+             "/etc/apt/sources.list.d/mongodb.list")
+        run("apt-get update")
+        run("apt-get install mongodb-10gen")
+        run("service mongodb restart")
+
+
+def install_configs():
+    with settings(user='root'):
+        put(".deploy/nginx.conf", "/etc/nginx/nginx.conf")  # TODO: may not want to do this directory to nginx.conf
+        put(".deploy/runwiki.sh", "/srv/node/humonwiki/runwiki.sh")
+        put(".deploy/supervisord.conf", "/etc/supervisor/conf.d/humonwiki.conf")
+        run("chmod +x /srv/node/humonwiki/runwiki.sh")
 
 
 def build_bundle():
@@ -66,14 +113,17 @@ def unpack_bundle():
     run("tar xzvf /tmp/humonwiki-demeteorized.tar.gz -C /srv/node/humonwiki/")
 
 
-def stop_node():
-    # TODO: stop the node service in whatever way is most appropriate
-    pass
+def stop_services():
+    # note: we do not stop nginx, just reload the config later
+    with settings(user='root'):
+        run("/etc/init.d/supervisor stop")
 
 
-def start_node():
-    # TODO: restart node service in whatever way is most appropriate
-    pass
+def start_services():
+    with settings(user='root'):
+        with settings(warn_only=True):
+            run("/etc/init.d/supervisor start")
+        run("/etc/init.d/nginx reload")
 
 
 def deploy():
@@ -82,7 +132,8 @@ def deploy():
 
     build_bundle()
     push_bundle()
-    stop_node()
+    stop_services()
     unpack_bundle()
-    start_node()
+    install_configs()
+    start_services()
 
