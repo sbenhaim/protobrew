@@ -1,27 +1,8 @@
 Template.comment_form.rendered = ->
   if Meteor.user() and not @editor
     el = $("#comment")
-    console.log "rendered"
-    el.redactor
-      plugins: ["autoSuggest"]
-      imageUpload: "/images"
-      buttons: ["html", "|", "formatting", "|", "bold", "italic", "deleted", "|", "unorderedlist", "orderedlist", "outdent", "indent", "|", "image", "table", "link", "|", "fontcolor", "backcolor", "|", "alignment", "|", "horizontalrule"]
-      focus: true
-      autoresize: true
-      filepicker: (callback) ->
-        filepicker.setKey "AjmU2eDdtRDyMpagSeV7rz"
-        filepicker.pick
-          mimetype: "image/*"
-        , (file) ->
-          filepicker.store file,
-            location: "S3"
-            path: Meteor.userId() + "/" + file.filename
-          , (file) ->
-            callback filelink: file.url
 
-     # @editor = new EpicEditor(EpicEditorOptions).load()
-     # $(@editor.editor).bind "keydown", "meta+return", ->
-     #   $(window.editor).closest("form").find("input[type=\"submit\"]").click()
+    window.EntryLib.initRedactor( el, ["autoSuggest"] )
 
 
 Template.comment_form.helpers addingComment: ->

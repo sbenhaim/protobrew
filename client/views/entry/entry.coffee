@@ -127,25 +127,11 @@ Template.entry.events
             cancel(e, true) if e.keyCode == 27
         )
 
+
 Template.editEntry.rendered = ->
     el = $( '#entry-text' )
-    el.redactor(
-        plugins: ['autoSuggest', 'stickyScrollToolbar']
-        imageUpload: '/images'
-        # linebreaks: true # buggy - insert link on last line, hit enter to break,
-        # with cursor on newline try to insert link (modal only show edit of previous link)
-        buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'deleted', '|',
-                  'unorderedlist', 'orderedlist', 'outdent', 'indent', '|',
-                  'image', 'table', 'link', '|',
-                  'fontcolor', 'backcolor', '|', 'alignment', '|', 'horizontalrule'],
-        focus: true
-        autoresize: true
-        filepicker: (callback) ->
-            filepicker.setKey('AjmU2eDdtRDyMpagSeV7rz')
-            filepicker.pick({mimetype:"image/*"}, (file) ->
-                filepicker.store(file, {location:"S3", path: Meteor.userId() + "/" + file.filename },
-                (file) -> callback( filelink: file.url )))
-    )
+
+    window.EntryLib.initRedactor( el, ['autoSuggest', 'stickyScrollToolbar'] )
 
     window.scrollTo(0,Session.get('y-offset'))
 

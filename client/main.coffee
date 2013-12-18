@@ -197,7 +197,7 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
 
   fileReader[method](blob)
 
-@RedactorPlugins = {}  if typeof RedactorPlugins is "undefined"
+@RedactorPlugins = {} unless RedactorPlugins?
 @RedactorPlugins.stickyScrollToolbar =
     init: ->
         toolbarOffsetFromTop = $("#entry .redactor_toolbar").offset().top
