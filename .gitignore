@@ -1,5 +1,11 @@
+# Editor stuff
 .idea/
 .DS_Store
+\#*\#
+*~
+.\#*
+
+# Meteor/Application
 _settings.coffee
 packages/
 smart.json
@@ -8,3 +14,7 @@ public/user-images
 packages/spin/.build
 packages/bootstrap3-less/.build
 packages/meteor-accounts-ui-bootstrap-3/.build
+
+# Deployment/Build
+.build/
+*.pyc
