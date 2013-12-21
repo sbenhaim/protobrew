@@ -1,113 +1,130 @@
+class Node
+  constructor: (@url, @name, @parent) ->
+    @children = []
+
+  addChild: (childNode) ->
+    @children.push(childNode)
+
+  addToDOM: (ul) ->
+    li = $("<li>")
+    $(ul).append(li)
+    $a = $("<a/>")
+    $a.attr('href', "/" + @url)
+    $a.html(@name)
+    li.append($a)
+    if @children.length > 0
+      newUlElem = $("<ul>").appendTo(li)
+      for child in @children
+        child.addToDOM(newUlElem)
+
+
+class Tree
+
+  constructor: () ->
+    @root = null
+    @ulElem = null
+    @textOut = ""
+    @names = {}
+
+  insertName: (name) =>
+    @names[name] = {}
+
+  # constant time, forget that linear or logarithmic bs
+  containsName: (name) =>
+    return @names.hasOwnProperty(name)
+
+  # Insert a new node into the tree
+  insertNode: (newChild) =>
+    parent = newChild.parent
+
+    if !@root?
+      @root = newChild
+
+    # do not insert the node if it is already inserted
+    if parent?
+      for sibling in parent.children
+        if sibling.url == newChild.url
+          return false
+
+    # Make sure we are not creating a cylce
+    node = parent
+    while (node)
+      if node.url == newChild.url
+        return false
+      node = node.parent
+
+    # All clear, do it!
+    if parent?
+      parent.addChild(newChild)
+    @names[newChild.name] = newChild
+    return true
+
+  displayNames: () =>
+    for n in @names
+      console.log("name: #{n}")
+
+  toDom: () =>
+    ul = $("<ul>")
+    @root.addToDOM(ul)
+    return ul
+
+isInternalLink = (theHref) ->
+  return (!theHref.match(/^\w+:\/\//))
+
+buildTree = (context, tree, rootNode) ->
+  if !parent
+    entry = Entries.findOne({_id: 'home'})
+  else
+    entry = findSingleEntryByTitle(rootNode.name, context)
+
+  if !entry
+    return
+
+  for el in $("<div>" + entry.text + "</div>").find('a')
+    href = $(el).attr('href')
+    if isInternalLink(href)
+      if (href.indexOf "/") == 0
+        name = href.slice(1)
+      else
+        name = href
+      tree.insertNode(new Node(href, name, rootNode))
+
+  for child in rootNode.children
+    buildTree(context, tree, child)
+
 Template.pageindex.events =
   'click #pageindex a': evtNavigate
 
-class Node
-   constructor: (@url, @name, @parent) ->
-      @children = []
+Template.pageindex.pageindex = ->
+  tree = new Tree()
+  entry = Entries.findOne({_id: 'home'})
+  if !entry?
+    return "No Wiki Pages Exist. You should make one!"
 
-class Tree
-   root: null
-   constructor: (@root) ->
-      @ulElem = null
-      @textOut = ""
-      @nameArray = []
+  root = new Node(entry.title, entry.title, null)
+  tree.insertNode(root)
 
-   # simple linear search. improve to binary for performance
-   findNameArray: (name) ->
-      for n in @nameArray
-         if n == name
-            return true
-      return false
-   insertNode : (newChild) ->
-      parent = newChild.parent
-      for child in parent.children
-         if child.url == newChild.url
-            #console.log("multi child detected")
-            return false
+  context = Session.get('context')
+  buildTree(context, tree, tree.root)
 
-      while (parent) # check for loops
-         if parent.url == newChild.url
-            #console.log("loop detected "+newChild.url)
-            return false
-         parent = parent.parent
-      newChild.parent.children.push newChild
-      @nameArray.push newChild.name
-      return true
+  # build unordered list of unorphaned entries
+  ul = tree.toDom()
 
-   displayNames: () ->
-      for n in @nameArray
-         console.log("name: #{n}")
-
-   traverseTree: (ulElem, node) ->
-#      console.log("url: #{node.url} name: #{node.name}")
+  # build unordered list of orphaned entries
+  ul2 = $('<ul>')
+  entry_cnt = 0
+  for entry in findAll().fetch()
+    if !tree.containsName(entry.title)
+      entry_cnt += 1
       li = $("<li>")
-      $(ulElem).append(li)
+      $(ul2).append(li)
       $a = $("<a/>")
-      $a.attr('href', "/" + node.url )
-      $a.html(node.name)
+      $a.attr('href', "/" + entry.title)
+      $a.html(entry.title)
       li.append($a)
-      child_stack = []
-      for child in node.children
-         child_stack.push child
-      newUlElem = $("<ul>").appendTo(li)
-      @traverseTree(newUlElem, child) for child in child_stack
 
-buildLinks = (context, tree, rootNode) ->
-   if ! parent
-      entry = Entries.findOne({_id: 'home'})
-   else
-      entry = findSingleEntryByTitle(rootNode.name, context)
-
-   #console.log("building #{rootNode.name}")
-   if ! entry
-      return
-
-   for el in $("<div>"+entry.text+"</div>").find('a')
-      href = $(el).attr('href')
-      if ! href.match(/^\w+:\/\//) #detect internal link
-         if (href.indexOf "/") == 0
-            name = href.slice(1)
-         else
-            name = href
-         tree.insertNode(new Node href, name, rootNode)
-      else   
-         #console.log("what kind of #{href}")
-   for child in rootNode.children
-      buildLinks(context, tree, child)
-
-Template.pageindex.test = ->
-    tree = new Tree
-    entry = Entries.findOne({_id: 'home'})
-    if ! entry?
-        return "No Wiki Pages Exist. You should make one!"
-    tree.root = new Node "/"+entry.title,entry.title, null
-    tree.nameArray.push entry.title
-
-    context = Session.get('context')
-    buildLinks context, tree, tree.root
-            
-    ul = $('<ul>')
-    tree.traverseTree(ul, tree.root)
-    #console.log(ul.html())
-    tree.displayNames()      
-
-    ul2 = $('<ul>')      
-
-    entry_cnt = 0
-    for entry in findAll().fetch()
-      console.log(entry)
-      if ! tree.findNameArray(entry.title)
-         entry_cnt += 1
-         li = $("<li>")
-         $(ul2).append(li)
-         $a = $("<a/>")
-         $a.attr('href', "/"+entry.title ) 
-         $a.html(entry.title)
-         li.append($a)
-
-    if ! entry_cnt
-       html_out = ul.html()
-    else
-       html_out = ul.html() + "<h2>Orphan Pages</h2>" + ul2.html()
-    html_out
-   
+  if !entry_cnt
+    html_out = ul.html()
+  else
+    html_out = ul.html() + "<h2>Orphaned Pages</h2>" + ul2.html()
+  html_out
