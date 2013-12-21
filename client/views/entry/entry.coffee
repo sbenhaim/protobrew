@@ -1,6 +1,6 @@
 root = exports ? this
 
-#builds array of all heading titles
+# builds array of all heading titles
 @stackTitles = (items, cur, counter) ->
 
     cur = 1 if cur == undefined
@@ -11,9 +11,8 @@ root = exports ? this
     for elem, index in items
         elem = $(elem)
         children  =  filterHeadlines( elem.nextUntil( 'h' + cur, 'h' + next ) )
-        d = {};
+        d = {}
         d.title = elem.text()
-        # d.y  = elem.offset().top
         d.id = counter++
         d.target = "entry-heading-#{d.id}"
         d.style = "top" if cur == 0
@@ -78,9 +77,8 @@ Template.entry.events
     'click a.entry-link': (evt) ->
         if Session.get('editMode')
             evt.preventDefault()
-            return
         else
-            evtNavigate(e)
+            evtNavigate(evt)
 
     # for Create It! button on new page
     'click .edit': (evt) ->
