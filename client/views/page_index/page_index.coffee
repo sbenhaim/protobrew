@@ -95,7 +95,7 @@ buildTree = (context, tree, rootNode) ->
 Template.pageindex.events =
   'click #pageindex a': evtNavigate
 
-Template.pageindex.test = ->
+Template.pageindex.pageindex = ->
   tree = new Tree()
   entry = Entries.findOne({_id: 'home'})
   if !entry?
