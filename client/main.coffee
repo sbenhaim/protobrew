@@ -22,19 +22,19 @@ Deps.autorun(->
 );
 
 highlightNav = ->
+  headerHeight = $("header")[0].clientHeight
   pos = $(window).scrollTop()
-  headlines = $('h1, h2, h3, h4, h5')
+  headlines = _.filter $('h1, h2, h3, h4, h5'), ($headline) ->
+    $headline.id != "article-title"
 
   for headline in headlines
-    if $(headline).offset().top + 20 > pos
+    if $(headline).offset().top - 10 >= pos
       id = headline.id.replace(/entry/, "nav")
       break
 
-  el = $("#" + id)
-  el.parents('ul').find('a').removeClass('selected')
-  el.addClass('selected')
-  console.log(el)
-
+  $el = $("#" + id)
+  $el.parents('ul').find('a').removeClass('selected')
+  $el.addClass('selected')
 
 @lockEntry = ->
   Meteor.call('lockEntry', Session.get('entryId')) if Session.get('entryId')
@@ -175,7 +175,7 @@ Meteor.startup ->
 
 scrollLast = +new Date()
 $(window).scroll ->
-  if +new Date() - scrollLast > 50
+  if +new Date() - scrollLast > 30  # milliseconds
     scrollLast = +new Date();
     highlightNav()
 

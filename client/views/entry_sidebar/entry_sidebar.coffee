@@ -43,21 +43,18 @@ Template.entry_sidebar.navItems = ->
         entry = findSingleEntryByTitle(title, context)
         if entry
             source = $('<div>').html(entry.text) #make a div with entry.text as the innerHTML
-
-            # TODO: replace wtih function and user here and Template.entry.entry
-            headings = buildHeadingTree(onlyNonEmpty(source.find(":header:first")))
-            headings.unshift( {id: 0, target: "article-title", title: Session.get('title') } )
+            headings = _.filter buildHeadingTree(onlyNonEmpty(source.find(":header:first"))), (heading) ->
+              heading.id != 0
             if headings.length > 0
                 for e, i in source.find('h1,h2,h3,h4,h5')
                     e.id = "entry-heading-" + (i + 1)
             entry.text = source.html()
-            # endTODO
 
-            textWithTitle = '<h1 id="article-title" class="article-title">'+title+'</h2>'+entry.text
+            textWithTitle = entry.text
             $headingNodes = $(textWithTitle).filter(":header")
-            result = $('<ul>')
-            buildNavTree($headingNodes, result, 1)
-            result.html()
+            $result = $('<ul>')
+            buildNavTree($headingNodes, $result, 1)
+            $result.html()
     else
     	return false
 
