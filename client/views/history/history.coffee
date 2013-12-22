@@ -1,16 +1,13 @@
-
 Template.history.revisions = ->
   title = Session.get("title")
   if title
-    revs = findRevisionsByTitle( title )
-    console.log revs
-    revs
+    findRevisionsByTitle(title)
   else
     console.log "No revs found."
     []
 
 Template.history.getUserName = (userID) ->
-    UserLib.getDisplayNameById(userID)
+  UserLib.getDisplayNameById(userID)
 
 Template.history.events
   'click #compareSelected': (evt) ->
@@ -18,7 +15,7 @@ Template.history.events
     rev1 = $('.historyForm input[name=rev1]:checked').val()
     rev2 = $('.historyForm input[name=rev2]:checked').val()
     if rev1? and rev2?
-      navigate('/compare/'+Session.get('title')+'/'+rev1+'/'+rev2)
+      navigate('/compare/' + Session.get('title') + '/' + rev1 + '/' + rev2)
     else
       $('.compareRadio').queue (next) ->
         $(this).addClass 'compareRadioRed'
@@ -37,8 +34,8 @@ _currentHash = 44032
 _is_debug = false;
 
 pushHash = (tag) ->
-  if typeof(_htmlHash[tag]) == 'undefined'
-    _htmlHash[tag] = eval('"\\u'+_currentHash.toString(16)+'"')
+  if not _htmlHash.tag?
+    _htmlHash[tag] = eval('"\\u' + _currentHash.toString(16) + '"')
     _currentHash++
   _htmlHash[tag]
 
@@ -84,5 +81,5 @@ Template.compare.rendered = ->
       debug: true
     });
     # TODO: plain2html the diff result.
-    diffText = plain2html($("#diffView").html()).replace(/<br>/gi,'')
+    diffText = plain2html($("#diffView").html()).replace(/<br>/gi, '')
     $("#diffView").html(diffText)
