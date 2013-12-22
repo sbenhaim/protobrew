@@ -81,6 +81,9 @@ Router.map ->
     @route "history",
         path: "/history/:title"
         template: "history"
+        before: ->
+          Session.set('context', null)
+          Session.set('title', @params.title)
     @route "compare",
         path: "/compare/:title/:rev1/:rev2"
         template: "compare"
