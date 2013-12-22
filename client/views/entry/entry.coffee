@@ -119,8 +119,8 @@ Template.entry.events
                         if error
                             Toast.error('Page already exists!')
                         else
-                    $el.html($in.val())
-                    navigate($in.val())
+                            $el.html($in.val())
+                            navigate($in.val())
 
                 $in.replaceWith($el)
                 $(document).off('click')
@@ -192,6 +192,8 @@ deleteEntry = (evt) ->
     entry._id = eid if eid
 
     context = Session.get('context')
+    # TODO should call verifySave from here and the server saveEntry function
+    # rather than just the server saveEntry function?
 
     # Meteor.call('saveEntry', title, entry, context, reroute)
     Meteor.call('saveEntry', title, entry, context)
