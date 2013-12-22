@@ -37,13 +37,17 @@ Tags.allow
   Entries.findOne({title: titleTerm, context: context})
 
 @findRevisionsByTitle = (title) ->
-  titleEscaped = escapeRegExp(title)
-  titleTerm = new RegExp("^" + titleEscaped + "$", 'i')
-  entry = Entries.findOne({title: titleTerm})
-  if entry
-    Revisions.find({entryId: entry._id}).fetch()
-  else
-    []
+    titleEscaped = escapeRegExp( title )
+    titleTerm = new RegExp( "^" + titleEscaped + "$", 'i' )
+    entry = Entries.findOne({title: titleTerm})
+    if entry
+      revs = Revisions.find({entryId: entry._id}, {sort: {date: -1}}).fetch()
+      console.log(revs)
+      _.each revs, (rev) ->
+        rev.moment = moment(rev.date).fromNow()
+      revs
+    else
+      []
 
 @findRevisionById = (id) ->
   Revisions.findOne({"_id": id})
