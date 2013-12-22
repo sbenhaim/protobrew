@@ -1,8 +1,9 @@
-buildRec = (headingNodes, $elm, lv) ->
+# Recursively build navigation tree from nodes, appending to element
+buildNavTree = (headingNodes, $elm, lv) ->
     # each time through recursive function pull a piece of the jQuery object off
     node = headingNodes.splice(0,1)
 
-    if node && node.length > 0
+    if node? and node.length > 0
         curLv = parseInt(node[0].tagName.substring(1))
         if curLv is lv # same level append an il
             cnt = 0
@@ -17,23 +18,19 @@ buildRec = (headingNodes, $elm, lv) ->
             loop
                 li = $elm.children().last() # if there are already li's at this level
                 if ($elm.children().last().length == 0)
-                    li = $("<li>").appendTo($elm);
-                $elm = $("<ul>").appendTo(li);
+                    li = $("<li>").appendTo($elm)
+                $elm = $("<ul>").appendTo(li)
                 cnt++
                 break unless cnt < (curLv - lv)
-        li = $("<li>").appendTo($elm);
-        # li.text(node[0].innerText)
+        li = $("<li>").appendTo($elm)
         $a = $("<a/>")
-        # $a.attr( "id", "nav-title-" + child.id )
-        # $a.addClass( child.style )
-        #$a.attr( 'data-target', child.target )
-        # $a.html( child.title )
-        $a.attr( 'href', '#' + node[0].id ) #for cursor purposes only
+        $a.attr('href', '#' + node[0].id) #for cursor purposes only
+        $a.attr('id', node[0].id.replace(/entry/, "nav"))
         $a.text($(node[0]).text())
         li.append( $a )
 
         # recursive call
-        buildRec headingNodes, $elm, lv + cnt
+        buildNavTree(headingNodes, $elm, lv + cnt)
 
 
 Template.entry_sidebar.entry = ->
@@ -43,12 +40,12 @@ Template.entry_sidebar.navItems = ->
     title = Session.get("title")
     context = Session.get('context')
     if title
-        entry = findSingleEntryByTitle( title, context )
+        entry = findSingleEntryByTitle(title, context)
         if entry
-            source = $('<div>').html( entry.text ) #make a div with entry.text as the innerHTML
+            source = $('<div>').html(entry.text) #make a div with entry.text as the innerHTML
 
             # TODO: replace wtih function and user here and Template.entry.entry
-            headings = stackTitles( filterHeadlines( source.find(":header:first")) )
+            headings = buildHeadingTree(onlyNonEmpty(source.find(":header:first")))
             headings.unshift( {id: 0, target: "article-title", title: Session.get('title') } )
             if headings.length > 0
                 for e, i in source.find('h1,h2,h3,h4,h5')
@@ -59,7 +56,7 @@ Template.entry_sidebar.navItems = ->
             textWithTitle = '<h1 id="article-title" class="article-title">'+title+'</h2>'+entry.text
             $headingNodes = $(textWithTitle).filter(":header")
             result = $('<ul>')
-            buildRec($headingNodes,result,1)
+            buildNavTree($headingNodes, result, 1)
             result.html()
     else
     	return false

@@ -1,27 +1,39 @@
 root = exports ? this
 
-# builds array of all heading titles
-@stackTitles = (items, cur, counter) ->
-
-    cur = 1 if cur == undefined
-    counter ?= 1
-
+# Recursively build tree of headings starting with the first one provided
+#
+# Example Return Value
+# [{
+#   "title": "title",
+#   "id": 0,
+#   "target": "entry-heading-0",
+#   "style": "top",
+#   "children": [
+#     {...},
+#     {...}
+#   ]
+# }]
+#
+@buildHeadingTree = (items, cur=1, counter=1) ->
     next = cur + 1
-
+    nodes = []
     for elem, index in items
-        elem = $(elem)
-        children  =  filterHeadlines( elem.nextUntil( 'h' + cur, 'h' + next ) )
+        $elem = $(elem)
+        children = onlyNonEmpty($elem.nextUntil('h' + cur, 'h' + next))
         d = {}
-        d.title = elem.text()
+        d.title = $elem.text()
         d.id = counter++
         d.target = "entry-heading-#{d.id}"
         d.style = "top" if cur == 0
-        d.children = stackTitles( children, next, counter ) if children.length > 0
-        d
+        d.children = buildHeadingTree(children, next, counter) if children.length > 0
+        nodes.push(d)
+    return nodes
 
-@filterHeadlines = ( $hs ) ->
-    _.filter( $hs, ( h ) ->
-        $(h).text().match(/[^\s]/) ) #matches any non-whitespace char
+# Given a collection of headlines, return only those that include
+# non-whitespace characters
+@onlyNonEmpty = ($hs) ->
+    _.filter $hs, (h) ->
+      $(h).text().match(/[^\s]/) #matches any non-whitespace char
 
 
 Template.entry.title = ->
@@ -59,7 +71,7 @@ Template.entry.entry = ->
             Session.set('entryId', entry._id )
 
             source = $('<div>').html( entry.text ) #make a div with entry.text as the innerHTML
-            headings = stackTitles( filterHeadlines( source.find(":header:first")) )
+            headings = buildHeadingTree( onlyNonEmpty( source.find(":header:first")) )
             headings.unshift( {id: 0, target: "article-title", title: Session.get('title') } )
             if headings.length > 0
                 for e, i in source.find('h1,h2,h3,h4,h5')
