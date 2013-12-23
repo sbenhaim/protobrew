@@ -159,11 +159,16 @@ Template.editEntry.rendered = ->
     });
 
 
-deleteEntry = (evt) ->
+@deleteEntry = (evt) ->
     entry = Session.get('entry')
     if entry
+        # delete associated comments
+        if Comments.find(entry: entry._id).count() > 0
+            Meteor.call('deleteComments',entry)
+
+        #delete entry
         Meteor.call('deleteEntry',entry)
-        Entries.remove({_id: entry._id})
+        Entries.remove(_id: entry._id)
         Session.set('editMode', false)
         Session.set('editEntry', false)
     else

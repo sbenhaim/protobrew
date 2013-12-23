@@ -24,6 +24,15 @@ Meteor.methods
         id = Entries.remove({_id: entry._id})
         return id
 
+    deleteComments:(entry) ->
+        # add permission check
+        if entry._id is null
+            return
+        if typeof entry._id is 'undefined'
+            return
+        id = Comments.remove(entry: entry._id)
+        return id
+
     # Todo: lock down fields
     saveEntry: (title, entry, context, callback) ->
         # Only members can edit

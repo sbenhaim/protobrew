@@ -22,6 +22,7 @@ class _EntryLib
             buttons: this.redactorButtons,
             focus: true
             autoresize: true
+            minHeight: 100 #pixels
             filepicker: (callback) ->
                 filepicker.setKey(this.filepickerKey)
                 filepicker.pick({mimetype:"image/*"}, (file) ->

@@ -79,7 +79,7 @@ Template.deleteConfirmModal.events =
 
   'click #delete-cancel-button': (e) ->
     $('#delete-confirm-modal').modal('hide')
-
+    
 
 ## Global Helpers
 
