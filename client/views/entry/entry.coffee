@@ -119,8 +119,8 @@ Template.entry.events
                         if error
                             Toast.error('Page already exists!')
                         else
-                    $el.html($in.val())
-                    navigate($in.val())
+                            $el.html($in.val())
+                            navigate($in.val())
 
                 $in.replaceWith($el)
                 $(document).off('click')
@@ -159,11 +159,16 @@ Template.editEntry.rendered = ->
     });
 
 
-deleteEntry = (evt) ->
+@deleteEntry = (evt) ->
     entry = Session.get('entry')
     if entry
+        # delete associated comments
+        if Comments.find(entry: entry._id).count() > 0
+            Meteor.call('deleteComments',entry)
+
+        #delete entry
         Meteor.call('deleteEntry',entry)
-        Entries.remove({_id: entry._id})
+        Entries.remove(_id: entry._id)
         Session.set('editMode', false)
         Session.set('editEntry', false)
     else
@@ -192,6 +197,8 @@ deleteEntry = (evt) ->
     entry._id = eid if eid
 
     context = Session.get('context')
+    # TODO should call verifySave from here and the server saveEntry function
+    # rather than just the server saveEntry function?
 
     # Meteor.call('saveEntry', title, entry, context, reroute)
     Meteor.call('saveEntry', title, entry, context)

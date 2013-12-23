@@ -1,7 +1,6 @@
 Template.comment_form.rendered = ->
   if Meteor.user() and not @editor
     el = $("#comment")
-
     window.EntryLib.initRedactor( el, ["autoSuggest"] )
 
 

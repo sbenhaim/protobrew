@@ -1291,7 +1291,7 @@
                 return;
             }
             // undo
-            else if (ctrl && key === 90 && e.shiftKey && !e.altKey)
+            else if (ctrl && key === 89 && !e.shiftKey && !e.altKey) // GK: change redo to ctrl + y from ctrl + shit + z
             {
                 e.preventDefault();
                 if (this.opts.rebuffer.length != 0) this.bufferRedo();

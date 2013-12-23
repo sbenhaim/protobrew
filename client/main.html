@@ -68,28 +68,31 @@
 </template>
 
 <template name="deleteConfirmModal">
+    <div id="delete-confirm-modal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Delete Page</h4>
+                </div>
+                
+                {{#isolate}}
+                <div class="modal-body">
+                    Warning:
+                    <p>This will delete the current page and all it's contents inside.</p>
+                    <p> </p>
+                    <p>If you are sure please type in DELETE below:</p>
+                    <input type="text" id="delete-confirm-input"/>
 
-    <div id="delete-confirm-modal" class="modal hide fade">
-        <div class="modal-header">
-            <h3>Delete Page</h3>
+                </div>
+                
+                <div class="modal-footer">
+                    <a id="delete-confirm-button" href="javascript:void(0);" class="btn btn-danger"> DELETE NOW</a>
+                    <a id="delete-cancel-button" href="javascript:void(0);" class="btn btn-primary"> Do not Delete</a>
+                </div>
+                {{/isolate}}
+            </div>
         </div>
-        
-        {{#isolate}}
-        <div class="modal-body">
-            <h4>Warning:</h4>
-            <p>This will delete the current page and all the content inside.</p>
-            <p> </p>
-            <p>If you are sure please type in DELETE below:</p>
-            <input type="text" id="delete-confirm-input"/>
-
-        </div>
-        
-        <div class="modal-footer">
-            <a id="delete-confirm-button" href="javascript:void(0);" class="btn btn-danger"> DELETE NOW</a>
-            <a id="delete-cancel-button" href="javascript:void(0);" class="btn btn-primary"> Do not Delete</a>
-        </div>
-        {{/isolate}}
-    </div>
+    </div>  
 </template>
 
 

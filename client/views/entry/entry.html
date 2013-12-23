@@ -14,54 +14,42 @@
         <form>
 
             {{#with entry}}
-            {{> editEntry}}
+                {{> editEntry}}
             {{/with}}
 
             {{#if adminable}}
-            <p>
-                <label>Mode
-                    <select id="mode" name="mode">
-                        <option {{#if modeIs "public"}}selected{{/if}} value="public">Public</option>
-                        <option {{#if modeIs "read-only"}}selected{{/if}} value="read-only">Read-Only</option>
-                        <option {{#if modeIs "private"}}selected{{/if}} value="private">Private</option>
-                    </select>
-                </label>
-            </p>
+                <p>
+                    <label>Mode
+                        <select id="mode" name="mode">
+                            <option {{#if modeIs "public"}}selected{{/if}} value="public">Public</option>
+                            <option {{#if modeIs "read-only"}}selected{{/if}} value="read-only">Read-Only</option>
+                            <option {{#if modeIs "private"}}selected{{/if}} value="private">Private</option>
+                        </select>
+                    </label>
+                </p>
             {{/if}}
         </form>
         {{else}}
-
-        {{#if entry._id}}
-
-        {{#if viewable}}
-
-        <div id="view-entry-content-wrapper">
-            <p>{{{entry.text}}}</p>
-        </div>
-
-
-        {{> comment_form}}
-        {{> comment_list}}
-
-        {{else}}
-
-        <p>{{entry.title}} is private.</p>
-
-        {{/if}}
-
-        {{else}}
-
-        {{#if entryLoaded}}
-        <p>{{title}} doesn't exist yet.</p>
-        {{#if currentUser}}
-        <a class="btn btn-success edit" href="#" value="edit" id="create_btn"><span aria-hidden="true" data-icon="&#x22;"></span> Create it!</a>
-        {{/if}}
-        {{else}}
-        {{> spinner}}
-        {{/if}}
-
-        {{/if}}
-
+            {{#if entry._id}}
+                {{#if viewable}}
+                    <div id="view-entry-content-wrapper">
+                        <p>{{{entry.text}}}</p>
+                    </div>
+                    {{> comment_form}}
+                    {{> comment_list}}
+                {{else}}
+                    <p>{{entry.title}} is private.</p>
+                {{/if}}
+            {{else}}
+                {{#if entryLoaded}}
+                    <p>{{title}} doesn't exist yet.</p>
+                    {{#if currentUser}}
+                        <a class="btn btn-success edit" href="#" value="edit" id="create_btn"><span aria-hidden="true" data-icon="&#x22;"></span> Create it!</a>
+                    {{/if}}
+                {{else}}
+                    {{> spinner}}
+                {{/if}}
+            {{/if}}
         {{/if}}
     </div>
 
