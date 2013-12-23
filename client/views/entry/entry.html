@@ -11,24 +11,22 @@
         </div>
 
         {{#if editMode}}
-        <form>
-
-            {{#with entry}}
-                {{> editEntry}}
-            {{/with}}
-
-            {{#if adminable}}
-                <p>
-                    <label>Mode
-                        <select id="mode" name="mode">
-                            <option {{#if modeIs "public"}}selected{{/if}} value="public">Public</option>
-                            <option {{#if modeIs "read-only"}}selected{{/if}} value="read-only">Read-Only</option>
-                            <option {{#if modeIs "private"}}selected{{/if}} value="private">Private</option>
-                        </select>
-                    </label>
-                </p>
-            {{/if}}
-        </form>
+            <form>
+                {{#with entry}}
+                    {{> editEntry}}
+                {{/with}}
+                {{#if adminable}}
+                    <p>
+                        <label>Mode
+                            <select id="mode" name="mode">
+                                <option {{#if modeIs "public"}}selected{{/if}} value="public">Public</option>
+                                <option {{#if modeIs "read-only"}}selected{{/if}} value="read-only">Read-Only</option>
+                                <option {{#if modeIs "private"}}selected{{/if}} value="private">Private</option>
+                            </select>
+                        </label>
+                    </p>
+                {{/if}}
+            </form>
         {{else}}
             {{#if entry._id}}
                 {{#if viewable}}
