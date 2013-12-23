@@ -17,7 +17,7 @@ body .redactor_box_fullscreen {
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 2000;
+    z-index: 1000000;
     overflow: hidden;
     width: 100%;
 }
@@ -110,7 +110,6 @@ GK: styling for text comes from bootstrap
 	line-height: 1.5rem;
 }
 
-
 .redactor_editor,
 .redactor_editor:focus {
 	position: relative;
@@ -124,9 +123,6 @@ GK: styling for text comes from bootstrap
 	box-shadow: none !important;
 	white-space: normal;
 }
-
-
-
 .redactor_editor a {
 	color: #15c !important;
 	text-decoration: underline !important;
@@ -226,7 +222,6 @@ GK: styling for text comes from bootstrap
   border: 0;
   border-top: 1px solid #ccc;
 }
-
 .redactor_editor h1,
 .redactor_editor h2,
 .redactor_editor h3,

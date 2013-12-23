@@ -23,8 +23,8 @@ class _EntryLib
             focus: true
             autoresize: true
             minHeight: 100 #pixels
-            filepicker: (callback) ->
-                filepicker.setKey(this.filepickerKey)
+            filepicker: (callback) =>
+                filepicker.setKey(@filepickerKey)
                 filepicker.pick({mimetype:"image/*"}, (file) ->
                     filepicker.store(file, {location:"S3", path: Meteor.userId() + "/" + file.filename },
                     (file) -> callback( filelink: file.url )))
