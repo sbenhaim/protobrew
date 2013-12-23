@@ -60,3 +60,66 @@ Here's an example of how one would deploy to the staging server
 
     $ fab staging deploy
 
+Data Model
+----------
+
+The data model that exists today has the following basic model collections
+that are defined by the wiki application:
+
+    Entries:
+      {
+        _id: "gjQH4bGKLokvjJ2Gn",
+        title: "home".
+        context: null,
+        mode: "public",
+        tags: ["tag1", "tag2"],
+        text: "Blah, Blah, Blah"
+      }
+
+    Tags:
+      {
+        _id: "pDo4KTfYusHoZNNci",
+        name: "tag1"
+      }
+
+    Revisions:
+      {
+        _id: "csYmjCQLFqoFknE6z",
+        entryId: "gjQH4bGKLokvjJ2Gn",
+        date: <date>,
+        text: "The entry at this revision",
+        author: "xgSCswxkEyXMHt8uW"
+      }
+
+In addition to these, additional collections are defined by some 3rd
+party packages.
+
+Meteor Accounts (http://docs.meteor.com/#accounts_api):
+
+    Meteor.users:
+      {
+        _id: "bbca5d6a-2156-41c4-89da-0329e8c99a4f",  // Meteor.userId()
+        username: "cool_kid_13", // unique name
+        emails: [
+          // each email address can only belong to one user.
+          { address: "cool@example.com", verified: true },
+          { address: "another@different.com", verified: false }
+        ],
+        createdAt: Wed Aug 21 2013 15:16:52 GMT-0700 (PDT),
+        profile: {
+          // The profile is writable by the user by default.
+          name: "Joe Schmoe"
+        },
+        services: {
+          facebook: {
+            id: "709050", // facebook id
+            accessToken: "AAACCgdX7G2...AbV9AZDZD"
+          },
+          resume: {
+            loginTokens: [
+              { token: "97e8c205-c7e4-47c9-9bea-8e2ccc0694cd",
+                when: 1349761684048 }
+            ]
+          }
+        }
+      }

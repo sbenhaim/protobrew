@@ -1,5 +1,3 @@
-root = exports ? this
-
 # Recursively build tree of headings starting with the first one provided
 #
 # Example Return Value

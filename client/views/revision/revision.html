@@ -1,0 +1,15 @@
+<template name="revision">
+    <div id="entry">
+    {{#if entry._id}}
+        <h1 id="article-title" class="article-title">{{entry.title}}</h1>
+        <div>
+            <span class="text-muted">Showing revision</span> {{revision.id}}
+            <span class="text-muted">created on </span>{{revisionDateAsMoment}}
+            (<a href="/history/{{entry.title}}">history</a> | <a href="/{{entry.title}}">current</a>)
+        </div>
+        <div id="view-entry-content-wrapper">
+            {{{revision.text}}}
+        </div>
+    {{/if}}
+    </div>
+</template>

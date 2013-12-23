@@ -9,6 +9,9 @@ Template.history.revisions = ->
 Template.history.getUserName = (userID) ->
   UserLib.getDisplayNameById(userID)
 
+Template.history.entry = ->
+  Entries.findOne({title: Session.get("title")})
+
 Template.history.events
   'click #compareSelected': (evt) ->
     evt.preventDefault()

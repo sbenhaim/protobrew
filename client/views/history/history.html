@@ -4,15 +4,10 @@
         <table class="table revisionsTable">
             <thead>
             <tr>
-                <th>
-                    <button id="compareSelected">Compare Selected</button>
-                </th>
-                <th>
-                    Date
-                </th>
-                <th>
-                    Author
-                </th>
+                <th><button id="compareSelected">Compare Selected</button></th>
+                <th>Date</th>
+                <th>Author</th>
+                <th>View Revision</th>
             </tr>
             </thead>
             <tbody>
@@ -29,6 +24,9 @@
                 </td>
                 <td>
                     <a href="/users/{{getUserName author}}">{{getUserName author}}</a>
+                </td>
+                <td>
+                    <a href="/revision/{{entry.title}}/{{_id}}">View Revision</a>
                 </td>
                 <!--
                 <td>
