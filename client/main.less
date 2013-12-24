@@ -23,13 +23,38 @@
   margin: 0;
 }
 
+#article-title-bar {
+  margin: 20px 0 10px 0;
+  width: 100%;
+  .btn {
+    height: 53px;
+  }
+}
+
+#article-title-bar:hover .title-hover-show {
+    display: block;
+}
+
+.title-hover-show {
+    float: right;
+    display: none;
+}
+
+#title-edit-bar {
+  margin: 20px 0 10px 0;
+  .btn {
+    height: 53px;
+  }
+}
+
 input.entry-title-input {
   font-weight: 300 !important;
   font-size: 36px !important;
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-  margin: 20px 0 10px 0;
+  height: 53px;
   padding: 0;
 }
+
 
 #entry-sidebar {
   a.selected {
@@ -45,3 +70,5 @@ input.entry-title-input {
 //   border-color: gray;
 
 // }
+
+

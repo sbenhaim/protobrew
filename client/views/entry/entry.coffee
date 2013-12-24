@@ -43,6 +43,9 @@ Template.entry.titleHidden = ->
 Template.entry.entryLoaded = ->
     Session.get('entryLoaded')
 
+Template.entry.changingTitle = ->
+    Session.get('changingTitle')
+
 Template.entry.userContext = ->
     Session.get('context')
 
@@ -98,42 +101,55 @@ Template.entry.events
         Session.set('editMode', true)
 
     'click #article-title': (evt) ->
+        editTitleMode(evt)
 
-        entry = Session.get('entry')
-        context = Session.get("context")
-        user  = Meteor.user()
-        return unless editable( entry, user, context )
+    'click #article-title-edit': (evt) ->
+        editTitleMode(evt)
 
-        $el = $(evt.target)
-        $in = $("<input class='entry-title-input'/>")
-        $in.val( $el.text().trim() )
-        $el.replaceWith($in)
-        $in.focus()
+    'click #article-title-save': (evt) ->
+        saveTitleChange()
 
-        updateTitle = (e, force = false) ->
-            if force || e.target != $el[0] && e.target != $in[0]
-                if $in.val() != $el.text()
-                    Meteor.call 'updateTitle', Session.get('entry'), Session.get('context'), $in.val(), (error, result) ->
-                        if error
-                            Toast.error('Page already exists!')
-                        else
-                            $el.html($in.val())
-                            navigate($in.val())
+    'click #article-title-cancel': (evt) ->
+        cancelTitleChange()
+    
+    'keyup #article-title-input': (evt) ->
+        if evt.keyCode == 13
+            saveTitleChange()
 
-                $in.replaceWith($el)
-                $(document).off('click')
+        if evt.keyCode == 27
+            cancelTitleChange()
 
-        cancel = (e, force = false) ->
-            if force || e.target != $el[0] && e.target != $in[0]
-                $in.replaceWith($el)
-                $(document).off('click')
+@editTitleMode = (evt) ->
+    entry = Session.get('entry')
+    context = Session.get('context')
+    user  = Meteor.user()
+    if not editable( entry, user, context )
+        return
+    Session.set('changingTitle', true)
+    evt.stopPropagation()
+    $(document).on 'click', (evt)->
+        if evt.target.getAttribute("id") isnt "article-title-input"
+            cancelTitleChange()
 
-        $(document).on('click', updateTitle)
+@saveTitleChange = (evt) ->
+    titleInput = $('#article-title-input').val().trim()
+    Meteor.call 'updateTitle', Session.get('entry'), Session.get('context'), titleInput, (error, result) ->
+        if error
+            Toast.error('Page already exists!')
+            Session.set('changingTitle', false)
+        else
+            navigate(titleInput)
+            Session.set('changingTitle', false)
 
-        $in.on("keyup", (e) ->
-            updateTitle(e, true) if e.keyCode == 13
-            cancel(e, true) if e.keyCode == 27
-        )
+@cancelTitleChange = (evt) ->
+    Session.set('changingTitle', false)
+    $(document).off('click')
+
+
+
+
+Template.entry.rendered = ->
+    $('#article-title-input').focus()
 
 
 Template.editEntry.rendered = ->

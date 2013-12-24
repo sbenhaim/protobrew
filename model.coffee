@@ -22,11 +22,16 @@ Tags.allow
     true if userId
 
 @entryLink = (entry) ->
-  unless entry.context then "/#{entry.title}" else "/u/#{entry.context}/#{entry.title}"
+  encodedTitle = encodeURIComponent(entry.title)
+  if entry.context?
+    encodedContext = encodeURIComponent(entry.context)
+    return "/u/#{encodedContext}/#{encodedTitle}"
+  else
+    return "/#{encodedTitle}"
 
 @historyLink = (entry) ->
-  "/history/#{entry.title}"
-
+  encodedTitle = encodeURIComponent(entry.title)
+  return "/history/#{encodedTitle}"
 
 @findAll = (context) ->
   Entries.find({context: context})

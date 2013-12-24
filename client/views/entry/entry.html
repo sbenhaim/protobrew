@@ -1,8 +1,34 @@
 <template name="entry">
     <div id="entry">
-        <h1 id="article-title" class="article-title">
-            {{#if userContext}}{{userContext}} / {{/if}}{{title}}
-        </h1>
+
+        {{#if changingTitle}}
+            <div id="title-edit-bar" class="input-group">
+                <input id="article-title-input" class="article-title entry-title-input form-control" type="text" 
+                   value="{{#if userContext}}{{userContext}} / {{/if}}{{title}}">
+                <span id="title-edit-buttons" class="input-group-btn">
+                
+                    <button id="article-title-save" type="button" class="btn btn-success">
+                      OK
+                    </button>
+                    <button id="article-title-cancel" type="button" class="btn btn-warning">
+                      Cancel
+                    </button>
+                </span>
+            </div>
+        {{else}}
+            <div id="article-title-bar" class="input-group">
+                <h1 id="article-title" class="article-title">
+                    {{#if userContext}}{{userContext}} / {{/if}}{{title}}
+                </h1>
+                <span id="title-edit-buttons" class="input-group-btn">
+                
+                    <button id="article-title-edit" type="button" class="btn btn-primary title-hover-show">
+                      Edit Title
+                    </button>
+                </span>
+            </div>
+        {{/if}}
+
         <div id="last-edit-person-and-time">
             <span class='text-muted'> last edited by </span>
             <a href="/users/{{lastEditedBy}} ">{{lastEditedBy}}</a>
