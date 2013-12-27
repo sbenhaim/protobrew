@@ -24,20 +24,29 @@
 }
 
 #article-title-bar {
-  margin: 20px 0 10px 0;
+  margin: 12px 0px 0px 0px;
   width: 100%;
+  h1 {
+    margin: 0;
+  }
   .btn {
     height: 53px;
   }
-}
-
-#article-title-bar:hover .title-hover-show {
-    display: block;
-}
-
-.title-hover-show {
+  .title-hover-show {
     float: right;
     display: none;
+  }
+  #article-title {
+    padding-top: 8px;
+    padding-bottom: 7px;
+  }
+}
+
+#article-title-bar:hover {
+  background-color: #CCC;
+  .title-hover-show {
+    display: block;
+  }
 }
 
 #title-edit-bar {
