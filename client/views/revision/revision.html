@@ -1,11 +1,15 @@
 <template name="revision">
     <div id="entry">
-    {{#if entry._id}}
+    {{#if entry._id and revision._id}}
         <h1 id="article-title" class="article-title">{{entry.title}}</h1>
         <div>
-            <span class="text-muted">Showing revision</span> {{revision.id}}
-            <span class="text-muted">created on </span>{{revisionDateAsMoment}}
-            (<a href="/history/{{entry.title}}">history</a> | <a href="/{{entry.title}}">current</a>)
+            Revision {{revisionIndexForThisEntry}} of {{numberOfRevisionsForThisEntry}}
+            created {{revisionDateAsMoment}}
+            (<a href="/history/{{entry.title}}">history</a> |
+             <a href="/{{entry.title}}">current</a>)
+            <br />
+            Edit performed by <a href="/users/{{authorName}}">{{authorName}}</a>
+            on {{revision.date}}
         </div>
         <div id="view-entry-content-wrapper">
             {{{revision.text}}}
