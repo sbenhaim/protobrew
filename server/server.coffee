@@ -3,8 +3,15 @@ throw new Meteor.Error( 500, "No `Domain' defined (need server/_domainer.coffee)
 
 Meteor.methods
 
-    updateTitle: (entry, context, title, callback) ->
+   updateTitle: (entry, context, title, callback) ->
+
         throw new Meteor.Error(403, "You must be logged in") unless this.userId
+
+        # todo: insert verifyTitle function check 
+        # checks for characters that are unencodeable with encodeURIComponent
+        # encodeURIComponent() will not encode: ~!*()'"
+        # http://stackoverflow.com/questions/4540753/encodeuri-or-encodeuricomponent
+        
         existingEntry =  findSingleEntryByTitle( title, context )
         if existingEntry 
             if existingEntry.title.toLowerCase() == entry.title.toLowerCase()
@@ -35,6 +42,8 @@ Meteor.methods
 
     # Todo: lock down fields
     saveEntry: (title, entry, context, callback) ->
+        # todo: insert verifyTitle function check 
+
         # Only members can edit
         user = Meteor.user()
         entry = verifySave(title, entry, user, context )
