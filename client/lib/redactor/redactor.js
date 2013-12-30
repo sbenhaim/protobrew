@@ -5599,10 +5599,10 @@
 
                 // matches www-data.it -- needs at least (1 letter + '.' + 2 letters )
                 var pattern = '((xn--)?[a-z0-9]+(-[a-z0-9]+)*\\.)+[a-z]{2,}';
-                var re = new RegExp('^(http|ftp|https)://' + pattern, 'i');
+                var re = new RegExp('^(svn|http|ftp|https)://' + pattern, 'i');
                 var re2 = new RegExp('^' + pattern, 'i');
 
-                // if no http and there is something.something
+                // if no http and there is something.something then add linkProtocol
                 if (link.search(re) == -1 && link.search(re2) == 0 && this.opts.linkProtocol)
                 {
                     link = this.opts.linkProtocol + link;

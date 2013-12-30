@@ -20,8 +20,9 @@
             <!-- /logo -->
 
             <!-- Sidebar Toggler -->
-            <a href="#" class="toggle-sidebar toggle-left-sidebar bs-tooltip" data-placement="bottom" data-original-title="Toggle navigation">
-                <i class="glyphicon glyphicon-reorder"></i>
+            <a href="#" class="toggle-sidebar toggle-left-sidebar" rel="tooltip" data-placement="bottom" 
+                title="Toggle navigation">
+                <i class="fa fa-bars"></i>
             </a>
             <!-- /Sidebar Toggler -->
 
@@ -35,19 +36,22 @@
 
             <ul id='edit_mode_toolbar'class="nav navbar-nav navbar-left edit_mode">
                 <li>
-                    <a class="btn btn-danger delete bs-tooltip" data-placement="bottom" data-original-title="Delete the Current Page" href="#">
+                    <a href="#" class="btn btn-danger delete" rel="tooltip" data-placement="bottom" 
+                        title="Delete the Current Page">
                         <i class="glyphicon glyphicon-trash"></i>
                         <span>Delete</span>
                     </a>
                 </li>
                 <li>
-                    <a class="btn btn-warning cancel bs-tooltip" data-placement="bottom" data-original-title="Cancel Changes" href="#">
+                    <a href="#" class="btn btn-warning cancel" rel="tooltip" data-placement="bottom" 
+                        title="Cancel Changes">
                         <i class="glyphicon glyphicon-arrow-left"></i>
                         <span>Cancel</span>
                     </a>
                 </li>
                 <li>
-                    <a class="btn btn-success save bs-tooltip" data-placement="bottom" data-original-title="Save Changes" href="#">
+                    <a href="#" class="btn btn-success save" rel="tooltip" data-placement="bottom" 
+                        title="Save Changes">
                         <i class="glyphicon glyphicon-save"></i>
                         <span>Save</span>
                     </a>
@@ -59,7 +63,8 @@
             <ul class="nav navbar-nav navbar-left">
 
                 <li>
-                    <a id="new_page" href="#" class=" bs-tooltip" data-placement="bottom" data-original-title="Create New Wiki Page" >
+                    <a id="new_page" href="#" rel="tooltip" data-placement="bottom" 
+                        title="Create New Wiki Page" >
                         <i class="glyphicon glyphicon-file"></i>
                         <span>New</span>
                     </a>
@@ -67,14 +72,16 @@
 
             {{#if isStarred}}
                 <li>
-                    <a id="toggle_star" href="#" class="bs-tooltip" data-placement="bottom" data-original-title="Star This Page">
+                    <a id="toggle_star" href="#" rel="tooltip" data-placement="bottom" 
+                        title="Unstar This Page">
                         <i class="glyphicon glyphicon-star"></i>
                         <span>Unstar</span>
                     </a>
                 </li>
             {{else}}
                 <li>
-                    <a id="toggle_star" href="#" class="bs-tooltip" data-placement="bottom" data-original-title="Unstar This Page">
+                    <a id="toggle_star" href="#" rel="tooltip" data-placement="bottom" 
+                    title="Star This Page">
                         <i class="glyphicon glyphicon-star-empty"></i>
                         <span>Star</span>
                     </a>
@@ -86,14 +93,16 @@
             {{#if editable}}
                 {{#if locked}}
                         <li>
-                            <a id="edit_btn" href="#" class="edit bs-tooltip" data-placement="bottom" data-original-title="Locked By Other User" >
+                            <a id="edit_btn" href="#" class="edit" rel="tooltip" data-placement="bottom" 
+                                title="Locked By Other User" >
                                 <i class="glyphicon glyphicon-edit"></i>
                                 <span>Locked</span>
                             </a>
                         </li>
                 {{else}}
                         <li>
-                            <a id="" href="#" class="edit bs-tooltip" data-placement="bottom" data-original-title="Edit Wiki Page" >
+                            <a id="" href="#" class="edit" rel="tooltip" data-placement="bottom" 
+                                title="Edit Wiki Page" >
                                 <i class="glyphicon glyphicon-edit"></i>
                                 <span>Edit</span>
                             </a>
