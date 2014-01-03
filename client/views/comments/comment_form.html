@@ -1,0 +1,22 @@
+<template name="comment_form">
+  <div class="comment-new">
+    <form>
+
+      {{#if addingComment}}
+        {{#constant}}
+          <div class="comment-field" id="editor">
+            <textarea id="comment" rows="3" autofocus="autofocus"></textarea>
+          </div>
+          <div class="btn-group ">
+              <input type="button" class="comment-save btn btn-success" value="Save Comment"/>
+              <input type="button" class="comment-cancel btn btn-warning" value="Cancel Comment"/>
+          </div>
+        {{/constant}}
+      {{else}}
+        <div class="comment-add">
+          <input type="button" class="button btn btn-primary" value="Add New Comment"/>
+        </div>
+      {{/if}}
+    </form>
+  </div>
+</template>

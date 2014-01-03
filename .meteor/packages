@@ -3,16 +3,17 @@
 # 'meteor add' and 'meteor remove' will edit this file for you,
 # but you can also edit it by hand.
 
-backbone
-spiderable
-jquery
+standard-app-packages
+insecure
 preserve-inputs
 coffeescript
-accounts-ui
+iron-router
+accounts-password
 accounts-google
+accounts-base
+event-hooks
+roles
+spin
+accounts-ui-bootstrap-3
+bootstrap3-less
 less
-bootstrap
-toastjs
-select2
-standard-app-packages
-require

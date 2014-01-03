@@ -1,0 +1,55 @@
+<head>
+    <style type="text/css">
+    #container {
+    }
+
+    </style>
+</head>
+
+<template name="debug">
+    <div id="container">
+        <!-- wikis -->
+        <table class="table table-striped table-bordered">
+            <caption><h3>Wikis Collection<h3></caption>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each wikis}}
+                    <tr>
+                        <td>{{_id}}</td>
+                        <td>{{name}}</td>
+                        <td>{{visibility}}</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+
+        <!-- users -->
+        <table class="table table-striped table-bordered">
+            <caption><h3>Users Collection<h3></caption>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each users}}
+                    <tr>
+                        <td>{{_id}}</td>
+                        <td>
+                            {{#each emails}}
+                                {{address}}
+                            {{/each}}
+                        </td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+
+</template>

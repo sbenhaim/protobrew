@@ -1,0 +1,12 @@
+<template name="user_item">
+<tr class="user">
+	<td><a href="/users/{{displayName}}">{{displayName}}</a></td>
+	<td>{{createdAtFormatted}}</td>
+<!-- 	<td>
+		<a href="#">{{entriesCount}}</a>
+	</td> -->
+<!-- 	<td><a href="#">{{commentsCount}}</a></td> -->
+	<td>{{#if userIsAdmin}}<a class="unadmin-link" href="#"><i class="icon-check unadmin-link"></i>Unadmin</a>{{else}}<a href="#" class="admin-link">Make admin</a>{{/if}}</td>
+	<td><a class="delete-link" href="#">Delete User</a></td>
+</tr>
+</template>

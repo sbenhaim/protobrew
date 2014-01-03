@@ -1,0 +1,49 @@
+<template name="entry_sidebar">
+    <div id="entry-sidebar" class="sidebar-fixed">
+        <div id="entry-sidebar-divider" class="resizeable"></div>
+        <div id="entry-sidebar-content">
+
+            <!--=== Heading Map ===-->
+            <div class="sidebar-title">
+                <span>Heading Map</span>
+            </div>
+
+
+            <div id="entry-sidebar-outline">
+            {{#if navItems}}
+                <ul>
+                     {{{ navItems }}}
+                </ul>
+            {{/if}}
+            </div>
+            
+            <!-- /Tags -->
+            <div class="sidebar-title">
+                <span>Tags</span>
+            </div>
+
+
+
+            <div id="entry-sidebar-tags">
+            {{#if editMode}}
+                <div id="tags-edit">
+                <p>
+                    <textarea id="entry-tags"></textarea>
+                    <div><small><em>press &#x23ce; between tags</em></small></div>
+                </p>
+                </div>
+            {{else}}
+                {{#if entry.tags.length}}
+                    <ul>
+                        {{#each entry.tags}}
+                            <li><a href="javascript:void(0);" class="btn btn-xs btn-grey">{{this}}</a></li>
+                        {{/each}}
+                    </ul>
+                {{/if}}
+            {{/if}}
+            </div>
+        </div>
+
+    </div>
+
+</template>

@@ -1,0 +1,89 @@
+<template name="left_nav">
+    <div id="sidebar" class="sidebar-fixed">
+        <div id="sidebar-content">
+
+
+            <!-- Search Input -->
+            <form class="sidebar-search">
+                <div class="input-box">
+                    <button type="submit" class="submit">
+                        <i class="icon-search"></i>
+                    </button>
+                    <span>
+                        <input id="search-input" type="text" placeholder="Search..." value="{{term}}">
+                    </span>
+                </div>
+            </form>
+
+
+            <!-- Search Results -->
+
+                <!-- Removed template content for a dropdown beneath 
+                     the search bar that contained the search results -->
+
+            <!-- /.sidebar-search-results -->
+
+            <!--=== Navigation ===-->
+            <ul id="nav">
+
+                <li {{#if pageIs "/"}}class="current"{{/if}}>
+                    <a class="left-nav" href="/">
+                        <i class="icon-home"></i>
+                        Home
+                    </a>
+                </li>
+
+                <li {{#if pageIs "Help"}}class="current"{{/if}}>
+                    <a class="left-nav" href="/Help">
+                        <i class="icon-question-sign"></i>
+                        Help
+                    </a>
+                </li>
+
+                <li {{#if pageIs "PageIndex"}}class="current"{{/if}}>
+                    <a class="left-nav" href="/s/PageIndex">
+                        <i class="icon-list-alt"></i>
+                        Index
+                    </a>
+                </li>
+            </ul>
+
+
+            <user>
+            <div class="tabbable-custom">
+                <ul class="nav nav-tabs" id="userTabs">
+                    <li id="editedTab" class="{{#if isActiveTab 'editedTab'}} active {{/if}}">
+                        <a class='tabButton'>Edited</a>
+                    </li>
+                    <li id="starredTab" class="{{#if isActiveTab 'starredTab'}} active {{/if}}">
+                        <a class='tabButton'>Starred</a>
+                    </li>
+                </ul>
+
+                <div id="usernav" class="tab-content">   
+                        <div id="edited" class="tab-pane {{#if isActiveTab 'editedTab'}} active {{/if}}">
+                            <ul>
+                                {{#each edited}}
+                                    <li><a class="left-nav" href="{{entryLink this}}">{{title}}</a></li>
+                                {{/each}}
+                            </ul>
+                        </div> 
+                    <div id="starred" class="tab-pane {{#if isActiveTab 'starredTab'}} active {{/if}}" >
+                            <ul>
+                                {{#each starred}}
+                                <li><a class="left-nav" href="{{entryLink this}}">{{title}}</a></li>
+                                {{/each}}
+                            </ul>
+                    </div>
+                </div>
+            </div>
+            </user>
+
+
+
+
+        </div>
+        <div id="divider" class="resizeable"></div>
+    </div>
+    <!-- /Sidebar -->
+</template>

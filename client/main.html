@@ -1,0 +1,122 @@
+<head>
+    <title>Things</title>
+    <link href="/css/bootstrap.css" rel="stylesheet" media="screen">
+  	<link href="/css/bootstrap-responsive.css" rel="stylesheet" media="screen">
+  	<link href="/css/style.css" rel="stylesheet" media="screen">
+  	<link href="/css/bootstrap-glyphicons.css" rel="stylesheet">
+</head>
+
+<body>
+</body>
+
+<template name="layout">
+
+    {{yield 'toolbar'}}
+
+
+    <div id="container" class="fixed-header">
+        {{> left_nav}}
+
+        <div id="content">
+            <div class="container">
+              {{yield}}
+            </div>
+        </div>
+         {{> entry_sidebar}}
+
+    </div>
+
+  {{> newUserModal }}
+  {{> deleteConfirmModal }}
+
+
+</template>
+
+
+<template name="editEntry">
+    <textarea id="entry-text" placeholder="Just some friendly placeholder text.">{{text}}</textarea>
+</template>
+
+
+<template name="loading">
+    {{> spinner}}
+</template>
+
+
+<template name="landing">
+  {{ loginButtons}}
+  <h3 class="urban-jungle">Landing Page</h3>
+  <h3 class="urban-jungle">Humon's Only!</h3>
+</template>
+
+
+<template name="dashboard">
+    
+    <div class="row">
+      {{ loginButtons}}
+      <h3 class="bitwise">Dashboard</h3>
+      <hr>
+    </div>
+    <h4>Public Wikis</h4>
+    <ul>
+      {{#each wikis.public}}
+        <li><a href="/wikis/{{name}}">{{name}}</a></li>
+      {{/each}}
+    </ul>
+    <h4>Private Wikis</h4>
+    <ul>
+      {{#each wikis.private}}
+        <li><a href="/wikis/{{name}}">{{name}}</a></li>
+      {{/each}}
+    </ul>
+    <h4>Other Links</h4>
+    <ul>
+      <li><a href="/profile">Profile</a></li>
+      <li><a href="/create">Create Wiki</a></li>
+    </ul>
+</template>
+
+
+<template name="create">
+  <h1 class="bitwise">create</h1>
+  <div id="container">
+      <div>
+        <label>Wiki Name</label>
+        <input type="text" id="create-wiki-name" placeholder="Name"/>
+        <label>Visibility</label>
+        <select id="create-wiki-visibility">
+          <option value="public">Public</option>
+          <option value="private">Private</option>
+        </select>
+        <button class="btn-inverse datOrangeBackground" id="login-button">
+          Let's <span> Do This! </span>
+        </button>
+      </div>
+  </div>
+</template>
+
+
+<template name="deleteConfirmModal">
+
+    <div id="delete-confirm-modal" class="modal hide fade">
+        <div class="modal-header">
+            <h3>Delete Page</h3>
+        </div>
+        
+        {{#isolate}}
+        <div class="modal-body">
+            <h4>Warning:</h4>
+            <p>This will delete the current page and all the content inside.</p>
+            <p> </p>
+            <p>If you are sure please type in DELETE below:</p>
+            <input type="text" id="delete-confirm-input"/>
+
+        </div>
+        
+        <div class="modal-footer">
+            <a id="delete-confirm-button" href="javascript:void(0);" class="btn btn-danger"> DELETE NOW</a>
+            <a id="delete-cancel-button" href="javascript:void(0);" class="btn btn-primary"> Do not Delete</a>
+        </div>
+        {{/isolate}}
+    </div>
+</template>

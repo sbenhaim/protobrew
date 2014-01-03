@@ -1,4 +1,16 @@
+router
+page-js-ie-support
+HTML5-History-API
+iron-router
+handlebars-server
+event-hooks
+roles
+spin
+accounts-ui-bootstrap-3
+bootstrap3-less
 require
 toastjs
 select2
 typeahead-js
+momentjs
+font-awesome

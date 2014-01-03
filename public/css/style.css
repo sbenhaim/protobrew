@@ -1,0 +1,81 @@
+body {
+    background-color: #D8D8D8;
+}
+
+#container {
+    width: 50%;
+    margin: auto;
+}
+
+.login-bar{
+    float: top;
+}
+
+.datOrangeText {
+    color: #FE642E;
+}
+
+.datOrangeBackground {
+    background-color: #FE642E;
+}
+
+.backgroundColor {
+    background-color: #D8D8D8;
+}
+
+.bitwise {
+    text-align: center;
+    font-family: 'Bitwise';
+    font-size: 100px;
+}
+
+.urban-jungle {
+    text-align: center;
+    font-family: 'UrbanJungle';
+    font-size: 70px;
+}
+
+@font-face {
+  font-family: 'Bitwise';
+  src: url('/fonts/bitwise.ttf');
+}
+
+@font-face {
+  font-family: 'UrbanJungle';
+  src: url('/fonts/UrbanJungleDEMO.otf');
+}
+
+
+.btn-inverse {
+    margin-top: 25px;
+}
+
+.btn-default, .btn-inverse {
+    border: medium none;
+    cursor: pointer;
+    display: inline-block;
+    font-family: "Montserrat",sans-serif;
+    font-size: 14px; font-size: 1.4rem;
+    font-weight: 300;
+    line-height: 20px;
+    padding: 8px 14px;
+    text-align: left;
+    text-transform: uppercase;
+    width: 190px;
+}
+
+.btn-inverse span, .btn-default span {
+    font-weight: 700;
+}
+
+.btn-inverse.alt, .btn-default.alt {
+    text-align: right;
+}
+
+.btn-inverse i, .btn-default i {
+    float: right;
+    line-height: 20px;
+}
+
+.btn-inverse.alt i, .btn-default.alt i {
+    float: left;
