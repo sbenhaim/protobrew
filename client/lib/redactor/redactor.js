@@ -5671,6 +5671,22 @@
 
             this.selectionSave();
 
+            // SB: Filepicker override
+            if ( this.opts.filepicker ) {
+                
+                var callback = function( json ) {
+                    if (  json.mimetype.match( /^image\// ) ) {
+                        this.imageCallback( json );
+                    }
+                    else {
+                        this.fileCallback( json );
+                    }
+                }
+
+                return this.opts.filepicker($.proxy(callback, this));
+            }
+            // End hack
+
             var callback = $.proxy(function()
             {
                 var sel = this.getSelection();
@@ -5892,21 +5908,6 @@
                 }
 
             }, this);
-
-            // SB: Filepicker override
-            if ( this.opts.filepicker ) {
-                
-                var callback = function( json ) {
-                    if (  json.mimetype.match( /^image\// ) ) {
-                        this.imageCallback( json );
-                    }
-                    else {
-                        this.fileCallback( json );
-                    }
-                }
-
-                return this.opts.filepicker($.proxy(callback, this));
-            }
 
             this.modalInit(this.opts.curLang.image, this.opts.modal_image, 610, callback);
 
