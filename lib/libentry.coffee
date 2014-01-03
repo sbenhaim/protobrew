@@ -25,9 +25,12 @@ class _EntryLib
             minHeight: 100 #pixels
             filepicker: (callback) =>
                 filepicker.setKey(@filepickerKey)
-                filepicker.pick({mimetype:"image/*"}, (file) ->
+                filepicker.pick({}, (file) ->
                     filepicker.store(file, {location:"S3", path: Meteor.userId() + "/" + file.filename },
-                    (file) -> callback( filelink: file.url )))
+                    (file) ->
+                        file.filelink = file.url
+                        callback( file )))
+                            
 
 
 @EntryLib = new _EntryLib()
