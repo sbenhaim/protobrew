@@ -75,12 +75,20 @@ Router.map ->
 
   @route "search",
     path: "/search/:term"
+    layoutTemplate: "layout"
+    yieldTemplates:
+      'toolbar':
+        to: 'toolbar'
     before: ->
       Session.set('search-term', @params.term)
       Session.set('title', 'search') # forces sidebar to re-render need other session dependency
 
   @route "tag",
     path: "/tag/:tag"
+    layoutTemplate: "layout"
+    yieldTemplates:
+      'toolbar':
+        to: 'toolbar'
     before: ->
       Session.set('tag', @params.tag)
       Session.set('title', @params.tag)
@@ -91,6 +99,10 @@ Router.map ->
   # type could be based on url e.g. /s/PageIndex
   @route "pageindex",
     path: "/s/PageIndex"
+    layoutTemplate: "layout"
+    yieldTemplates:
+      'toolbar':
+        to: 'toolbar'
     before: ->
       Session.set('title', 'PageIndex')
     waitOn: ->
@@ -121,6 +133,10 @@ Router.map ->
   @route "compare",
     path: "/compare/:title/:rev1/:rev2"
     template: "compare"
+    layoutTemplate: "layout"
+    yieldTemplates:
+      'toolbar':
+        to: 'toolbar'
     before: [
       ->
         Session.set('rev1', @params.rev1)
@@ -131,6 +147,10 @@ Router.map ->
   @route "revision",
     path: "/revision/:title/:rev"
     template: "revision"
+    layoutTemplate: "layout"
+    yieldTemplates:
+      'toolbar':
+        to: 'toolbar'
     before: ->
       Session.set("context", null)  # TODO: not sure on context thing
       Session.set("title", @params.title)
@@ -138,6 +158,10 @@ Router.map ->
 
   @route "entry",
     path: "/:title"
+    layoutTemplate: "layout"
+    yieldTemplates:
+      'toolbar':
+        to: 'toolbar'
     action: "sessionSetup"
     controller: "EntryController"
 
