@@ -1,3 +1,17 @@
+Meteor.publish("browsable-wikis", () ->
+    return Wikis.find({
+            $or: [
+                {
+                    visibility: "public"
+                },
+                {
+                    visibility: "private",
+                    readers: this.userId
+                }
+            ]
+        })
+    )
+
 Meteor.publish("userData", ->
     Meteor.users.find({_id: this.userId}, {fields: {'username': 1, 'group': 1, 'profile': 1}})
 )

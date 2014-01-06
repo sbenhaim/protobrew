@@ -136,5 +136,27 @@ Meteor.methods
 
         return {filelink: path + name}
 
-
-
+    createWiki: (wiki_name, visibility, owner) =>
+        #=======================================================================
+        # Create a wiki
+        # 
+        # If Public:
+        #       Make sure the wiki_name is valid and create
+        #
+        # If private:
+        #       Make sure wiki_name is valid and create, also need to
+        #       set the current user as the only valid user in the wiki
+        #=======================================================================
+        already_exists = Wikis.findOne({name: wiki_name})
+        if already_exists
+            console.log("Wiki already exists - " + wiki_name)
+        else
+            Wikis.insert({
+                name: wiki_name
+                visibility: visibility
+                owners: [owner]
+                readers: [owner]
+                writers: [owner]
+                admins: [owner]
+                })
+            console.log("Wiki created -" + wiki_name)

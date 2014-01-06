@@ -26,22 +26,50 @@ root = exports ? this
     window.open(href, '_blank')
 
 
-Router.configure
-  layoutTemplate: "layout"
-# notFoundTemplate: "notFound"
-  loadingTemplate: "loading"
-  yieldTemplates:
-    'toolbar':
-      to: 'toolbar'
-
-
-# TODO
-# each page should have a editing permission based on
-# 
-
 Router.map ->
-  @route "home",
-    path: "/"
+  @route("landing", {
+    path: "/landing"
+    template: "landing"
+    layoutTemplate: "global"
+    action: () ->
+      if Meteor.userId()
+        this.render("dashboard")
+        Router.go("dashboard")
+      else
+        this.render("landing")
+    })
+
+  @route("create", {
+    path: "/create"
+    template: "create"
+    layoutTemplate: "global"
+    action: () ->
+      console.log("sup")
+      if Meteor.userId()
+        this.render("create")
+      else
+        Router.go("landing")
+        this.render("landing")
+    })
+
+  @route("dashboard", {
+    path: "/dashboard"
+    template: "dashboard"
+    layoutTemplate: "global"
+    action: () ->
+        if Meteor.userId()
+            this.render("dashboard")
+        else
+            this.render("landing")
+            Router.go("landing")
+    })
+
+  @route "wiki",
+    path: "/wikis/:wiki_name"
+    layoutTemplate: "layout"
+    yieldTemplates:
+      'toolbar':
+        to: 'toolbar'
     action: "gotoOrCreateHome"
     controller: "HomeController"
 
@@ -113,6 +141,12 @@ Router.map ->
     action: "sessionSetup"
     controller: "EntryController"
 
+  @route "wildcard",
+    path: "/*"
+    layoutTemplate: "global"
+    action: () ->
+      this.render("landing")
+      Router.go("landing")
 
 
 class @HomeController extends RouteController
