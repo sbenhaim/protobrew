@@ -27,7 +27,7 @@
             <ul id="nav">
 
                 <li {{#if pageIs "/"}}class="current"{{/if}}>
-                    <a class="left-nav" href="/">
+                    <a class="left-nav" href="/entry/home">
                         <i class="icon-home"></i>
                         Home
                     </a>
@@ -64,14 +64,14 @@
                         <div id="edited" class="tab-pane {{#if isActiveTab 'editedTab'}} active {{/if}}">
                             <ul>
                                 {{#each edited}}
-                                    <li><a class="left-nav" href="{{entryLink this}}">{{title}}</a></li>
+                                    <li><a class="left-nav" href="/entry{{entryLink this}}">{{title}}</a></li>
                                 {{/each}}
                             </ul>
                         </div> 
                     <div id="starred" class="tab-pane {{#if isActiveTab 'starredTab'}} active {{/if}}" >
                             <ul>
                                 {{#each starred}}
-                                <li><a class="left-nav" href="{{entryLink this}}">{{title}}</a></li>
+                                <li><a class="left-nav" href="/entry{{entryLink this}}">{{title}}</a></li>
                                 {{/each}}
                             </ul>
                     </div>

@@ -24,7 +24,7 @@ Template.toolbar.events
                 console.log(error, pageName);
                 #TODO: fix non-editable navigate
                 window.scrollTo(0,0) # fix for positio being screwed up
-                navigate('/'+pageName)
+                navigate('/entry/' + pageName)
         )
 
     # 'click #left_sidebar_toggler': (evt) ->

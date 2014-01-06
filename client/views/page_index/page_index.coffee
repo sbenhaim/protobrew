@@ -119,7 +119,7 @@ Template.pageindex.pageindex = ->
       li = $("<li>")
       $(ul2).append(li)
       $a = $("<a/>")
-      $a.attr('href', "/" + entry.title)
+      $a.attr('href', "/entry/" + entry.title)
       $a.html(entry.title)
       li.append($a)
 

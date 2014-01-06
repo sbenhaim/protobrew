@@ -25,6 +25,23 @@ root = exports ? this
   else
     window.open(href, '_blank')
 
+Hooks.onLoggedIn = () ->
+  #=======================================================================
+  # Maybe do something here eventually?
+  #=======================================================================
+  console.log("User logged out")
+
+Hooks.onLoggedOut = () ->
+  #=======================================================================
+  # If a user suddenly logs out, we need to make sure they still have
+  # permissions to be on the page they are
+  # 
+  # TODO:
+  #=======================================================================
+  Router.go(window.location.pathname)
+  console.log("User logged in")
+
+Hooks.init()
 
 Router.map ->
   @route("landing", {
@@ -71,7 +88,7 @@ Router.map ->
       'toolbar':
         to: 'toolbar'
     action: "gotoOrCreateHome"
-    controller: "HomeController"
+    controller: "WikiController"
 
   @route "search",
     path: "/search/:term"
@@ -157,7 +174,7 @@ Router.map ->
       Session.set("rev", @params.rev)
 
   @route "entry",
-    path: "/:title"
+    path: "/entry/:title"
     layoutTemplate: "layout"
     yieldTemplates:
       'toolbar':
@@ -173,24 +190,26 @@ Router.map ->
       Router.go("landing")
 
 
-class @HomeController extends RouteController
+class @WikiController extends RouteController
   template: "entry"
   waitOn: Meteor.subscribe 'userData'
   gotoOrCreateHome: ->
-    # remove this render once render can be inherited from Configure (next iron)
-    @render
-      toolbar:
-        to: 'toolbar'
+    #=======================================================================
+    # Routing controller to handle the main Wiki page
+    #
+    # Whenever trying to navigate to a wiki page we must verify that the
+    # the currently logged in user has read/write permissions for this wiki
+    #=======================================================================
+    wiki_name = this.params.wiki_name
+    console.log(wiki_name)
 
     entry = Entries.findOne({_id: 'home'})
     if !entry # bang on it a bit
-      Meteor.call 'createHome', render_home
+      Meteor.call 'createHome', () -> @render()
     else
       Session.set('titleHidden', false)
       # Session.set('mode', 'entry')
       Session.set('title', entry.title)
-      @render()
-    render_home = () ->
       @render()
 
 
@@ -202,11 +221,8 @@ class @EntryController extends RouteController
   sessionSetup: ->
     Session.set('context', null)
     Session.set('title', @params.title)
-    # remove this render once render can be inherited from Configure (next iron)
-    @render
-      toolbar:
-        to: 'toolbar'
     @render()
+
 
 class @User_profileController extends RouteController
   template: "user_profile"

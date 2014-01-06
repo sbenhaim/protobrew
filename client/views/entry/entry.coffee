@@ -65,7 +65,7 @@ Template.entry.entry = ->
     title = Session.get('title')
     context = Session.get('context')
     if title
-        entry = findSingleEntryByTitle( title, context )
+        entry = findSingleEntryByTitle(title, context)
 
         if entry
             Session.set('entry', entry )

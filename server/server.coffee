@@ -55,7 +55,14 @@ Meteor.methods
         else
             id =  Entries.insert(entry)
 
-        Revisions.insert( { entryId: id, date: new Date(), text: entry.text, author: user._id } )
+        full_entry = {
+            entryId: id,
+            date: new Date(),
+            text: entry.text,
+            author: user._id,
+            wiki_name: Session.get("wiki_name")
+        }
+        Revisions.insert(full_entry)
 
         return id
 
