@@ -12,7 +12,7 @@
 # Now, RTFM.  http://docs.fabfile.org/en/1.4.2/tutorial.html
 #
 import os
-from fabric.api import run, local, abort, settings, lcd, cd, require, env, put, sudo
+from fabric.api import run, local, abort, settings, lcd, cd, require, env, put, sudo, get
 
 APP_LOCATION = "/srv/node/humonwiki"
 THIS_DIR = os.path.dirname(__file__)
@@ -134,7 +134,7 @@ def start_services():
 
 def deploy():
     if not hasattr(env, 'is_configured'):
-        abort("Must specify either local or production before deploy (e.g. fab staging deploy)")
+        abort("Must specify environment (local, staging, production) before deploy (e.g. fab staging deploy)")
 
     build_bundle()
     push_bundle()
@@ -143,3 +143,11 @@ def deploy():
     install_configs()
     start_services()
 
+def backupdb():
+    if not hasattr(env, 'is_configured'):
+        abort("Must specify environment (local, staging, production) before backupdb")
+
+    run("rm -rf /tmp/mongobak")
+    run("mongodump -h localhost -o /tmp/mongobak/")
+    get("/tmp/mongobak", "./")
+    print("Backup stored to ./mongobak")
