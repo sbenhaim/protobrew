@@ -11,6 +11,7 @@
 #
 # Now, RTFM.  http://docs.fabfile.org/en/1.4.2/tutorial.html
 #
+import datetime
 import os
 from fabric.api import run, local, abort, settings, lcd, cd, require, env, put, sudo, get
 
@@ -80,6 +81,8 @@ def install_configs():
         put(".deploy/runwiki.sh", "/srv/node/humonwiki/runwiki.sh")
         put(".deploy/supervisord.conf", "/etc/supervisor/conf.d/humonwiki.conf")
         run("chmod +x /srv/node/humonwiki/runwiki.sh")
+        put(".deploy/automongobackup.sh", "/etc/cron.daily/automongobackup")
+        run("chmod +x /etc/cron.daily/automongobackup")
 
 
 def build_bundle():
@@ -143,11 +146,18 @@ def deploy():
     install_configs()
     start_services()
 
+
 def backupdb():
     if not hasattr(env, 'is_configured'):
         abort("Must specify environment (local, staging, production) before backupdb")
 
-    run("rm -rf /tmp/mongobak")
-    run("mongodump -h localhost -o /tmp/mongobak/")
-    get("/tmp/mongobak", "./")
-    print("Backup stored to ./mongobak")
+    tfmt = datetime.datetime.now().strftime("%m.%d.%y-%H.%M")
+    backup_dir = ".backups/%s/" % tfmt
+
+    run("rm -rf /tmp/mongosnapshot")
+    run("mongodump -h localhost -o /tmp/mongosnapshot")
+    get("/tmp/mongosnapshot", backup_dir)
+    print("Current backup stored to %smongosnapshot" % backup_dir)
+
+    get("/var/backups/mongodb", "%shistorical" % backup_dir)
+    print("Historical backups stored to %shistorical" % backup_dir)

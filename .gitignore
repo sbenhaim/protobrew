@@ -18,3 +18,4 @@ packages/meteor-accounts-ui-bootstrap-3/.build
 # Deployment/Build
 .build/
 *.pyc
+.backups/
