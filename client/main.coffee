@@ -1,8 +1,5 @@
 root = exports ? this
 
-Meteor.subscribe 'entries', onComplete = ->
-  Session.set('entryLoaded', true)
-
 Meteor.subscribe('comments')
 
 Meteor.subscribe('settings', ->
@@ -17,8 +14,14 @@ Meteor.subscribe('revisions')
 
 Meteor.subscribe('allUserData')
 
-Deps.autorun(->
+Deps.autorun(() ->
+  # userData
   Meteor.subscribe("userData")
+
+  # entries
+  Meteor.subscribe("entries", onComplete = () ->
+    Session.set("entryLoaded", true)
+    )
 );
 
 highlightNav = ->

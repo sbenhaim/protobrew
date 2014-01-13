@@ -43,6 +43,12 @@ Hooks.onLoggedOut = () ->
 
 Hooks.init()
 
+hasWikiRights = (wiki) ->
+  #=======================================================================
+  # Determine if the current user has the rights to a given wiki
+  #=======================================================================
+
+
 Router.map ->
   @route("landing", {
     path: "/landing"
@@ -89,6 +95,30 @@ Router.map ->
         to: 'toolbar'
     action: "gotoOrCreateHome"
     controller: "WikiController"
+
+   @route "entry",
+    path: "/wikis/:wiki_name/entry/:entry_name"
+    layoutTemplate: "layout"
+    yieldTemplates:
+      'toolbar':
+        to: 'toolbar'
+    template: "entry"
+    waitOn: () ->
+      Meteor.subscribe("userData")
+      Meteor.subscribe("entries")
+    action: () ->
+      entry_name = this.params.entry_name
+      wiki_name = this.params.wiki_name
+
+      entry_found = Entries.find({name: entry_name})
+      if entry_found
+        Session.set('context', null)
+        Session.set('title', entry_name)
+        Session.set("wiki_name", wiki_name)
+
+        this.render()
+      else
+        Router.go("landing")
 
   @route "search",
     path: "/search/:term"
@@ -173,15 +203,6 @@ Router.map ->
       Session.set("title", @params.title)
       Session.set("rev", @params.rev)
 
-  @route "entry",
-    path: "/entry/:title"
-    layoutTemplate: "layout"
-    yieldTemplates:
-      'toolbar':
-        to: 'toolbar'
-    action: "sessionSetup"
-    controller: "EntryController"
-
   @route "wildcard",
     path: "/*"
     layoutTemplate: "global"
@@ -192,37 +213,58 @@ Router.map ->
 
 class @WikiController extends RouteController
   template: "entry"
-  waitOn: Meteor.subscribe 'userData'
-  gotoOrCreateHome: ->
+  waitOn: () ->
+    return [
+        Meteor.subscribe("userData"),
+        Meteor.subscribe("entries")
+      ]    
+
+  findHome: (wiki_name) ->
+    home = Entries.findOne({
+        _id: "home",
+        wiki: wiki_name
+      })
+    return home
+
+  gotoOrCreateHome: () ->
     #=======================================================================
     # Routing controller to handle the main Wiki page
     #
-    # Whenever trying to navigate to a wiki page we must verify that the
+    # (1) Whenever trying to navigate to a wiki page we must verify that the
     # the currently logged in user has read/write permissions for this wiki
+    #
+    # (2) The route "/wikis/:wiki_name" is meant to just create the home
+    # entry if it does not exist, and redirect them to the newly created
+    # home entry route, i.e. "/wikis/:wiki_name/entry/home"
     #=======================================================================
     wiki_name = this.params.wiki_name
-    console.log(wiki_name)
+      
+    console.log("Attempting to access wiki: " + wiki_name)
 
-    entry = Entries.findOne({_id: 'home'})
-    if !entry # bang on it a bit
-      Meteor.call 'createHome', () -> @render()
+    wiki = Wikis.findOne({name: wiki_name})
+    if wiki
+      home = @findHome(wiki_name)
+      if home
+        console.log("Home entry found, routing to that entry")
+        console.log home
+        Session.set('titleHidden', false)
+        Session.set('title', home.title)
+        Session.set("wiki_name", wiki_name)
+        Router.go("/wikis/" + wiki_name + "/entry/home")
+      else
+        console.log("Home not found -- Creating home entry")
+        # the home entry hasn't been created, here we call the server method to
+        # create it, and tell it to route is back to this same exact path once
+        # completed, if it was created correctly, we will route differently upon
+        # rentry.
+        onCompleted = () ->
+          console.log("Home created successfully, routing there now")
+          Router.go("/wikis/" + wiki_name)
+
+        Meteor.call("createHome", wiki_name, () -> onCompleted())
     else
-      Session.set('titleHidden', false)
-      # Session.set('mode', 'entry')
-      Session.set('title', entry.title)
-      @render()
-
-
-class @EntryController extends RouteController
-  template: "entry"
-  waitOn: ->
-    Meteor.subscribe 'userData'
-    Meteor.subscribe 'entries'
-  sessionSetup: ->
-    Session.set('context', null)
-    Session.set('title', @params.title)
-    @render()
-
+      this.render("landing")
+      Router.go("landing")
 
 class @User_profileController extends RouteController
   template: "user_profile"

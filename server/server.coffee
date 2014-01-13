@@ -41,7 +41,7 @@ Meteor.methods
         return id
 
     # Todo: lock down fields
-    saveEntry: (title, entry, context, callback) ->
+    saveEntry: (wiki_name, title, entry, context, callback) ->
         # todo: insert verifyTitle function check 
 
         # Only members can edit
@@ -60,18 +60,22 @@ Meteor.methods
             date: new Date(),
             text: entry.text,
             author: user._id,
-            wiki_name: Session.get("wiki_name")
+            wiki_name: wiki_name
         }
         Revisions.insert(full_entry)
 
         return id
 
-    createHome: () ->
-        bail = (message, status = 403) ->
-            throw new Meteor.Error(status, message)
-        entry = Entries.findOne({_id: "home"})
-        if ! entry
-            id =  Entries.insert({_id: "home", title: "home", mode: "public"})
+    createHome: (wiki_name) ->
+      console.log Entries.find().fetch()
+    
+      _entry = {
+        _id: "home",
+        title: "home",
+        mode: "public",
+        wiki: wiki_name,
+      }
+      Entries.insert(_entry)
 
     lockEntry: ( entryId ) ->
         Entries.update( {_id: entryId}, {$set: {"editing": true}}) if entryId

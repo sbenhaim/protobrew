@@ -213,7 +213,7 @@ Template.editEntry.rendered = ->
     # TODO should call verifySave from here and the server saveEntry function
     # rather than just the server saveEntry function?
 
-    # Meteor.call('saveEntry', title, entry, context, reroute)
-    Meteor.call('saveEntry', title, entry, context)
+    wiki_name = Session.get("wiki_name")
+    Meteor.call('saveEntry', wiki_name, title, entry, context)
     Entries.update({_id: entry._id}, entry)
     Session.set("editMode", false)
