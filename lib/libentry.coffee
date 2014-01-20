@@ -23,7 +23,8 @@ class _EntryLib
             focus: true
             autoresize: true
             minHeight: 100 #pixels
-            fileUpload: true,
+            fileUpload: true
+            removeEmptyTags: false
             filepicker: (callback) =>
                 filepicker.setKey(@filepickerKey)
                 filepicker.pick({}, (file) ->

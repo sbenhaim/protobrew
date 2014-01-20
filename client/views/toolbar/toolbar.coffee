@@ -10,7 +10,7 @@ Template.toolbar.hide_toolbar = ->
         return false
 
 Template.toolbar.rendered = ->
-    $('a[rel=tooltip]').tooltip()
+    $('a[rel=tooltip]').tooltip(container: 'body')
 
 Template.toolbar.events
     'click #new_page': (evt) ->

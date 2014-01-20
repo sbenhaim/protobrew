@@ -159,7 +159,6 @@ Template.layout.loginConfigured = () ->
       href = href.replace(/https?:\/\/([^\/.]+)$/, '/$1')
       $(el).attr('href', href)
       $(el).addClass('entry-link')
-
   $html.html()
 
 
