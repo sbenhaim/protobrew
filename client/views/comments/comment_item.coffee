@@ -121,7 +121,7 @@
       # var text  = $('#comment-text').val();
       commentId = Comments.update(selectedCommentId,
         $set:
-          text: rewriteLinks($(".comment-text-editor").val())
+          text: rewriteLinks($(".comment-text-editor").redactor('get'))
       )
       # trackEvent("edit comment", {'entryId': selectedPostId, 'commentId': selectedCommentId});
       Session.set "selectedCommentId", null

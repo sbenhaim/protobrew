@@ -192,10 +192,10 @@ Template.editEntry.rendered = ->
         navigate( '/'+entry.title, Session.get( "context" ) ) unless entry.title == "home"
 
     title = Session.get('title')
-
+    text = rewriteLinks( $('#entry-text').redactor('get') )
     entry = {
         'title': title
-        'text': rewriteLinks( $('#entry-text').val() )
+        'text': text
         'mode': $('#mode').val()
     }
 
