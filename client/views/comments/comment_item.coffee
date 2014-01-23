@@ -9,13 +9,6 @@
       submitted = new Date(@submitted)
       submitted.toString()
 
-    
-    # ,child_comments: function(){    
-    #   var entryId = Session.get('entryId');    
-    #   var comments = Comments.find({ entry: entryId, parent: this._id });    
-    #   return comments;    
-    # }
-
     author: ->
       Meteor.users.findOne @userId
 
@@ -35,12 +28,7 @@
 
     comment_text: ->
       
-      # console.log('this.text');      
-      # console.log(this.text);
       if @text        
-        # var converter = new Markdown.Converter();        
-        # var html_body=converter.makeHtml(this.body);        
-        # return html_body.autoLink();
         source = $("<div>").html(@text)
         source.html()
 
@@ -66,8 +54,9 @@
       comment = @data
       $comment = $("#" + comment._id)
       comment_editor = $(".comment-text-editor")
+    comment_html = @data.text
     if Meteor.user() and not @editor
-      window.EntryLib.initRedactor( comment_editor, ["autoSuggest"] )
+      window.EntryLib.initRedactor( comment_editor, comment_html, ["autoSuggest"] )
 
   Template.comment_item.created = ->
     @firstRender = true

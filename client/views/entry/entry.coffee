@@ -154,9 +154,8 @@ Template.entry.rendered = ->
 
 Template.editEntry.rendered = ->
     el = $( '#entry-text' )
-
-    window.EntryLib.initRedactor( el, ['autoSuggest', 'stickyScrollToolbar'] )
-
+    html = Template.entry.entry().text
+    window.EntryLib.initRedactor( el, html, ['autoSuggest', 'stickyScrollToolbar'] )
     window.scrollTo(0,Session.get('y-offset'))
 
     minHeight = $(window).height() - 190 #   top toolbar = 50px,  title = 90px wmargin,  redactor toolbar = 30 px,  bottom margin = 20px

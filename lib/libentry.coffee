@@ -13,7 +13,7 @@ class _EntryLib
 
     filepickerKey: 'AjmU2eDdtRDyMpagSeV7rz'
 
-    initRedactor: ($el, plugins) ->
+    initRedactor: ($el, html, plugins) ->
         $el.redactor
             plugins: plugins
             # imageUpload: '/images'
@@ -32,6 +32,8 @@ class _EntryLib
                     (file) ->
                         file.filelink = file.url
                         callback( file )))
+        # set redactor content - false so that it doesn't remove empty <p> tags
+        $el.redactor('set', html , false);
                             
 
 
