@@ -188,6 +188,11 @@ Template.editEntry.rendered = ->
         navigate( '/'+entry.title, Session.get( "context" ) ) unless entry.title == "home"
 
     title = Session.get('title')
+    wiki_name = Session.get("wiki_name")
+
+    console.log("Saving entry (" + title + ") for wiki (" + wiki_name + ")")
+
+
     text = rewriteLinks( $('#entry-text').redactor('get') )
     entry = {
         'title': title
