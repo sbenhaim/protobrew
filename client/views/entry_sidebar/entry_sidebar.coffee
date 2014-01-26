@@ -39,8 +39,9 @@ Template.entry_sidebar.entry = ->
 Template.entry_sidebar.navItems = ->
     title = Session.get("title")
     context = Session.get('context')
+    wiki_name = Session.get("wiki_name")
     if title
-        entry = findSingleEntryByTitle(title, context)
+        entry = findSingleEntryByTitle(wiki_name, context, title)
         if entry
             source = $('<div>').html(entry.text) #make a div with entry.text as the innerHTML
             headings = _.filter buildHeadingTree(onlyNonEmpty(source.find(":header:first"))), (heading) ->

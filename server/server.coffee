@@ -22,7 +22,7 @@ Meteor.methods
         # encodeURIComponent() will not encode: ~!*()'"
         # http://stackoverflow.com/questions/4540753/encodeuri-or-encodeuricomponent
         
-        existingEntry =  findSingleEntryByTitle( title, context )
+        existingEntry =  findSingleEntryByTitle(entry.wiki, context, title)
         if existingEntry 
             if existingEntry.title.toLowerCase() == entry.title.toLowerCase()
                 return Entries.update( {_id: entry._id}, {$set: {'title': title}} )
@@ -56,7 +56,7 @@ Meteor.methods
 
         # Only members can edit
         user = Meteor.user()
-        entry = verifySave(title, entry, user, context )
+        entry = verifySave(wiki_name, title, entry, user, context)
         entry.context = context
 
         if entry._id
@@ -158,6 +158,7 @@ Meteor.methods
         title: "home",
         mode: "public",
         wiki: wiki_name,
+        context: null,
       }
       Entries.insert(_entry)
       console.log("Entry created: " + entry_name)

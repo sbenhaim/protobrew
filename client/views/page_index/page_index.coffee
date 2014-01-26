@@ -72,10 +72,12 @@ isInternalLink = (theHref) ->
   return (!theHref.match(/^\w+:\/\//))
 
 buildTree = (context, tree, rootNode) ->
+  wiki_name = Session.get("wiki_name")
+
   if !parent
     entry = Entries.findOne({_id: 'home'})
   else
-    entry = findSingleEntryByTitle(rootNode.name, context)
+    entry = findSingleEntryByTitle(wiki_name, context, rootNode.name)
 
   if !entry
     return

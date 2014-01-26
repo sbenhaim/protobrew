@@ -52,20 +52,24 @@ Template.entry.userContext = ->
 Template.entry.lastEditedBy = ->
     title = Session.get('title')
     context = Session.get('context')
-    entry = findSingleEntryByTitle( title, context )
+    wiki_name = Session.get("wiki_name")
+    entry = findSingleEntryByTitle(wiki_name, context, title)
     UserLib.lastEditedBy(entry)
 
 Template.entry.sinceLastEdit = ->
     title = Session.get('title')
     context = Session.get('context')
-    entry = findSingleEntryByTitle( title, context )
+    wiki_name = Session.get("wiki_name")
+    entry = findSingleEntryByTitle(wiki_name, context, title)
     UserLib.sinceLastEdit(entry)
 
 Template.entry.entry = ->
     title = Session.get('title')
     context = Session.get('context')
+    wiki_name = Session.get("wiki_name")
+
     if title
-        entry = findSingleEntryByTitle(title, context)
+        entry = findSingleEntryByTitle(wiki_name, context, title)
 
         if entry
             Session.set('entry', entry )
@@ -198,6 +202,7 @@ Template.editEntry.rendered = ->
         'title': title
         'text': text
         'mode': $('#mode').val()
+        'wiki': wiki_name
     }
 
     tags = $('#entry-tags').nextAll('input[type=hidden]').val()

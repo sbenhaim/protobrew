@@ -38,10 +38,14 @@ Tags.allow
 @findAll = (context) ->
   Entries.find({context: context})
 
-@findSingleEntryByTitle = (title, context) ->
+@findSingleEntryByTitle = (wiki_name, context, title) ->
   titleEscaped = escapeRegExp(title)
   titleTerm = new RegExp("^" + titleEscaped + "$", 'i')
-  Entries.findOne({title: titleTerm, context: context})
+  Entries.findOne({
+          title: titleTerm
+          context: context
+          wiki: wiki_name
+              })
 
 @findRevisionsByTitle = (title) ->
     titleEscaped = escapeRegExp( title )
@@ -59,7 +63,7 @@ Tags.allow
 @findRevisionById = (id) ->
   Revisions.findOne({"_id": id})
 
-@verifySave = (title, entry, user, context) ->
+@verifySave = (wiki_name, title, entry, user, context) ->
   bail = (message, status = 403) ->
     throw new Meteor.Error(status, message)
 
@@ -72,7 +76,7 @@ Tags.allow
     entry._id = null unless oldEntry
 
   # No dup titles in same context
-  other = findSingleEntryByTitle(title, context)
+  other = findSingleEntryByTitle(wiki_name, context, title)
   bail("Title taken") if other && other._id != entry._id
 
 

@@ -1,6 +1,8 @@
 getEntryFromSession = ->
   title = Session.get("title")
-  entry = findSingleEntryByTitle(title)
+  wiki_name = Session.get("wiki_name")
+  context = Session.get("context")
+  entry = findSingleEntryByTitle(wiki_name, context, title)
   return entry
 
 getRevisionFromSession = ->

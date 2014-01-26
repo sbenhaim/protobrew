@@ -55,7 +55,8 @@ Template.toolbar.events
         entryId = Session.get('entryId')
         context = Session.get('context')
         title = Session.get("title")
-        entry = findSingleEntryByTitle( title, context )
+        wiki_name = Session.get("wiki_name")
+        entry = findSingleEntryByTitle(wiki_name, context, title)
 
         if not entry
             Toast.error('Cannot star a blank page!')
