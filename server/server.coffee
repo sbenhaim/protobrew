@@ -1,6 +1,16 @@
 throw new Meteor.Error( 500, "No `Domain' defined (need server/_domainer.coffee)" ) unless Domainer?
 
 
+getClientOrServer = () ->
+    if Meteor.isServer
+        return "Server"
+
+    if Meteor.isClient
+        return "Client"
+
+    return "Unknown"
+
+
 Meteor.methods
 
    updateTitle: (entry, context, title, callback) ->
@@ -138,9 +148,7 @@ Meteor.methods
 
 
     createHome: (wiki_name) ->
-      console.log("Running createHome on server ", wiki_name)
       entry_name = "home"
-      console.log Entries.find().fetch()
     
       _entry = {
         title: "home",
@@ -149,6 +157,9 @@ Meteor.methods
       }
       Entries.insert(_entry)
       console.log("Entry created: " + entry_name)
+      console.log("All entries: ")
+      console.log(Entries.find().fetch())
+        
 
     createWiki: (wiki_name, visibility, owner) =>
         #=======================================================================
@@ -161,7 +172,6 @@ Meteor.methods
         #       Make sure wiki_name is valid and create, also need to
         #       set the current user as the only valid user in the wiki
         #=======================================================================
-        console.log("Running createWiki on server ", wiki_name)
         already_exists = Wikis.findOne({name: wiki_name})
         if already_exists
             console.log("Wiki already exists - " + wiki_name)
@@ -175,5 +185,4 @@ Meteor.methods
                 writers: [owner]
                 admins: [owner]
                 })
-            console.log("Wiki created -" + wiki_name)
-            @createHome(wiki_name)
+            console.log("Wiki created - " + wiki_name)

@@ -19,6 +19,8 @@ Template.create.events = {
     visibility = document.getElementById("create-wiki-visibility").value
 
     Meteor.call("createWiki", wiki_name, visibility, Meteor.userId())
+    Meteor.call("createHome", wiki_name)
+    Meteor.subscribe("entries")
 
     Router.go("dashboard")
 }

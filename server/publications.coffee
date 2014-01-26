@@ -23,12 +23,16 @@ Meteor.publish("browsable-wikis", () ->
 )
 
 
-Meteor.publish("entries", () ->
-  console.log("Publishing entries for user")
-  entries = entriesForUser()
-  console.log entries.fetch()
-  return entriesForUser()
-)
+@publishEntries = () ->
+
+  Meteor.publish("entries", () ->
+    console.log("Publishing entries for user")
+    entries = entriesForUser()
+    console.log entries.fetch()
+    return entriesForUser()
+  )
+
+@publishEntries()
 
 
 Meteor.publish("userData", () ->

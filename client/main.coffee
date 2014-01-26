@@ -20,6 +20,8 @@ Deps.autorun(() ->
 
   # entries
   Meteor.subscribe("entries")
+
+  # wikis
   Meteor.subscribe("browsable-wikis")
 
 );
