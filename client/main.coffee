@@ -19,7 +19,7 @@ Deps.autorun(() ->
   Meteor.subscribe("userData")
 
   # entries
-  Meteor.subscribe("entries")
+  Meteor.subscribe("entries", () -> Session.set("entryLoaded", true))
 
   # wikis
   Meteor.subscribe("browsable-wikis")

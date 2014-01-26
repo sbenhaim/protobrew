@@ -244,7 +244,7 @@ class @WikiController extends RouteController
       Session.set('titleHidden', false)
       Session.set('title', home.title)
       Session.set("wiki_name", wiki_name)
-      Router.go("/wikis/" + wiki_name + "/entry/home")
+      Router.go(EntryLib.getEntryPath(wiki_name, "home"))
     else
       this.render("landing")
       Router.go("landing")

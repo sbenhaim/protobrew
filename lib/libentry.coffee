@@ -1,5 +1,8 @@
 class _EntryLib
 
+    getEntryPath: (wikiName, entryName) ->
+        "/wikis/" + wikiName + "/entry/" + entryName
+
     getSummaries: (entries) ->
         entries.map (e) ->
             text = $('<div>').html( e.text ).text()

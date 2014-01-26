@@ -91,9 +91,13 @@ Meteor.methods
         Meteor.users.update( {_id: this.userId}, {$set: {"username": value}}) if value
 
 
-    createNewPage: () ->
+    createNewPage: (wikiName) ->
         #ownUnnamedPages = Entries.find( { author : this.userId, title : {$regex: /^unnamed-/ }}, {sort: { title: 1 }}).fetch() # .find(query, projection)
-        ownUnnamedPages = Entries.find( { context: null, title : {$regex: /^unnamed-/ }}, {sort: { title: 1 }}).fetch() # .find(query, projection)
+        ownUnnamedPages = Entries.find( {
+          context: null,
+          title:  {$regex: /^unnamed-/ },
+          wiki: wikiName,
+        }, {sort: { title: 1 }}).fetch() # .find(query, projection)
         if ownUnnamedPages.length == 0
             console.log('1')
             return 'unnamed-1'

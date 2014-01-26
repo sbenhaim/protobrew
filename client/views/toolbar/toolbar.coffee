@@ -19,12 +19,13 @@ Template.toolbar.events
 
     'click #new_page': (evt) ->
         evt.preventDefault()
-        Meteor.call('createNewPage', 
+        wikiName =  Session.get('wiki_name')
+        Meteor.call('createNewPage', wikiName,
            (error, pageName) ->
                 console.log(error, pageName);
                 #TODO: fix non-editable navigate
                 window.scrollTo(0,0) # fix for positio being screwed up
-                navigate('/entry/' + pageName)
+                navigate(EntryLib.getEntryPath(wikiName, pageName))
         )
 
     # 'click #left_sidebar_toggler': (evt) ->
