@@ -93,7 +93,7 @@ Router.map ->
     yieldTemplates:
       'toolbar':
         to: 'toolbar'
-    action: "gotoOrCreateHome"
+    action: "routeToWiki"
     controller: "WikiController"
 
    @route "entry",
@@ -213,29 +213,25 @@ Router.map ->
 
 class @WikiController extends RouteController
   template: "entry"
-  waitOn: () ->
-    return [
-        Meteor.subscribe("userData"),
-        Meteor.subscribe("entries")
-      ]    
+      
+  waitOn: -> [
+    Meteor.subscribe("userData"),
+    Meteor.subscribe("entries") ]
 
   findHome: (wiki_name) ->
     home = Entries.findOne({
-        _id: "home",
+        title: "home",
         wiki: wiki_name
       })
     return home
 
-  gotoOrCreateHome: () ->
+  routeToWiki: () ->
     #=======================================================================
     # Routing controller to handle the main Wiki page
     #
     # (1) Whenever trying to navigate to a wiki page we must verify that the
     # the currently logged in user has read/write permissions for this wiki
     #
-    # (2) The route "/wikis/:wiki_name" is meant to just create the home
-    # entry if it does not exist, and redirect them to the newly created
-    # home entry route, i.e. "/wikis/:wiki_name/entry/home"
     #=======================================================================
     wiki_name = this.params.wiki_name
       
@@ -244,24 +240,11 @@ class @WikiController extends RouteController
     wiki = Wikis.findOne({name: wiki_name})
     if wiki
       home = @findHome(wiki_name)
-      if home
-        console.log("Home entry found, routing to that entry")
-        console.log home
-        Session.set('titleHidden', false)
-        Session.set('title', home.title)
-        Session.set("wiki_name", wiki_name)
-        Router.go("/wikis/" + wiki_name + "/entry/home")
-      else
-        console.log("Home not found -- Creating home entry")
-        # the home entry hasn't been created, here we call the server method to
-        # create it, and tell it to route is back to this same exact path once
-        # completed, if it was created correctly, we will route differently upon
-        # rentry.
-        onCompleted = () ->
-          console.log("Home created successfully, routing there now")
-          Router.go("/wikis/" + wiki_name)
 
-        Meteor.call("createHome", wiki_name, () -> onCompleted())
+      Session.set('titleHidden', false)
+      Session.set('title', home.title)
+      Session.set("wiki_name", wiki_name)
+      Router.go("/wikis/" + wiki_name + "/entry/home")
     else
       this.render("landing")
       Router.go("landing")

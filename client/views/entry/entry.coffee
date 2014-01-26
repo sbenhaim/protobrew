@@ -145,12 +145,8 @@ Template.entry.events
     Session.set('changingTitle', false)
     $(document).off('click')
 
-
-
-
 Template.entry.rendered = ->
     $('#article-title-input').focus()
-
 
 Template.editEntry.rendered = ->
     el = $( '#entry-text' )

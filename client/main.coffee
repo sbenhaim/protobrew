@@ -19,9 +19,9 @@ Deps.autorun(() ->
   Meteor.subscribe("userData")
 
   # entries
-  Meteor.subscribe("entries", onComplete = () ->
-    Session.set("entryLoaded", true)
-    )
+  Meteor.subscribe("entries")
+  Meteor.subscribe("browsable-wikis")
+
 );
 
 highlightNav = ->

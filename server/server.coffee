@@ -66,17 +66,6 @@ Meteor.methods
 
         return id
 
-    createHome: (wiki_name) ->
-      console.log Entries.find().fetch()
-    
-      _entry = {
-        _id: "home",
-        title: "home",
-        mode: "public",
-        wiki: wiki_name,
-      }
-      Entries.insert(_entry)
-
     lockEntry: ( entryId ) ->
         Entries.update( {_id: entryId}, {$set: {"editing": true}}) if entryId
 
@@ -147,6 +136,20 @@ Meteor.methods
 
         return {filelink: path + name}
 
+
+    createHome: (wiki_name) ->
+      console.log("Running createHome on server ", wiki_name)
+      entry_name = "home"
+      console.log Entries.find().fetch()
+    
+      _entry = {
+        title: "home",
+        mode: "public",
+        wiki: wiki_name,
+      }
+      Entries.insert(_entry)
+      console.log("Entry created: " + entry_name)
+
     createWiki: (wiki_name, visibility, owner) =>
         #=======================================================================
         # Create a wiki
@@ -158,10 +161,12 @@ Meteor.methods
         #       Make sure wiki_name is valid and create, also need to
         #       set the current user as the only valid user in the wiki
         #=======================================================================
+        console.log("Running createWiki on server ", wiki_name)
         already_exists = Wikis.findOne({name: wiki_name})
         if already_exists
             console.log("Wiki already exists - " + wiki_name)
         else
+            # TODO: on the server (not simulation), do validation
             Wikis.insert({
                 name: wiki_name
                 visibility: visibility
@@ -171,3 +176,4 @@ Meteor.methods
                 admins: [owner]
                 })
             console.log("Wiki created -" + wiki_name)
+            @createHome(wiki_name)

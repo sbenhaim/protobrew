@@ -67,19 +67,19 @@ The data model that exists today has the following basic model collections
 that are defined by the wiki application:
 
     Wikis:
-     {
-      name: "company_name",
-      visibility: "public"
-      owners: [uid1, uid2, uid3],
-      readers: [uid1, uid2, uid3],
-      writers: [uid1, uid2, uid3],
-      admins: [uid1, uid2, uid3]
-     }
+      {
+        name: "company_name",
+        visibility: "public",
+        owners: [uid1, uid2, uid3],
+        readers: [uid1, uid2, uid3],
+        writers: [uid1, uid2, uid3],
+        admins: [uid1, uid2, uid3]
+      }
 
     Entries:
       {
         _id: "gjQH4bGKLokvjJ2Gn",
-        title: "home".
+        title: "home",
         context: null,
         mode: "public",
         tags: ["tag1", "tag2"],
