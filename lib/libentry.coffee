@@ -25,6 +25,8 @@ class _EntryLib
             minHeight: 100 #pixels
             fileUpload: true
             removeEmptyTags: false
+            keyupCallback: (evt) ->
+                @contextualInlineComplete(evt)
             filepicker: (callback) =>
                 filepicker.setKey(@filepickerKey)
                 filepicker.pick({}, (file) ->

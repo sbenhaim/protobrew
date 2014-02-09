@@ -218,6 +218,53 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
     $(window).scroll ->
       stickyToolbar()
 
+@RedactorPlugins.inlineCompletion =
+  contextualInlineComplete: (evt) ->
+    switch evt.keyCode
+      # only 219 is used, all other key operations happen in the typeahead window which is attached to the body not redactor
+      when 13 then #enter
+      when 8 then #backspace
+      when 32 then #space
+      when 27 then #esc
+      when 9  then #tab
+      when 219  # '['
+        if $("#inlineAutoComplete").hasClass('tt-query')
+            return
+        else
+          @selectionSave()
+          @insertHtmlAdvanced('<span id="test">&nbsp;</span>')
+          offset = $('#test').offset()
+          textInput = $('<input type="text" id="inlineAutoComplete" autofocus />')
+          textInput.css('border': 'none', 'box-shadow': 'none')
+          $('body').append(textInput)
+          $('#inlineAutoComplete').typeahead(
+            local: ['test', 'alpha', 'betya']
+          ).focus() #need trailing .focus to automatically start typing in the typeahead window
+          $('.twitter-typeahead').attr('style' , 'position: absolute !important')
+          $('.twitter-typeahead').css( top: offset.top-7, left: offset.left-3)
+          # $(".twitter-typeahead").on "typeahead:selected", (event, selection) ->
+          $('.twitter-typeahead').on('keyup', (evt) ->
+            if evt.keyCode == 13
+              #TODO - change to $('.twitter-typeahead').typeahead('val') once updated to latest typeahead
+              autoCompleteVal = $('#inlineAutoComplete').val()
+              $('#inlineAutoComplete').typeahead('destroy')
+              $('#test').remove()
+              $('#entry-text').redactor('selectionRestore')
+              $('#entry-text').redactor('insertText', autoCompleteVal)
+          )
+          #TODO 
+            #better way to cleanup <inline id="test">&nbsp;</inline>?
+            #delete [
+
+
+
+
+
+
+    
+
+
+
 @RedactorPlugins.autoSuggest =
   init: ->
     #hijack redactor modalClose - if need to clean-up before closing
@@ -227,10 +274,6 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
     $('body').on 'click', '.redactor_dropdown_link', ->
       RedactorPlugins.autoSuggest.autoSuggest()
 
-# $('body').on 'click','#redactor_modal_overlay', ->
-#     console.log 'testing'
-#     $('#select2-drop-mask').trigger('click')
-#                 # select2-drop-mask
 
   autoSuggest: ->
     #.on to catch creation of modal (DNE before dropdown is selected)
@@ -238,32 +281,6 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
       # evt.preventDefault()
       #remove the event to stop focus from multi-firing
       $('body').off 'focus', '#redactor_modal'
-
-
-      # $("#redactor_wiki_link").on "keyup keypress blur input paste change", (e)->
-      #     linkText = $("#redactor_wiki_link").val()
-      #     displayText = $("#redactor_wiki_link_text").val()
-      #     re = new RegExp('^'+displayText, 'g')
-
-      #     if not displayText
-      #         $("#redactor_wiki_link_text").val linkText
-      #     else if displayText is linkText.slice(0,-1) #linkText with the last char stripped off
-      #         $("#redactor_wiki_link_text").val linkText
-      #     else if re.test(linkText)
-      #         $("#redactor_wiki_link_text").val linkText
-
-
-      # $("#redactor_link_url").on "keyup keypress blur input paste change", (e)->
-      #     linkText = $("#redactor_link_url").val()
-      #     displayText = $("#redactor_link_url_text").val()
-      #     re = new RegExp('^'+displayText, 'g')
-
-      #     if not displayText
-      #         $("#redactor_link_url_text").val linkText
-      #     else if displayText is linkText.slice(0,-1) #linkText with the last char stripped off
-      #         $("#redactor_link_url_text").val linkText
-      #     else if re.test(linkText)
-      #         $("#redactor_link_url_text").val linkText
 
 
       $("#redactor_link_url").on "keyup keypress blur input paste change", (e)->
@@ -282,10 +299,6 @@ Meteor.saveFile = (blob, name, path, type, callback) ->
       listTitles = Entries.find({}, title: 1, context: 1).map (e) ->
         wSlash = entryLink e
         wSlash.replace(/^\//, "")
-
-      # $("#redactor_wiki_link").textext
-      #     plugins: "autocomplete suggestions"
-      #     suggestions: listTitles
 
       idarray = []
       for i in listTitles

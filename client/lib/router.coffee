@@ -34,7 +34,6 @@ Router.configure
     'toolbar':
       to: 'toolbar'
 
-
 # TODO
 # each page should have a editing permission based on
 # 
