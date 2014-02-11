@@ -1,7 +1,29 @@
+<template name="dashboard-toolbar">
+    <header class="header navbar navbar-fixed-top" role="banner">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4" id="dashboard-title">
+                    <strong>Dashboard</strong>
+                </div>
+                <div class="col-md-4">
+
+                </div>
+                <div class="col-md-4">
+                    <ul class="nav navbar-nav navbar-right">
+                        {{ loginButtons}}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+</template>
+
+
 <template name="dashboard">
     
     <div class="row">
-      {{ loginButtons}}
+      {{> dashboard-toolbar}}
+
       <h3 class="bitwise">Dashboard</h3>
       <hr>
     </div>
