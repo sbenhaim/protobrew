@@ -75,7 +75,7 @@ buildTree = (context, tree, rootNode) ->
   wiki_name = Session.get("wiki_name")
 
   if !parent
-    entry = Entries.findOne({_id: 'home'})
+    entry = Entries.findOne({title: 'home'})
   else
     entry = findSingleEntryByTitle(wiki_name, context, rootNode.name)
 
@@ -99,7 +99,7 @@ Template.pageindex.events =
 
 Template.pageindex.pageindex = ->
   tree = new Tree()
-  entry = Entries.findOne({_id: 'home'})
+  entry = Entries.findOne({title: 'home'})
   if !entry?
     return "No Wiki Pages Exist. You should make one!"
 

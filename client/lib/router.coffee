@@ -50,6 +50,9 @@ hasWikiRights = (wiki) ->
 
 
 Router.map ->
+  #=======================================================================
+  # Global Routes (No Wiki Context)
+  #=======================================================================
   @route("landing", {
     path: "/landing"
     template: "landing"
@@ -87,6 +90,9 @@ Router.map ->
             Router.go("landing")
     })
 
+  #=======================================================================
+  # Wiki Routes (All prefixed with /wikis/<name>/)
+  #=======================================================================
   @route "wiki",
     path: "/wikis/:wiki_name"
     layoutTemplate: "layout"
