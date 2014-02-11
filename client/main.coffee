@@ -24,7 +24,12 @@ Deps.autorun(() ->
   # wikis
   Meteor.subscribe("browsable-wikis")
 
-);
+)
+
+
+Handlebars.registerHelper('session', (input) ->
+    return Session.get(input)
+)
 
 highlightNav = ->
   headerHeight = $("header")[0].clientHeight

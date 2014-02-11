@@ -27,14 +27,14 @@
             <ul id="nav">
 
                 <li {{#if pageIs "/"}}class="current"{{/if}}>
-                    <a class="left-nav" href="/entry/home">
+                    <a class="left-nav" href="/wikis/{{session 'wiki_name'}}/entry/home">
                         <i class="icon-home"></i>
                         Home
                     </a>
                 </li>
 
                 <li {{#if pageIs "Help"}}class="current"{{/if}}>
-                    <a class="left-nav" href="/Help">
+                    <a class="left-nav" href="/wikis/{{session 'wiki_name'}}/entry/help">
                         <i class="icon-question-sign"></i>
                         Help
                     </a>
