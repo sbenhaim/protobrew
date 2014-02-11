@@ -1,18 +1,16 @@
 <template name="dashboard-toolbar">
     <header class="header navbar navbar-fixed-top" role="banner">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4" id="dashboard-title">
-                    <strong>Dashboard</strong>
-                </div>
-                <div class="col-md-4">
+        <div class="row">
+            <div class="col-md-4" id="dashboard-title">
+                <strong>Dashboard</strong>
+            </div>
+            <div class="col-md-4">
 
-                </div>
-                <div class="col-md-4">
-                    <ul class="nav navbar-nav navbar-right">
-                        {{ loginButtons}}
-                    </ul>
-                </div>
+            </div>
+            <div class="col-md-4">
+                <ul class="nav navbar-nav navbar-right">
+                    {{loginButtons}}
+                </ul>
             </div>
         </div>
     </header>
@@ -23,27 +21,26 @@
     
     <div class="row">
       {{> dashboard-toolbar}}
-
-      <h3 class="bitwise">Dashboard</h3>
-      <hr>
     </div>
-    <h4>Public Wikis</h4>
-    <ul>
-      {{#each wikis.public}}
-        <li><a href="/wikis/{{name}}">{{name}}</a></li>
-      {{/each}}
-    </ul>
-    <h4>Private Wikis</h4>
-    <ul>
-      {{#each wikis.private}}
-        <li><a href="/wikis/{{name}}">{{name}}</a></li>
-      {{/each}}
-    </ul>
-    <h4>Other Links</h4>
-    <ul>
-      <li><a href="/profile">Profile</a></li>
-      <li><a href="/create">Create Wiki</a></li>
-    </ul>
+    <div class="row" id="dashboard-content">
+        <h4>Public Wikis</h4>
+        <ul>
+          {{#each wikis.public}}
+            <li><a href="/wikis/{{name}}">{{name}}</a></li>
+          {{/each}}
+        </ul>
+        <h4>Private Wikis</h4>
+        <ul>
+          {{#each wikis.private}}
+            <li><a href="/wikis/{{name}}">{{name}}</a></li>
+          {{/each}}
+        </ul>
+        <h4>Other Links</h4>
+        <ul>
+          <li><a href="/profile">Profile</a></li>
+          <li><a href="/create">Create Wiki</a></li>
+        </ul>
+    </div>
 </template>
 
 
