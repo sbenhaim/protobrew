@@ -61,41 +61,6 @@
   Template.comment_item.created = ->
     @firstRender = true
 
-  # Template.comment_item.rendered = ->
-    
-  #   # t("comment_item");
-  #   if @data
-  #     comment = @data
-  #     $comment = $("#" + comment._id)
-  #     if not (Meteor.user() && Meteor.user()._id == comment.userId)
-  #       openedComments = Session.get("openedComments") or [] 
-  #       # if user is logged in, and the comment belongs to the user, then never queue it
-  #       debugger;
-  #       if commentIsNew(comment) and not $comment.hasClass("comment-queued") and openedComments.indexOf(comment._id) is -1
-          
-  #         # if comment is new and has not already been previously queued          
-  #         # note: testing on the class works because Meteor apparently preserves newly assigned CSS classes          
-  #         # across template renderings          
-  #         # TODO: save scroll position
-  #         if Meteor.users.findOne(comment.userId)
-            
-  #           # get comment author name
-  #           user = Meteor.users.findOne(comment.userId)
-  #           author = getDisplayName(user)
-  #           imgURL = getAvatarUrl(user)
-  #           $container = findQueueContainer($comment)
-  #           comment_link = "<li class=\"icon-user\"><a href=\"#" + comment._id + "\" class=\"has-tooltip\" style=\"background-image:url(" + imgURL + ")\"><span class=\"tooltip\"><span>" + author + "</span></span></a></li>"
-  #           if @firstRender
-              
-  #             # TODO: fix re-rendering problem with timer
-  #             $(comment_link).appendTo($container.find("ul")).hide().fadeIn "slow"
-  #             @firstRender = false
-  #           else
-  #             $(comment_link).appendTo $container.find("ul")
-  #           $comment.removeClass("comment-displayed").addClass "comment-queued"
-  #           $comment.data "queue", $container
-
-  
   # TODO: take the user back to their previous scroll position
   Template.comment_item.events =
     "click .queue-comment": (e) ->
