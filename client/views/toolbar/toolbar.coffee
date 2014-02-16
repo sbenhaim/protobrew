@@ -13,6 +13,10 @@ Template.toolbar.rendered = ->
     $('a[rel=tooltip]').tooltip(container: 'body')
 
 Template.toolbar.events
+    'click li a': (evt) ->
+        # $('a[rel=tooltip]').tooltip('destroy')
+        $('.tooltip').remove() #fix for orphaned tooltips
+
     'click #new_page': (evt) ->
         evt.preventDefault()
         Meteor.call('createNewPage', 

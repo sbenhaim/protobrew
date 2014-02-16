@@ -3,11 +3,11 @@ Template.user_item.rendered = ->
 Template.user_item.helpers
   
   createdAtFormatted: ->
-    createdAt this
+    UserLib.createdAt this
     # (if @createdAt then moment(@createdAt).fromNow() else "–")
 
   displayName: ->
-    getDisplayName this
+    UserLib.getDisplayName this
 
   email: ->
     getEmail this
