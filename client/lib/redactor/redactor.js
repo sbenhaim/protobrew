@@ -119,7 +119,7 @@
 
             imageUpload: false, // url
             imageUploadParam: 'file', // input name
-            filepicker: false,  // GK : filepicker
+            // filepicker: false,  // GK : filepicker
             fileUpload: false, // url
             fileUploadParam: 'file', // input name
             clipboardUpload: true, // or false
@@ -5671,22 +5671,6 @@
 
             this.selectionSave();
 
-            // SB: Filepicker override
-            if ( this.opts.filepicker ) {
-                
-                var callback = function( json ) {
-                    if (  json.mimetype.match( /^image\// ) ) {
-                        this.imageCallback( json );
-                    }
-                    else {
-                        this.fileCallback( json );
-                    }
-                }
-
-                return this.opts.filepicker($.proxy(callback, this));
-            }
-            // End hack
-
             var callback = $.proxy(function()
             {
                 var sel = this.getSelection();
@@ -6889,17 +6873,6 @@
             {
                 $(this.uploadOptions.input).change($.proxy(function(e)
                 {
-                    // SB: Hack
-                    var that = this;
-                    $.each(this.el[0].redactor_file.files, function(i, file) {
-                        Meteor.saveFile(file, file.name, null, null, $.proxy(function( json ) {
-                            console.log( "json: ", json );
-                            that.uploadOptions.success(json);
-                        },this));
-                    });
-                    return
-                    // End hack
-
                     this.el.submit(function(e)
                     {
                         return false;

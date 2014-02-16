@@ -69,8 +69,8 @@ Router.map ->
       Meteor.subscribe 'userData'
       Meteor.subscribe 'entries'
 
-  @route "images",
-    path: "images"
+  # @route "images",
+  #   path: "images"
 
   @route "user_profile",
     path: "/users/:username"
