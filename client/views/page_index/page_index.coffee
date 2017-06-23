@@ -72,10 +72,12 @@ isInternalLink = (theHref) ->
   return (!theHref.match(/^\w+:\/\//))
 
 buildTree = (context, tree, rootNode) ->
+  wiki_name = Session.get("wiki_name")
+
   if !parent
-    entry = Entries.findOne({_id: 'home'})
+    entry = Entries.findOne({title: 'home'})
   else
-    entry = findSingleEntryByTitle(rootNode.name, context)
+    entry = findSingleEntryByTitle(wiki_name, context, rootNode.name)
 
   if !entry
     return
@@ -97,7 +99,7 @@ Template.pageindex.events =
 
 Template.pageindex.pageindex = ->
   tree = new Tree()
-  entry = Entries.findOne({_id: 'home'})
+  entry = Entries.findOne({title: 'home'})
   if !entry?
     return "No Wiki Pages Exist. You should make one!"
 
@@ -119,7 +121,7 @@ Template.pageindex.pageindex = ->
       li = $("<li>")
       $(ul2).append(li)
       $a = $("<a/>")
-      $a.attr('href', "/" + entry.title)
+      $a.attr('href', "/entry/" + entry.title)
       $a.html(entry.title)
       li.append($a)
 

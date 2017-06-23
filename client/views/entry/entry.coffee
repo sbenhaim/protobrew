@@ -52,20 +52,24 @@ Template.entry.userContext = ->
 Template.entry.lastEditedBy = ->
     title = Session.get('title')
     context = Session.get('context')
-    entry = findSingleEntryByTitle( title, context )
+    wiki_name = Session.get("wiki_name")
+    entry = findSingleEntryByTitle(wiki_name, context, title)
     UserLib.lastEditedBy(entry)
 
 Template.entry.sinceLastEdit = ->
     title = Session.get('title')
     context = Session.get('context')
-    entry = findSingleEntryByTitle( title, context )
+    wiki_name = Session.get("wiki_name")
+    entry = findSingleEntryByTitle(wiki_name, context, title)
     UserLib.sinceLastEdit(entry)
 
 Template.entry.entry = ->
     title = Session.get('title')
     context = Session.get('context')
+    wiki_name = Session.get("wiki_name")
+
     if title
-        entry = findSingleEntryByTitle( title, context )
+        entry = findSingleEntryByTitle(wiki_name, context, title)
 
         if entry
             Session.set('entry', entry )
@@ -145,12 +149,8 @@ Template.entry.events
     Session.set('changingTitle', false)
     $(document).off('click')
 
-
-
-
 Template.entry.rendered = ->
     $('#article-title-input').focus()
-
 
 Template.editEntry.rendered = ->
     el = $( '#entry-text' )
@@ -192,11 +192,17 @@ Template.editEntry.rendered = ->
         navigate( '/'+entry.title, Session.get( "context" ) ) unless entry.title == "home"
 
     title = Session.get('title')
+    wiki_name = Session.get("wiki_name")
+
+    console.log("Saving entry (" + title + ") for wiki (" + wiki_name + ")")
+
+
     text = rewriteLinks( $('#entry-text').redactor('get') )
     entry = {
         'title': title
         'text': text
         'mode': $('#mode').val()
+        'wiki': wiki_name
     }
 
     tags = $('#entry-tags').nextAll('input[type=hidden]').val()
@@ -213,7 +219,7 @@ Template.editEntry.rendered = ->
     # TODO should call verifySave from here and the server saveEntry function
     # rather than just the server saveEntry function?
 
-    # Meteor.call('saveEntry', title, entry, context, reroute)
-    Meteor.call('saveEntry', title, entry, context)
+    wiki_name = Session.get("wiki_name")
+    Meteor.call('saveEntry', wiki_name, title, entry, context)
     Entries.update({_id: entry._id}, entry)
     Session.set("editMode", false)

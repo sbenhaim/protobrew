@@ -1,8 +1,5 @@
 root = exports ? this
 
-Meteor.subscribe 'entries', onComplete = ->
-  Session.set('entryLoaded', true)
-
 Meteor.subscribe('comments')
 
 Meteor.subscribe('settings', ->
@@ -17,9 +14,22 @@ Meteor.subscribe('revisions')
 
 Meteor.subscribe('allUserData')
 
-Deps.autorun(->
+Deps.autorun(() ->
+  # userData
   Meteor.subscribe("userData")
-);
+
+  # entries
+  Meteor.subscribe("entries", () -> Session.set("entryLoaded", true))
+
+  # wikis
+  Meteor.subscribe("browsable-wikis")
+
+)
+
+
+Handlebars.registerHelper('session', (input) ->
+    return Session.get(input)
+)
 
 highlightNav = ->
   headerHeight = $("header")[0].clientHeight

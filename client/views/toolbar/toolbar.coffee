@@ -19,12 +19,13 @@ Template.toolbar.events
 
     'click #new_page': (evt) ->
         evt.preventDefault()
-        Meteor.call('createNewPage', 
+        wikiName =  Session.get('wiki_name')
+        Meteor.call('createNewPage', wikiName,
            (error, pageName) ->
                 console.log(error, pageName);
                 #TODO: fix non-editable navigate
                 window.scrollTo(0,0) # fix for positio being screwed up
-                navigate('/'+pageName)
+                navigate(EntryLib.getEntryPath(wikiName, pageName))
         )
 
     # 'click #left_sidebar_toggler': (evt) ->
@@ -54,7 +55,8 @@ Template.toolbar.events
         entryId = Session.get('entryId')
         context = Session.get('context')
         title = Session.get("title")
-        entry = findSingleEntryByTitle( title, context )
+        wiki_name = Session.get("wiki_name")
+        entry = findSingleEntryByTitle(wiki_name, context, title)
 
         if not entry
             Toast.error('Cannot star a blank page!')
